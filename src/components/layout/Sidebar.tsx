@@ -16,14 +16,14 @@ import {
 import { motion } from 'framer-motion';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, color: 'text-blue-400' },
-  { name: 'Applications', href: '/applications', icon: Briefcase, color: 'text-purple-400' },
-  { name: 'Job Opportunities', href: '/job-opportunities', icon: Target, color: 'text-emerald-400' },
-  { name: 'Resume Generator', href: '/resume', icon: FileText, color: 'text-green-400' },
-  { name: 'Cover Letters', href: '/cover-letters', icon: Mail, color: 'text-cyan-400' },
-  { name: 'Documents', href: '/documents', icon: FolderOpen, color: 'text-yellow-400' },
-  { name: 'Follow-Ups', href: '/follow-ups', icon: Clock, color: 'text-orange-400' },
-  { name: 'Settings', href: '/settings', icon: Settings, color: 'text-gray-400' },
+  { name: 'Dashboard', href: '#/', icon: LayoutDashboard, color: 'text-blue-400' },
+  { name: 'Applications', href: '#/applications', icon: Briefcase, color: 'text-purple-400' },
+  { name: 'Job Opportunities', href: '#/job-opportunities', icon: Target, color: 'text-emerald-400' },
+  { name: 'Resume Generator', href: '#/resume', icon: FileText, color: 'text-green-400' },
+  { name: 'Cover Letters', href: '#/cover-letters', icon: Mail, color: 'text-cyan-400' },
+  { name: 'Documents', href: '#/documents', icon: FolderOpen, color: 'text-yellow-400' },
+  { name: 'Follow-Ups', href: '#/follow-ups', icon: Clock, color: 'text-orange-400' },
+  { name: 'Settings', href: '#/settings', icon: Settings, color: 'text-gray-400' },
 ];
 
 interface SidebarProps {
