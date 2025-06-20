@@ -15,9 +15,6 @@ export function useJobApplications() {
   const [error, setError] = useState<string | null>(null);
   const webhooks = useWebhookIntegration();
 
-  // Debounced fetch to prevent excessive API calls
-  const debouncedFetch = debounce(fetchApplications, 300);
-
   const fetchApplications = async () => {
     try {
       setLoading(true);
@@ -64,6 +61,9 @@ export function useJobApplications() {
       setLoading(false);
     }
   };
+
+  // Debounced fetch to prevent excessive API calls
+  const debouncedFetch = debounce(fetchApplications, 300);
 
   useEffect(() => {
     debouncedFetch();
