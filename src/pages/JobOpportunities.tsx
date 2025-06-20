@@ -3,7 +3,7 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Badge } from '../components/ui/Badge';
-import { Search, MapPin, Clock, DollarSign, Briefcase, ExternalLink, Filter, Calendar, Mail, Linkedin, Globe, Building, CheckCircle, AlertCircle, Star, Users, Award, Zap } from 'lucide-react';
+import { Search, MapPin, Clock, DollarSign, Briefcase, ExternalLink, Filter, Calendar, Mail, Linkedin, Globe, Building, CheckCircle, AlertCircle, Star, Users, Award, Zap, FileText, Target, Phone, MessageSquare, Link2, Timer, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { format, isAfter, parseISO } from 'date-fns';
@@ -73,7 +73,7 @@ export function JobOpportunities() {
   const [jobTypeFilter, setJobTypeFilter] = useState('');
   const [sourceFilter, setSourceFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'kanban' | 'grid'>('kanban');
+  const [viewMode, setViewMode] = useState<'kanban' | 'detailed'>('detailed');
 
   useEffect(() => {
     fetchJobLeads();
@@ -115,7 +115,9 @@ export function JobOpportunities() {
         job.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.responsibilities?.some(resp => resp.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        job.requirements?.some(req => req.toLowerCase().includes(searchTerm.toLowerCase()));
+        job.requirements?.some(req => req.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        job.email_snippet?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.recruiter_name?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesLocation = !locationFilter || job.location === locationFilter;
       const matchesJobType = !jobTypeFilter || job.job_type === jobTypeFilter;
@@ -195,7 +197,7 @@ export function JobOpportunities() {
     setSourceFilter('');
   };
 
-  const JobCard = ({ job, index }: { job: JobLead; index: number }) => {
+  const DetailedJobCard = ({ job, index }: { job: JobLead; index: number }) => {
     const SourceIcon = getSourceIcon(job.source);
     const deadlineInfo = formatDeadline(job.deadline);
     
@@ -204,162 +206,332 @@ export function JobOpportunities() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
+        className="mb-8"
       >
-        <Card 
-          hover 
-          className="h-full bg-gradient-to-br from-dark-800/90 to-dark-900/90 border border-slate-700/50 group overflow-hidden"
-        >
-          <div className="flex flex-col h-full">
-            {/* Header with Company & Source */}
-            <div className="flex items-start justify-between mb-4 pb-3 border-b border-slate-700/30">
+        <Card className="bg-gradient-to-br from-dark-800/90 to-dark-900/90 border border-slate-700/50 overflow-hidden">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-primary-900/30 to-secondary-900/30 border-b border-slate-700/50 p-6">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between space-y-4 lg:space-y-0">
               <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
-                    <Building className="w-4 h-4 text-white" />
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Building className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-slate-300 font-medium text-sm">
-                    {job.company_name || 'Company Not Specified'}
-                  </span>
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-100 leading-tight">
+                      {job.job_title || 'Job Title Not Available'}
+                    </h2>
+                    <p className="text-lg text-slate-300 font-medium">
+                      {job.company_name || 'Company Not Specified'}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-lg font-bold text-slate-100 group-hover:text-white transition-colors line-clamp-2 leading-tight">
-                  {job.job_title || 'Job Title Not Available'}
-                </h3>
-              </div>
-              <div className="flex flex-col items-end space-y-2">
-                <Badge variant={getSourceColor(job.source)} className="flex items-center space-x-1">
-                  <SourceIcon className="w-3 h-3" />
-                  <span className="capitalize text-xs">{job.source}</span>
-                </Badge>
-                {deadlineInfo && (
-                  <Badge 
-                    variant={deadlineInfo.isExpired ? 'error' : deadlineInfo.urgency === 'urgent' ? 'warning' : 'default'}
-                    size="sm"
-                  >
-                    {deadlineInfo.isExpired ? 'Expired' : `${deadlineInfo.daysUntil}d left`}
-                  </Badge>
-                )}
-              </div>
-            </div>
-
-            {/* Job Details Grid */}
-            <div className="space-y-3 flex-1">
-              <div className="grid grid-cols-2 gap-3">
-                {job.location && (
-                  <div className="flex items-center space-x-2 text-sm text-slate-400">
-                    <MapPin className="w-4 h-4 text-primary-400" />
-                    <span className="truncate">{job.location}</span>
-                  </div>
-                )}
-
-                {job.job_type && (
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Badge variant={getJobTypeColor(job.job_type)} size="sm">
-                      {job.job_type}
+                
+                {/* Quick Info Row */}
+                <div className="flex flex-wrap items-center gap-3 mt-4">
+                  {job.location && (
+                    <div className="flex items-center space-x-2 bg-dark-800/50 rounded-lg px-3 py-1">
+                      <MapPin className="w-4 h-4 text-primary-400" />
+                      <span className="text-sm text-slate-300">{job.location}</span>
+                    </div>
+                  )}
+                  
+                  {job.job_type && (
+                    <Badge variant={getJobTypeColor(job.job_type)} className="flex items-center space-x-1">
+                      <Briefcase className="w-3 h-3" />
+                      <span>{job.job_type}</span>
                     </Badge>
+                  )}
+                  
+                  <Badge variant={getSourceColor(job.source)} className="flex items-center space-x-1">
+                    <SourceIcon className="w-3 h-3" />
+                    <span className="capitalize">{job.source}</span>
+                  </Badge>
+                  
+                  {deadlineInfo && (
+                    <Badge 
+                      variant={deadlineInfo.isExpired ? 'error' : deadlineInfo.urgency === 'urgent' ? 'warning' : 'success'}
+                      className="flex items-center space-x-1"
+                    >
+                      <Clock className="w-3 h-3" />
+                      <span>
+                        {deadlineInfo.isExpired ? 'Expired' : `${deadlineInfo.daysUntil} days left`}
+                      </span>
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex flex-col space-y-2 lg:ml-6">
+                {job.job_link && (
+                  <Button
+                    onClick={() => window.open(job.job_link, '_blank')}
+                    leftIcon={<ExternalLink className="w-4 h-4" />}
+                    className="w-full lg:w-auto"
+                    glow
+                  >
+                    Apply Now
+                  </Button>
+                )}
+                {job.website && (
+                  <Button
+                    onClick={() => window.open(job.website, '_blank')}
+                    variant="outline"
+                    leftIcon={<Globe className="w-4 h-4" />}
+                    className="w-full lg:w-auto"
+                  >
+                    Company Site
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Column - Job Details */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Salary & Duration */}
+                {(job.salary || job.duration) && (
+                  <div className="bg-gradient-to-r from-success-900/20 to-success-800/20 border border-success-600/30 rounded-xl p-4">
+                    <h3 className="text-lg font-semibold text-success-300 mb-3 flex items-center space-x-2">
+                      <DollarSign className="w-5 h-5" />
+                      <span>Compensation & Duration</span>
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {job.salary && (
+                        <div>
+                          <p className="text-sm text-slate-400 mb-1">Salary Range</p>
+                          <p className="text-lg font-bold text-success-300">{job.salary}</p>
+                        </div>
+                      )}
+                      {job.duration && (
+                        <div>
+                          <p className="text-sm text-slate-400 mb-1">Duration</p>
+                          <p className="text-lg font-medium text-slate-200 flex items-center space-x-2">
+                            <Timer className="w-4 h-4" />
+                            <span>{job.duration}</span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
-                {job.salary && (
-                  <div className="flex items-center space-x-2 text-sm text-slate-400 col-span-2">
-                    <DollarSign className="w-4 h-4 text-success-400" />
-                    <span className="font-medium text-success-300">{job.salary}</span>
+                {/* Responsibilities */}
+                {job.responsibilities && job.responsibilities.length > 0 && (
+                  <div className="bg-gradient-to-r from-primary-900/20 to-primary-800/20 border border-primary-600/30 rounded-xl p-4">
+                    <h3 className="text-lg font-semibold text-primary-300 mb-4 flex items-center space-x-2">
+                      <CheckCircle className="w-5 h-5" />
+                      <span>Key Responsibilities</span>
+                    </h3>
+                    <div className="space-y-3">
+                      {job.responsibilities.map((resp, idx) => (
+                        <div key={idx} className="flex items-start space-x-3 p-3 bg-dark-800/30 rounded-lg">
+                          <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-white text-xs font-bold">{idx + 1}</span>
+                          </div>
+                          <p className="text-slate-300 leading-relaxed">{resp}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
-                {job.duration && (
-                  <div className="flex items-center space-x-2 text-sm text-slate-400">
-                    <Clock className="w-4 h-4 text-warning-400" />
-                    <span>{job.duration}</span>
+                {/* Requirements */}
+                {job.requirements && job.requirements.length > 0 && (
+                  <div className="bg-gradient-to-r from-secondary-900/20 to-secondary-800/20 border border-secondary-600/30 rounded-xl p-4">
+                    <h3 className="text-lg font-semibold text-secondary-300 mb-4 flex items-center space-x-2">
+                      <Star className="w-5 h-5" />
+                      <span>Requirements & Skills</span>
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {job.requirements.map((req, idx) => (
+                        <Badge 
+                          key={idx} 
+                          variant="secondary" 
+                          className="text-sm py-2 px-3 bg-secondary-900/30 border border-secondary-600/50"
+                        >
+                          <Sparkles className="w-3 h-3 mr-1" />
+                          {req}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Email Content */}
+                {job.email_snippet && (
+                  <div className="bg-gradient-to-r from-accent-900/20 to-accent-800/20 border border-accent-600/30 rounded-xl p-4">
+                    <h3 className="text-lg font-semibold text-accent-300 mb-3 flex items-center space-x-2">
+                      <MessageSquare className="w-5 h-5" />
+                      <span>Email Content</span>
+                    </h3>
+                    {job.email_subject && (
+                      <div className="mb-3">
+                        <p className="text-sm text-slate-400 mb-1">Subject:</p>
+                        <p className="text-slate-200 font-medium">{job.email_subject}</p>
+                      </div>
+                    )}
+                    <div className="bg-dark-800/30 rounded-lg p-4">
+                      <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                        {job.email_snippet}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* Responsibilities Section */}
-              {job.responsibilities && job.responsibilities.length > 0 && (
-                <div className="bg-gradient-to-r from-primary-900/20 to-primary-800/20 border border-primary-600/30 rounded-lg p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <CheckCircle className="w-4 h-4 text-primary-400" />
-                    <span className="text-sm font-medium text-primary-300">Key Responsibilities</span>
+              {/* Right Column - Contact & Meta Info */}
+              <div className="space-y-6">
+                {/* Contact Information */}
+                {(job.recruiter_name || job.email_from) && (
+                  <div className="bg-gradient-to-br from-warning-900/20 to-warning-800/20 border border-warning-600/30 rounded-xl p-4">
+                    <h3 className="text-lg font-semibold text-warning-300 mb-4 flex items-center space-x-2">
+                      <Users className="w-5 h-5" />
+                      <span>Contact Information</span>
+                    </h3>
+                    <div className="space-y-3">
+                      {job.recruiter_name && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-warning-500 rounded-full flex items-center justify-center">
+                            <Users className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-slate-400">Recruiter</p>
+                            <p className="text-slate-200 font-medium">{job.recruiter_name}</p>
+                          </div>
+                        </div>
+                      )}
+                      {job.email_from && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-warning-500 rounded-full flex items-center justify-center">
+                            <Mail className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-slate-400">Email</p>
+                            <p className="text-slate-200 font-medium break-all">{job.email_from}</p>
+                          </div>
+                        </div>
+                      )}
+                      {job.email_to && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-warning-500 rounded-full flex items-center justify-center">
+                            <Target className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-slate-400">Sent To</p>
+                            <p className="text-slate-200 font-medium break-all">{job.email_to}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    {job.responsibilities.slice(0, 3).map((resp, idx) => (
-                      <div key={idx} className="text-xs text-slate-300 flex items-start space-x-2">
-                        <span className="text-primary-400 mt-1">•</span>
-                        <span className="line-clamp-2">{resp}</span>
+                )}
+
+                {/* Deadline Information */}
+                {deadlineInfo && (
+                  <div className={`bg-gradient-to-br rounded-xl p-4 border ${
+                    deadlineInfo.isExpired 
+                      ? 'from-error-900/20 to-error-800/20 border-error-600/30'
+                      : deadlineInfo.urgency === 'urgent'
+                      ? 'from-warning-900/20 to-warning-800/20 border-warning-600/30'
+                      : 'from-success-900/20 to-success-800/20 border-success-600/30'
+                  }`}>
+                    <h3 className={`text-lg font-semibold mb-3 flex items-center space-x-2 ${
+                      deadlineInfo.isExpired 
+                        ? 'text-error-300'
+                        : deadlineInfo.urgency === 'urgent'
+                        ? 'text-warning-300'
+                        : 'text-success-300'
+                    }`}>
+                      <Clock className="w-5 h-5" />
+                      <span>Application Deadline</span>
+                    </h3>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-slate-100 mb-1">
+                        {deadlineInfo.formatted}
+                      </p>
+                      <p className={`text-sm font-medium ${
+                        deadlineInfo.isExpired 
+                          ? 'text-error-400'
+                          : deadlineInfo.urgency === 'urgent'
+                          ? 'text-warning-400'
+                          : 'text-success-400'
+                      }`}>
+                        {deadlineInfo.isExpired 
+                          ? 'Application Deadline Passed'
+                          : `${deadlineInfo.daysUntil} days remaining`
+                        }
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Meta Information */}
+                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-600/30 rounded-xl p-4">
+                  <h3 className="text-lg font-semibold text-slate-300 mb-4 flex items-center space-x-2">
+                    <FileText className="w-5 h-5" />
+                    <span>Job Details</span>
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Posted:</span>
+                      <span className="text-slate-200">{format(parseISO(job.created_at), 'MMM dd, yyyy')}</span>
+                    </div>
+                    {job.extracted_from && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Source:</span>
+                        <span className="text-slate-200">{job.extracted_from}</span>
                       </div>
-                    ))}
-                    {job.responsibilities.length > 3 && (
-                      <div className="text-xs text-primary-400 font-medium">
-                        +{job.responsibilities.length - 3} more...
+                    )}
+                    {job.parsed_by && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Parsed by:</span>
+                        <span className="text-slate-200">{job.parsed_by}</span>
+                      </div>
+                    )}
+                    {job.thread_id && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Thread ID:</span>
+                        <span className="text-slate-200 font-mono text-xs">{job.thread_id.substring(0, 12)}...</span>
                       </div>
                     )}
                   </div>
                 </div>
-              )}
 
-              {/* Requirements Section */}
-              {job.requirements && job.requirements.length > 0 && (
-                <div className="bg-gradient-to-r from-secondary-900/20 to-secondary-800/20 border border-secondary-600/30 rounded-lg p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Star className="w-4 h-4 text-secondary-400" />
-                    <span className="text-sm font-medium text-secondary-300">Requirements</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {job.requirements.slice(0, 4).map((req, idx) => (
-                      <Badge key={idx} variant="secondary" size="sm" className="text-xs">
-                        {req}
-                      </Badge>
-                    ))}
-                    {job.requirements.length > 4 && (
-                      <Badge variant="secondary" size="sm" className="text-xs">
-                        +{job.requirements.length - 4}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Contact Info */}
-              {job.recruiter_name && (
-                <div className="bg-dark-900/50 rounded-lg p-2 border border-slate-700/30">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-accent-400" />
-                    <span className="text-sm text-slate-300">Contact: {job.recruiter_name}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Footer Actions */}
-            <div className="mt-4 pt-4 border-t border-slate-700/50">
-              <div className="flex items-center justify-between">
-                <div className="text-xs text-slate-500">
-                  {format(parseISO(job.created_at), 'MMM dd')}
-                </div>
-                <div className="flex items-center space-x-2">
+                {/* Quick Actions */}
+                <div className="space-y-2">
+                  {job.job_link && (
+                    <Button
+                      onClick={() => window.open(job.job_link, '_blank')}
+                      className="w-full"
+                      leftIcon={<ExternalLink className="w-4 h-4" />}
+                      glow
+                    >
+                      Apply for this Position
+                    </Button>
+                  )}
                   {job.website && (
                     <Button
                       onClick={() => window.open(job.website, '_blank')}
                       variant="outline"
-                      size="sm"
-                      leftIcon={<Globe className="w-3 h-3" />}
+                      className="w-full"
+                      leftIcon={<Globe className="w-4 h-4" />}
                     >
-                      Site
+                      Visit Company Website
                     </Button>
                   )}
-                  {job.job_link ? (
+                  {job.email_from && (
                     <Button
-                      onClick={() => window.open(job.job_link, '_blank')}
-                      leftIcon={<ExternalLink className="w-4 h-4" />}
-                      size="sm"
-                      className="group-hover:scale-105 transition-transform"
-                      glow
+                      onClick={() => window.open(`mailto:${job.email_from}`, '_blank')}
+                      variant="outline"
+                      className="w-full"
+                      leftIcon={<Mail className="w-4 h-4" />}
                     >
-                      Apply
-                    </Button>
-                  ) : (
-                    <Button disabled variant="outline" size="sm">
-                      No Link
+                      Contact Recruiter
                     </Button>
                   )}
                 </div>
@@ -391,19 +563,19 @@ export function JobOpportunities() {
         className="text-center"
       >
         <h1 className="text-3xl lg:text-4xl font-bold gradient-text mb-4">
-          🔥 Latest Job Opportunities
+          🔥 Comprehensive Job Opportunities
         </h1>
         <p className="text-slate-400 text-lg">
-          Discover exciting career opportunities with detailed insights
+          Detailed insights into every available position with complete information
         </p>
         <div className="mt-4 flex items-center justify-center space-x-6 text-sm text-slate-500">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-success-400 rounded-full animate-pulse"></div>
-            <span>{filteredJobLeads.length} opportunities available</span>
+            <span>{filteredJobLeads.length} detailed opportunities</span>
           </div>
           <div className="flex items-center space-x-2">
             <Zap className="w-4 h-4" />
-            <span>AI-Enhanced Details</span>
+            <span>Full Information Display</span>
           </div>
         </div>
       </motion.div>
@@ -419,35 +591,17 @@ export function JobOpportunities() {
             <div className="flex-1">
               <div className="relative">
                 <Input
-                  placeholder="Search jobs, companies, skills, or requirements..."
+                  placeholder="Search jobs, companies, skills, requirements, or email content..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   leftIcon={<Search className="w-5 h-5" />}
-                  className="w-full lg:max-w-lg"
+                  className="w-full"
                   variant="glass"
                 />
               </div>
             </div>
             
             <div className="flex items-center space-x-3">
-              <div className="flex items-center bg-dark-800/70 border border-slate-600 rounded-lg p-1">
-                <Button
-                  variant={viewMode === 'kanban' ? 'primary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('kanban')}
-                  className="rounded-md"
-                >
-                  Kanban
-                </Button>
-                <Button
-                  variant={viewMode === 'grid' ? 'primary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className="rounded-md"
-                >
-                  Grid
-                </Button>
-              </div>
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
@@ -530,74 +684,12 @@ export function JobOpportunities() {
         </Card>
       </motion.div>
 
-      {/* Content */}
-      {viewMode === 'kanban' ? (
-        /* Kanban View */
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Urgent Column */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-error-500 rounded-full"></div>
-              <h3 className="font-semibold text-error-300">Urgent (≤3 days)</h3>
-              <Badge variant="error" size="sm">{kanbanColumns.urgent.length}</Badge>
-            </div>
-            <div className="space-y-4">
-              {kanbanColumns.urgent.map((job, index) => (
-                <JobCard key={job.id} job={job} index={index} />
-              ))}
-            </div>
-          </div>
-
-          {/* This Week Column */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-warning-500 rounded-full"></div>
-              <h3 className="font-semibold text-warning-300">This Week</h3>
-              <Badge variant="warning" size="sm">{kanbanColumns.thisWeek.length}</Badge>
-            </div>
-            <div className="space-y-4">
-              {kanbanColumns.thisWeek.map((job, index) => (
-                <JobCard key={job.id} job={job} index={index} />
-              ))}
-            </div>
-          </div>
-
-          {/* Later Column */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-success-500 rounded-full"></div>
-              <h3 className="font-semibold text-success-300">Later</h3>
-              <Badge variant="success" size="sm">{kanbanColumns.later.length}</Badge>
-            </div>
-            <div className="space-y-4">
-              {kanbanColumns.later.map((job, index) => (
-                <JobCard key={job.id} job={job} index={index} />
-              ))}
-            </div>
-          </div>
-
-          {/* Expired Column */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-3 h-3 bg-slate-500 rounded-full"></div>
-              <h3 className="font-semibold text-slate-400">Expired</h3>
-              <Badge variant="default" size="sm">{kanbanColumns.expired.length}</Badge>
-            </div>
-            <div className="space-y-4 opacity-60">
-              {kanbanColumns.expired.map((job, index) => (
-                <JobCard key={job.id} job={job} index={index} />
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* Grid View */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredJobLeads.map((job, index) => (
-            <JobCard key={job.id} job={job} index={index} />
-          ))}
-        </div>
-      )}
+      {/* Job Listings */}
+      <div className="space-y-8">
+        {filteredJobLeads.map((job, index) => (
+          <DetailedJobCard key={job.id} job={job} index={index} />
+        ))}
+      </div>
 
       {/* Empty State */}
       {filteredJobLeads.length === 0 && !loading && (
@@ -642,10 +734,6 @@ export function JobOpportunities() {
             <div className="text-sm text-slate-400">Total Opportunities</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-error-400">{kanbanColumns.urgent.length}</div>
-            <div className="text-sm text-slate-400">Urgent</div>
-          </div>
-          <div>
             <div className="text-2xl font-bold text-secondary-400">
               {filterOptions.locations.length}
             </div>
@@ -662,6 +750,12 @@ export function JobOpportunities() {
               {jobLeads.filter(job => job.responsibilities && job.responsibilities.length > 0).length}
             </div>
             <div className="text-sm text-slate-400">With Details</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-warning-400">
+              {jobLeads.filter(job => job.recruiter_name).length}
+            </div>
+            <div className="text-sm text-slate-400">With Contacts</div>
           </div>
         </div>
       </motion.div>
