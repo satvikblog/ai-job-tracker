@@ -15,9 +15,6 @@ export function useFollowUps() {
   const [error, setError] = useState<string | null>(null);
   const webhooks = useWebhookIntegration();
 
-  // Debounced fetch to prevent excessive API calls
-  const debouncedFetch = debounce(fetchFollowUps, 300);
-
   const fetchFollowUps = async () => {
     try {
       setLoading(true);
@@ -58,6 +55,9 @@ export function useFollowUps() {
       setLoading(false);
     }
   };
+
+  // Debounced fetch to prevent excessive API calls
+  const debouncedFetch = debounce(fetchFollowUps, 300);
 
   useEffect(() => {
     debouncedFetch();
