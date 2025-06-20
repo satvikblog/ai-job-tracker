@@ -35,7 +35,7 @@ export function useGmailAPI() {
   const { 
     isAuthenticated, 
     getValidToken, 
-    requestGooglePermissions, 
+    requestGooglePermissions: _requestGmailPermissions, 
     revokeAccess,
     initializeGmailAPI 
   } = useGoogleOAuth();
@@ -340,7 +340,7 @@ export function useGmailAPI() {
     loading,
     messages,
     lastSyncTime,
-    requestGmailPermissions,
+    requestGmailPermissions: _requestGmailPermissions,
     fetchJobEmails,
     createApplicationFromEmail,
     revokeAccess
