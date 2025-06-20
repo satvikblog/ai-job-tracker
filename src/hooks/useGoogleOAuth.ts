@@ -59,12 +59,14 @@ export function useGoogleOAuth() {
 
         // Use default development credentials if still not found
         if (!clientId) {
-          clientId = '1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com';
-          console.warn('Using default Google Client ID for development');
+          console.warn('No Google Client ID found. Please configure VITE_GOOGLE_CLIENT_ID in your environment variables.');
+          toast.error('Google integration not configured. Please check your environment variables.');
+          return;
         }
         if (!apiKey) {
-          apiKey = 'AIzaSyDefaultApiKeyForDevelopment';
-          console.warn('Using default Google API Key for development');
+          console.warn('No Google API Key found. Please configure VITE_GOOGLE_API_KEY in your environment variables.');
+          toast.error('Google integration not configured. Please check your environment variables.');
+          return;
         }
       }
 
@@ -113,12 +115,23 @@ export function useGoogleOAuth() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: tokens } = await supabase
+      const { data: tokens, error } = await supabase
         .from('oauth_tokens')
         .select('*')
         .eq('user_id', user.id)
         .eq('provider', 'google')
         .single();
+
+      // Handle the case where no token exists
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No token found, user is not authenticated
+          setIsAuthenticated(false);
+          return;
+        }
+        console.error('Error loading OAuth status:', error);
+        return;
+      }
 
       if (tokens && tokens.access_token) {
         // Check if token is still valid
@@ -237,10 +250,21 @@ export function useGoogleOAuth() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      const { data: tokenData } = await supabase.rpc('get_oauth_token', {
+      const { data: tokenData, error } = await supabase.rpc('get_oauth_token', {
         p_user_id: user.id,
         p_provider: 'google'
       });
+
+      // Handle the case where no token exists (PGRST116 error)
+      if (error) {
+        if (error.code === 'PGRST116' && error.details === 'The result contains 0 rows') {
+          // No token found, return null gracefully
+          return null;
+        }
+        // For other errors, log and return null
+        console.error('Error getting OAuth token:', error);
+        return null;
+      }
 
       if (!tokenData || tokenData.length === 0) return null;
 
