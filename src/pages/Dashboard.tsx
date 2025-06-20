@@ -5,63 +5,31 @@ import { ApplicationChart } from '../components/dashboard/ApplicationChart';
 import { StatusFlowChart } from '../components/dashboard/StatusFlowChart';
 import { ResponseRateFlow } from '../components/dashboard/ResponseRateFlow';
 import { Briefcase, Clock, CheckCircle, TrendingUp, Target, Calendar, Award } from 'lucide-react';
-import { useJobApplications } from '../hooks/useJobApplications';
+import { useDashboardData } from '../hooks/useDashboardData';
 import { motion } from 'framer-motion';
-import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 
 export function Dashboard() {
-  const { applications, loading: applicationsLoading } = useJobApplications();
-
-  const statistics = useMemo(() => {
-    if (applicationsLoading) return null;
-
-    const statusBreakdown = applications.reduce((acc, app) => {
-      acc[app.status] = (acc[app.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const pendingFollowUps = applications.filter(app => 
-      app.next_follow_up_date && new Date(app.next_follow_up_date) >= new Date()
-    ).length;
-
-    const offersReceived = statusBreakdown['offer'] || 0;
-
-    // Calculate monthly applications for the last 3 months
-    const monthlyApplications = [];
-    for (let i = 2; i >= 0; i--) {
-      const date = subMonths(new Date(), i);
-      const monthStart = startOfMonth(date);
-      const monthEnd = endOfMonth(date);
-      
-      const count = applications.filter(app => {
-        const appliedDate = new Date(app.applied_on);
-        return appliedDate >= monthStart && appliedDate <= monthEnd;
-      }).length;
-
-      monthlyApplications.push({
-        month: format(date, 'MMM'),
-        count
-      });
-    }
-
-    return {
-      totalApplications: applications.length,
-      statusBreakdown,
-      followUpsPending: pendingFollowUps,
-      offersReceived,
-      monthlyApplications
-    };
-  }, [applications, applicationsLoading]);
+  const { stats, monthlyTrends, loading } = useDashboardData();
 
   const responseRate = useMemo(() => {
-    if (!applications.length) return 0;
-    const responded = applications.filter(app => 
-      ['interview', 'offer', 'rejected'].includes(app.status)
-    ).length;
-    return Math.round((responded / applications.length) * 100);
-  }, [applications]);
+    if (!stats || stats.totalApplications === 0) return 0;
+    const responded = stats.interviewCount + stats.offerCount + stats.rejectedCount;
+    return Math.round((responded / stats.totalApplications) * 100);
+  }, [stats]);
 
-  if (applicationsLoading) {
+  const statusBreakdown = useMemo(() => {
+    if (!stats) return {};
+    return {
+      'applied': stats.appliedCount,
+      'followed-up': stats.followedUpCount,
+      'interview': stats.interviewCount,
+      'offer': stats.offerCount,
+      'rejected': stats.rejectedCount,
+      'no-response': stats.noResponseCount
+    };
+  }, [stats]);
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -98,27 +66,27 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Total Applications"
-          value={statistics?.totalApplications || 0}
+          value={stats?.totalApplications || 0}
           icon={<Briefcase className="w-6 h-6" />}
-          change={applications.length > 0 ? "+12% from last month" : "Start applying!"}
+          change={stats?.totalApplications ? "+12% from last month" : "Start applying!"}
           changeType="positive"
           delay={0.1}
           color="primary"
         />
         <StatsCard
           title="Pending Follow-ups"
-          value={statistics?.followUpsPending || 0}
+          value={stats?.pendingFollowups || 0}
           icon={<Clock className="w-6 h-6" />}
-          change={statistics?.followUpsPending ? `${statistics.followUpsPending} due this week` : "No follow-ups"}
+          change={stats?.pendingFollowups ? `${stats.pendingFollowups} due this week` : "No follow-ups"}
           changeType="neutral"
           delay={0.2}
           color="warning"
         />
         <StatsCard
           title="Offers Received"
-          value={statistics?.offersReceived || 0}
+          value={stats?.offerCount || 0}
           icon={<Award className="w-6 h-6" />}
-          change={statistics?.offersReceived ? "+1 this month" : "Keep applying!"}
+          change={stats?.offerCount ? "+1 this month" : "Keep applying!"}
           changeType="positive"
           delay={0.3}
           color="success"
@@ -141,7 +109,7 @@ export function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <ApplicationChart data={statistics?.monthlyApplications || []} />
+          <ApplicationChart data={monthlyTrends.map(trend => ({ month: trend.month, count: trend.applicationCount })) || []} />
         </motion.div>
         
         <motion.div
@@ -149,7 +117,7 @@ export function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <StatusFlowChart statusData={statistics?.statusBreakdown || {}} />
+          <StatusFlowChart statusData={statusBreakdown} />
         </motion.div>
         
         <motion.div
@@ -157,7 +125,7 @@ export function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
         >
-          <ResponseRateFlow applications={applications} />
+          <ResponseRateFlow applications={stats?.recentApplications || []} />
         </motion.div>
       </div>
       
@@ -167,7 +135,7 @@ export function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.8 }}
       >
-        <RecentApplications applications={applications.slice(0, 5)} />
+        <RecentApplications applications={stats?.recentApplications || []} />
       </motion.div>
 
       {/* Quick Actions */}

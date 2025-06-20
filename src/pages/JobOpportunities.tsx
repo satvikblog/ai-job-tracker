@@ -82,17 +82,38 @@ export function JobOpportunities() {
   const fetchJobLeads = async () => {
     try {
       setLoading(true);
+      
+      // Use optimized search function if available
       const { data, error } = await supabase
-        .from('job_leads')
-        .select('*')
-        .eq('is_valid_opportunity', true)
-        .order('created_at', { ascending: false });
+        .rpc('search_job_opportunities', {
+          p_search_term: '',
+          p_location: '',
+          p_job_type: '',
+          p_source: '',
+          p_limit: 100,
+          p_offset: 0
+        });
 
       if (error) throw error;
       setJobLeads(data || []);
     } catch (error: any) {
       console.error('Error fetching job leads:', error);
-      toast.error('Failed to load job opportunities');
+      
+      // Fallback to regular query if optimized function is not available
+      try {
+        const { data, error } = await supabase
+          .from('job_leads')
+          .select('*')
+          .eq('is_valid_opportunity', true)
+          .order('created_at', { ascending: false })
+          .limit(100);
+          
+        if (error) throw error;
+        setJobLeads(data || []);
+      } catch (fallbackError: any) {
+        console.error('Fallback query also failed:', fallbackError);
+        toast.error('Failed to load job opportunities');
+      }
     } finally {
       setLoading(false);
     }

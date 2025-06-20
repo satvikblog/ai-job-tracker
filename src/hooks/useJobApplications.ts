@@ -59,15 +59,29 @@ export function useJobApplications() {
         throw profileError;
       }
 
-      // Fetch applications
+      // Optimized fetch with covering index
       const { data, error } = await supabase
         .from('job_applications')
         .select(`
-          *,
+          id,
+          user_id,
+          company_name,
+          job_title,
+          job_link,
+          source_site,
+          applied_on,
+          status,
+          next_follow_up_date,
+          notes,
+          salary,
+          location,
+          created_at,
+          updated_at,
           contacts (*)
         `)
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(100); // Reasonable limit for performance
 
       if (error) {
         console.error('Error fetching applications:', error);
