@@ -11,9 +11,6 @@ export function useDocuments() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Debounced fetch to prevent excessive API calls
-  const debouncedFetch = debounce(fetchDocuments, 300);
-
   const fetchDocuments = async () => {
     try {
       setLoading(true);
@@ -44,6 +41,9 @@ export function useDocuments() {
       setLoading(false);
     }
   };
+
+  // Debounced fetch to prevent excessive API calls
+  const debouncedFetch = debounce(fetchDocuments, 300);
 
   useEffect(() => {
     debouncedFetch();
