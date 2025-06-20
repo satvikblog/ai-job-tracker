@@ -1,0 +1,531 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force dark mode globally */
+:root {
+  color-scheme: dark;
+  --toast-bg: #1e293b;
+  --toast-color: #f1f5f9;
+}
+
+html {
+  @apply dark;
+}
+
+body {
+  @apply bg-dark-950 text-slate-100 antialiased;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  min-height: 100vh;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Ensure all text elements have proper contrast */
+h1, h2, h3, h4, h5, h6 {
+  @apply text-slate-100 !important;
+  color: #f1f5f9 !important;
+}
+
+p, span, div, label, td, th {
+  @apply text-slate-200 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Mobile responsive text sizes */
+@media (max-width: 640px) {
+  h1 { @apply text-xl !important; }
+  h2 { @apply text-lg !important; }
+  h3 { @apply text-base !important; }
+  .text-2xl { @apply text-xl !important; }
+  .text-3xl { @apply text-2xl !important; }
+}
+
+/* Specific text color classes */
+.text-muted {
+  @apply text-slate-400 !important;
+  color: #94a3b8 !important;
+}
+
+.text-subtle {
+  @apply text-slate-500 !important;
+  color: #64748b !important;
+}
+
+/* Form labels and inputs */
+label {
+  @apply text-slate-200 !important;
+  color: #e2e8f0 !important;
+}
+
+input, select, textarea {
+  @apply text-slate-100 !important;
+  color: #f1f5f9 !important;
+}
+
+input::placeholder, textarea::placeholder {
+  @apply text-slate-400 !important;
+  color: #94a3b8 !important;
+}
+
+/* Table headers */
+th {
+  @apply text-slate-300 !important;
+  color: #cbd5e1 !important;
+}
+
+/* Button text */
+button {
+  color: inherit !important;
+}
+
+/* Mobile-optimized scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 3px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Enhanced focus styles */
+.focus-visible:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounceGentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    transform: scale(1.02);
+  }
+}
+
+/* Utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+.animate-bounce-gentle {
+  animation: bounceGentle 2s infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.glass-strong {
+  background: rgba(30, 41, 59, 0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800;
+  @apply text-white font-medium px-6 py-3 rounded-lg;
+  @apply shadow-lg hover:shadow-glow transition-all duration-300;
+  @apply border border-primary-500/20;
+}
+
+.btn-secondary {
+  @apply bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800;
+  @apply text-white font-medium px-6 py-3 rounded-lg;
+  @apply shadow-lg hover:shadow-glow transition-all duration-300;
+  @apply border border-secondary-500/20;
+}
+
+.btn-outline {
+  @apply bg-dark-800/50 hover:bg-dark-700/70 border border-slate-600 hover:border-primary-500;
+  @apply text-slate-300 hover:text-white font-medium px-6 py-3 rounded-lg;
+  @apply backdrop-blur-sm transition-all duration-300;
+}
+
+/* Card styles */
+.card {
+  @apply bg-dark-800/70 backdrop-blur-sm border border-slate-700/50;
+  @apply rounded-xl shadow-dark hover:shadow-dark-lg;
+  @apply transition-all duration-300;
+}
+
+.card-hover {
+  @apply hover:bg-dark-800/90 hover:border-primary-500/30;
+  @apply hover:-translate-y-1 hover:shadow-glow-sm;
+}
+
+/* Input styles */
+.input-field {
+  @apply bg-dark-800/70 border border-slate-600 rounded-lg px-4 py-3;
+  @apply text-slate-100 placeholder-slate-400;
+  @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20;
+  @apply backdrop-blur-sm transition-all duration-200;
+}
+
+/* Status indicators */
+.status-applied { @apply bg-slate-700 text-slate-300 border-slate-600; }
+.status-followed-up { @apply bg-primary-900/50 text-primary-300 border-primary-700; }
+.status-interview { @apply bg-accent-900/50 text-accent-300 border-accent-700; }
+.status-offer { @apply bg-success-900/50 text-success-300 border-success-700; }
+.status-rejected { @apply bg-error-900/50 text-error-300 border-error-700; }
+.status-no-response { @apply bg-warning-900/50 text-warning-300 border-warning-700; }
+
+/* Loading states */
+.loading-skeleton {
+  @apply bg-gradient-to-r from-dark-800 via-dark-700 to-dark-800;
+  @apply animate-pulse rounded;
+  background-size: 200% 100%;
+}
+
+/* Notification styles */
+.notification-success {
+  @apply bg-success-900/20 border border-success-600 text-success-300;
+}
+
+.notification-error {
+  @apply bg-error-900/20 border border-error-600 text-error-300;
+}
+
+.notification-warning {
+  @apply bg-warning-900/20 border border-warning-600 text-warning-300;
+}
+
+.notification-info {
+  @apply bg-primary-900/20 border border-primary-600 text-primary-300;
+}
+
+/* Form elements dark theme */
+input, select, textarea, button {
+  @apply bg-dark-800/70 border-slate-600 text-slate-100;
+}
+
+input:focus, select:focus, textarea:focus {
+  @apply border-primary-500 ring-primary-500/20 bg-dark-800/90;
+}
+
+/* Ensure proper visibility for all interactive elements */
+button:hover {
+  @apply transform scale-105;
+}
+
+a:hover {
+  @apply text-primary-400;
+}
+
+/* Dark theme specific overrides */
+.dark {
+  color-scheme: dark;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+  .card {
+    @apply mx-2 rounded-lg;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-outline {
+    @apply w-full justify-center text-sm px-4 py-2;
+  }
+  
+  /* Mobile sidebar adjustments */
+  .sidebar-mobile {
+    @apply fixed inset-0 z-50 bg-dark-900/95 backdrop-blur-xl;
+  }
+  
+  /* Mobile modal adjustments */
+  .modal-mobile {
+    @apply mx-2 my-4 max-h-[90vh] overflow-y-auto;
+  }
+  
+  /* Mobile table responsiveness */
+  .table-mobile {
+    @apply block overflow-x-auto whitespace-nowrap;
+  }
+  
+  /* Mobile form adjustments */
+  .form-mobile {
+    @apply space-y-4;
+  }
+  
+  .form-mobile .grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  /* Mobile text adjustments */
+  .mobile-text-sm {
+    @apply text-sm;
+  }
+  
+  .mobile-hidden {
+    @apply hidden;
+  }
+  
+  .mobile-full {
+    @apply w-full;
+  }
+}
+
+/* Tablet responsiveness */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-grid-2 {
+    @apply grid-cols-2;
+  }
+  
+  .tablet-text-base {
+    @apply text-base;
+  }
+}
+
+/* Custom scrollbar for modal content */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* AI Generation specific styles */
+.ai-generating {
+  @apply animate-pulse-glow;
+}
+
+.ai-content {
+  @apply bg-gradient-to-br from-dark-800/50 to-dark-900/50;
+  @apply border border-primary-500/20 rounded-xl p-4;
+  @apply backdrop-blur-sm;
+}
+
+.ai-highlight {
+  @apply bg-primary-500/10 border-l-4 border-primary-500 pl-4 py-2;
+  @apply text-primary-100 rounded-r-lg;
+}
+
+/* Mobile touch targets */
+@media (max-width: 640px) {
+  button, .btn, .button {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  input, select, textarea {
+    @apply min-h-[44px];
+  }
+  
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+}
+
+/* Ensure all text in specific components is visible */
+.modal-content * {
+  color: inherit !important;
+}
+
+.modal-content h1, .modal-content h2, .modal-content h3, .modal-content h4, .modal-content h5, .modal-content h6 {
+  @apply text-slate-100 !important;
+}
+
+.modal-content p, .modal-content span, .modal-content div, .modal-content label {
+  @apply text-slate-200 !important;
+}
+
+/* Table specific styles */
+table th {
+  @apply text-slate-300 !important;
+}
+
+table td {
+  @apply text-slate-200 !important;
+}
+
+/* Badge text visibility */
+.badge-text {
+  color: inherit !important;
+}
+
+/* Ensure form field labels are visible */
+.form-label {
+  @apply text-slate-200 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Error text visibility */
+.error-text {
+  @apply text-red-400 !important;
+  color: #f87171 !important;
+}
+
+/* Success text visibility */
+.success-text {
+  @apply text-green-400 !important;
+  color: #4ade80 !important;
+}
+
+/* Warning text visibility */
+.warning-text {
+  @apply text-yellow-400 !important;
+  color: #facc15 !important;
+}
+
+/* Info text visibility */
+.info-text {
+  @apply text-blue-400 !important;
+  color: #60a5fa !important;
+}
+
+/* Mobile navigation improvements */
+@media (max-width: 768px) {
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-dark-900/95 backdrop-blur-xl;
+    @apply border-t border-slate-700/50 p-2;
+    @apply flex justify-around items-center;
+    z-index: 1000;
+  }
+  
+  .mobile-nav-item {
+    @apply flex flex-col items-center space-y-1 p-2 rounded-lg;
+    @apply text-xs font-medium transition-all duration-200;
+    @apply min-w-[60px] text-center;
+  }
+  
+  .mobile-nav-item.active {
+    @apply bg-primary-600/20 text-primary-300;
+  }
+  
+  .mobile-nav-item:not(.active) {
+    @apply text-slate-400 hover:text-slate-300;
+  }
+}
+
+/* Loading spinner improvements */
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-transparent;
+  border-top-color: currentColor;
+  border-right-color: currentColor;
+}
+
+/* Mobile-optimized spacing */
+@media (max-width: 640px) {
+  .mobile-spacing {
+    @apply space-y-4 p-4;
+  }
+  
+  .mobile-grid {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .mobile-flex {
+    @apply flex-col space-y-2 space-x-0;
+  }
+}
+
+/* Improved mobile form styling */
+@media (max-width: 640px) {
+  .mobile-form input,
+  .mobile-form select,
+  .mobile-form textarea {
+    @apply text-base; /* Prevents zoom on iOS */
+  }
+}
