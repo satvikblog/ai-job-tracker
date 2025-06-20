@@ -1,9 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './database.types';
 
-// Direct Supabase credentials
+// Supabase configuration
 const supabaseUrl = 'https://zeiivnxtkcqwlnmtxyfd.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWl2bnh0a2Nxd2xubXR4eWZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNzMyNzUsImV4cCI6MjA2NTY0OTI3NX0.lhahnsYyO9yEvnYTt-5fxZ6bxtDzqHSiOR0OABD_jSI';
+
+// Validate credentials
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase configuration');
+}
 
 export const supabase = createClient<Database>(
   supabaseUrl,
@@ -13,10 +18,19 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
+      flowType: 'pkce'
     },
     global: {
       headers: {
         'X-Client-Info': 'jobtracker-ai@1.0.0',
+      },
+    },
+    db: {
+      schema: 'public',
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
       },
     },
   }
@@ -40,20 +54,20 @@ export const getCurrentUserId = async () => {
 // Test connection
 export const testConnection = async () => {
   try {
-    const { data, error } = await supabase.from('profiles').select('count').limit(1);
+    // Simple health check
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .limit(1);
     
     if (error) {
       console.error('❌ Supabase connection failed:', error.message);
       return false;
     }
     
-    console.log('✅ Supabase connection successful');
     return true;
   } catch (error: any) {
     console.error('❌ Supabase connection error:', error.message);
     return false;
   }
 };
-
-// Initialize connection test
-testConnection();

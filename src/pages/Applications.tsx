@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
 export function Applications() {
-  const { applications, loading, addApplication, updateApplication, deleteApplication } = useJobApplications();
+  const { applications, loading, error, addApplication, updateApplication, deleteApplication } = useJobApplications();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<JobApplication | undefined>();
   const [view, setView] = useState<'table' | 'kanban'>('table');
@@ -59,6 +59,23 @@ export function Applications() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
           <p className="text-slate-400">Loading your applications...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-error-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Briefcase className="w-8 h-8 text-error-400" />
+          </div>
+          <h3 className="text-lg font-medium text-slate-300 mb-2">Failed to Load Applications</h3>
+          <p className="text-slate-400 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()} variant="primary">
+            Retry
+          </Button>
         </div>
       </div>
     );

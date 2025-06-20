@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import { useWebhookIntegration } from './useWebhookIntegration';
+import { debounce } from 'lodash-es';
 import toast from 'react-hot-toast';
 
 type FollowUp = Database['public']['Tables']['follow_ups']['Row'] & {
@@ -11,17 +12,22 @@ type FollowUp = Database['public']['Tables']['follow_ups']['Row'] & {
 export function useFollowUps() {
   const [followUps, setFollowUps] = useState<FollowUp[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const webhooks = useWebhookIntegration();
+
+  // Debounced fetch to prevent excessive API calls
+  const debouncedFetch = debounce(fetchFollowUps, 300);
 
   const fetchFollowUps = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // Check if user is authenticated
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
-        console.error('User not authenticated:', userError);
         setFollowUps([]);
+        setLoading(false);
         return;
       }
 
@@ -33,7 +39,8 @@ export function useFollowUps() {
             *
           )
         `)
-        .order('date', { ascending: false });
+        .order('date', { ascending: false })
+        .limit(100); // Reasonable limit
 
       if (error) throw error;
       
@@ -45,7 +52,7 @@ export function useFollowUps() {
       setFollowUps(userFollowUps);
     } catch (error: any) {
       console.error('Error fetching follow-ups:', error);
-      toast.error('Failed to load follow-ups');
+      setError('Failed to load follow-ups');
       setFollowUps([]);
     } finally {
       setLoading(false);
@@ -53,7 +60,11 @@ export function useFollowUps() {
   };
 
   useEffect(() => {
-    fetchFollowUps();
+    debouncedFetch();
+    
+    return () => {
+      debouncedFetch.cancel();
+    };
   }, []);
 
   const addFollowUp = async (followUpData: Omit<Database['public']['Tables']['follow_ups']['Insert'], 'id'>) => {
@@ -71,11 +82,11 @@ export function useFollowUps() {
 
       // 📧 TRIGGER WEBHOOK - Follow-up Logged
       if (data.job_applications) {
-        console.log('📧 Triggering webhook for follow-up logged:', data.job_applications.company_name);
         await webhooks.onFollowUpLogged(data.job_applications, data);
       }
 
-      await fetchFollowUps();
+      // Optimistically update the list
+      setFollowUps(prev => [data, ...prev]);
       toast.success(`Follow-up logged successfully! ${webhooks.config?.enabled ? '(Webhook triggered)' : ''}`);
       return data;
     } catch (error: any) {
@@ -94,7 +105,12 @@ export function useFollowUps() {
 
       if (error) throw error;
 
-      await fetchFollowUps();
+      // Optimistically update the list
+      setFollowUps(prev => 
+        prev.map(followUp => 
+          followUp.id === id ? { ...followUp, ...updates } : followUp
+        )
+      );
       toast.success('Follow-up updated successfully!');
     } catch (error: any) {
       console.error('Error updating follow-up:', error);
@@ -106,6 +122,7 @@ export function useFollowUps() {
   return {
     followUps,
     loading,
+    error,
     addFollowUp,
     updateFollowUp,
     refetch: fetchFollowUps,

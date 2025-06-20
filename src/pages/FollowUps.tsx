@@ -21,7 +21,7 @@ const responseStatusOptions = [
 ];
 
 export function FollowUps() {
-  const { followUps, loading, addFollowUp } = useFollowUps();
+  const { followUps, loading, error, addFollowUp } = useFollowUps();
   const { applications } = useJobApplications();
   const [searchTerm, setSearchTerm] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -80,7 +80,27 @@ export function FollowUps() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading your follow-ups...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-error-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8 text-error-400" />
+          </div>
+          <h3 className="text-lg font-medium text-slate-300 mb-2">Failed to Load Follow-ups</h3>
+          <p className="text-slate-400 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()} variant="primary">
+            Retry
+          </Button>
+        </div>
       </div>
     );
   }

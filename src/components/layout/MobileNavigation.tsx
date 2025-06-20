@@ -11,13 +11,13 @@ import {
 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Dashboard', href: '#/', icon: LayoutDashboard },
-  { name: 'Jobs', href: '#/applications', icon: Briefcase },
-  { name: 'Leads', href: '#/job-opportunities', icon: Target },
-  { name: 'Resume', href: '#/resume', icon: FileText },
-  { name: 'Letters', href: '#/cover-letters', icon: Mail },
-  { name: 'Docs', href: '#/documents', icon: FolderOpen },
-  { name: 'Follow', href: '#/follow-ups', icon: Clock },
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Jobs', href: '/applications', icon: Briefcase },
+  { name: 'Leads', href: '/job-opportunities', icon: Target },
+  { name: 'Resume', href: '/resume', icon: FileText },
+  { name: 'Letters', href: '/cover-letters', icon: Mail },
+  { name: 'Docs', href: '/documents', icon: FolderOpen },
+  { name: 'Follow', href: '/follow-ups', icon: Clock },
 ];
 
 export function MobileNavigation() {

@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { User, Session } from '@supabase/supabase-js';
+import { debounce } from 'lodash-es';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Debounced profile creation to prevent race conditions
+  const debouncedEnsureProfile = debounce(ensureProfile, 500);
 
   useEffect(() => {
     // Get initial session
@@ -20,7 +24,7 @@ export function useAuth() {
           
           // Ensure profile exists for authenticated user
           if (session?.user) {
-            await ensureProfile(session.user);
+            debouncedEnsureProfile(session.user);
           }
         }
       } catch (error) {
@@ -40,18 +44,22 @@ export function useAuth() {
       
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
 
       // Handle profile creation/update on auth events
       if (session?.user) {
-        await ensureProfile(session.user);
+        debouncedEnsureProfile(session.user);
       }
+      
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      debouncedEnsureProfile.cancel();
+    };
   }, []);
 
-  const ensureProfile = async (user: User) => {
+  async function ensureProfile(user: User) {
     try {
       // Check if profile exists
       const { data: existingProfile, error: fetchError } = await supabase
@@ -62,7 +70,6 @@ export function useAuth() {
 
       if (fetchError && fetchError.code === 'PGRST116') {
         // Profile doesn't exist, create it
-        console.log('Creating profile for user:', user.id);
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
@@ -73,19 +80,14 @@ export function useAuth() {
         
         if (insertError) {
           console.error('Error creating profile:', insertError);
-        } else {
-          console.log('Profile created successfully');
         }
       } else if (fetchError) {
         console.error('Error checking profile:', fetchError);
-      } else {
-        // Profile exists, optionally update it
-        console.log('Profile already exists for user:', user.id);
       }
     } catch (error) {
       console.error('Error in ensureProfile:', error);
     }
-  };
+  }
 
   const signIn = async (email: string, password: string) => {
     try {

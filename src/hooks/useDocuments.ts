@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Database } from '../lib/database.types';
+import { debounce } from 'lodash-es';
 import toast from 'react-hot-toast';
 
 type Document = Database['public']['Tables']['documents']['Row'];
@@ -8,16 +9,21 @@ type Document = Database['public']['Tables']['documents']['Row'];
 export function useDocuments() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Debounced fetch to prevent excessive API calls
+  const debouncedFetch = debounce(fetchDocuments, 300);
 
   const fetchDocuments = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // Check if user is authenticated
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
-        console.error('User not authenticated:', userError);
         setDocuments([]);
+        setLoading(false);
         return;
       }
 
@@ -25,13 +31,14 @@ export function useDocuments() {
         .from('documents')
         .select('*')
         .eq('user_id', user.id)
-        .order('uploaded_on', { ascending: false });
+        .order('uploaded_on', { ascending: false })
+        .limit(100); // Reasonable limit
 
       if (error) throw error;
       setDocuments(data || []);
     } catch (error: any) {
       console.error('Error fetching documents:', error);
-      toast.error('Failed to load documents');
+      setError('Failed to load documents');
       setDocuments([]);
     } finally {
       setLoading(false);
@@ -39,7 +46,11 @@ export function useDocuments() {
   };
 
   useEffect(() => {
-    fetchDocuments();
+    debouncedFetch();
+    
+    return () => {
+      debouncedFetch.cancel();
+    };
   }, []);
 
   const uploadDocument = async (file: File, fileType: Document['file_type'], linkedJobId?: string) => {
@@ -68,7 +79,8 @@ export function useDocuments() {
 
       if (error) throw error;
 
-      await fetchDocuments();
+      // Optimistically update the list
+      setDocuments(prev => [data, ...prev]);
       toast.success('Document uploaded successfully!');
       return data;
     } catch (error: any) {
@@ -87,7 +99,8 @@ export function useDocuments() {
 
       if (error) throw error;
 
-      await fetchDocuments();
+      // Optimistically update the list
+      setDocuments(prev => prev.filter(doc => doc.id !== id));
       toast.success('Document deleted successfully!');
     } catch (error: any) {
       console.error('Error deleting document:', error);
@@ -99,6 +112,7 @@ export function useDocuments() {
   return {
     documents,
     loading,
+    error,
     uploadDocument,
     deleteDocument,
     refetch: fetchDocuments,

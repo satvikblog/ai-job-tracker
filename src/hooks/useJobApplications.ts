@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import { useWebhookIntegration } from './useWebhookIntegration';
+import { debounce } from 'lodash-es';
 import toast from 'react-hot-toast';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'] & {
@@ -11,28 +12,71 @@ type JobApplication = Database['public']['Tables']['job_applications']['Row'] & 
 export function useJobApplications() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const webhooks = useWebhookIntegration();
+
+  // Debounced fetch to prevent excessive API calls
+  const debouncedFetch = debounce(fetchApplications, 300);
 
   const fetchApplications = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError) {
         console.error('Auth error:', userError);
-        throw userError;
+        setError('Authentication error');
+        return;
       }
       
       if (!user) {
         console.log('No authenticated user found');
         setApplications([]);
+        setLoading(false);
         return;
       }
 
-      console.log('Fetching applications for user:', user.id);
+      // Optimized fetch with minimal data and proper indexing
+      const { data, error } = await supabase
+        .from('job_applications')
+        .select(`
+          *,
+          contacts (*)
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(50); // Reasonable limit for initial load
 
-      // Ensure user profile exists
+      if (error) {
+        console.error('Error fetching applications:', error);
+        setError('Failed to load applications');
+        return;
+      }
+
+      setApplications(data || []);
+    } catch (error: any) {
+      console.error('Error in fetchApplications:', error);
+      setError('Failed to load applications');
+      toast.error('Failed to load applications');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    debouncedFetch();
+    
+    // Cleanup on unmount
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, []);
+
+  // Ensure profile exists helper function
+  const ensureProfile = async (user: any) => {
+    try {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('id')
@@ -41,104 +85,29 @@ export function useJobApplications() {
 
       if (profileError && profileError.code === 'PGRST116') {
         // Profile doesn't exist, create it
-        console.log('Creating profile for user:', user.id);
-        const { error: createError } = await supabase
+        await supabase
           .from('profiles')
           .insert({
             id: user.id,
             email: user.email!,
             full_name: user.user_metadata?.full_name || '',
           });
-        
-        if (createError) {
-          console.error('Error creating profile:', createError);
-          throw createError;
-        }
-      } else if (profileError) {
-        console.error('Profile error:', profileError);
-        throw profileError;
       }
-
-      // Optimized fetch with covering index
-      const { data, error } = await supabase
-        .from('job_applications')
-        .select(`
-          id,
-          user_id,
-          company_name,
-          job_title,
-          job_link,
-          source_site,
-          applied_on,
-          status,
-          next_follow_up_date,
-          notes,
-          salary,
-          location,
-          created_at,
-          updated_at,
-          contacts (*)
-        `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(100); // Reasonable limit for performance
-
-      if (error) {
-        console.error('Error fetching applications:', error);
-        throw error;
-      }
-
-      console.log('Fetched applications:', data?.length || 0);
-      setApplications(data || []);
-    } catch (error: any) {
-      console.error('Error in fetchApplications:', error);
-      toast.error('Failed to load applications');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Error ensuring profile:', error);
     }
   };
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
   const addApplication = async (applicationData: any) => {
     try {
-      console.log('Adding application with data:', applicationData);
-      
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
         throw new Error('User not authenticated');
       }
 
-      console.log('Current user:', user.id);
-
-      // Ensure profile exists before creating application
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError && profileError.code === 'PGRST116') {
-        // Create profile if it doesn't exist
-        console.log('Creating profile before adding application');
-        const { error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            id: user.id,
-            email: user.email!,
-            full_name: user.user_metadata?.full_name || '',
-          });
-        
-        if (createError) {
-          console.error('Error creating profile:', createError);
-          throw createError;
-        }
-      } else if (profileError) {
-        throw profileError;
-      }
+      // Ensure profile exists
+      await ensureProfile(user);
 
       // Clean the data for Supabase
       const cleanedData = {
@@ -155,8 +124,6 @@ export function useJobApplications() {
         user_id: user.id,
       };
 
-      console.log('Cleaned data for Supabase:', cleanedData);
-
       const { data, error } = await supabase
         .from('job_applications')
         .insert([cleanedData])
@@ -164,8 +131,6 @@ export function useJobApplications() {
         .single();
 
       if (error) {
-        console.error('Supabase error:', error);
-        console.error('Error details:', error.details, error.hint, error.message);
         throw error;
       }
 
@@ -186,10 +151,10 @@ export function useJobApplications() {
       }
 
       // 🚀 TRIGGER WEBHOOK - Application Added
-      console.log('🚀 Triggering webhook for new application:', data.company_name);
       await webhooks.onApplicationAdded(data);
 
-      await fetchApplications();
+      // Optimistically update the list instead of refetching
+      setApplications(prev => [data, ...prev]);
       toast.success('Application added successfully!');
       return data;
     } catch (error: any) {
@@ -211,8 +176,6 @@ export function useJobApplications() {
 
   const updateApplication = async (id: string, updates: Partial<Database['public']['Tables']['job_applications']['Update']>) => {
     try {
-      console.log('Updating application:', id, 'with updates:', updates);
-      
       // Get current application for webhook comparison
       const currentApp = applications.find(app => app.id === id);
       const previousStatus = currentApp?.status;
@@ -224,7 +187,6 @@ export function useJobApplications() {
         .eq('id', id);
 
       if (updateError) {
-        console.error('Update error:', updateError);
         throw updateError;
       }
 
@@ -236,28 +198,27 @@ export function useJobApplications() {
         .single();
 
       if (fetchError) {
-        console.error('Fetch error after update:', fetchError);
         throw fetchError;
       }
 
       if (updatedApp) {
         // 📝 TRIGGER WEBHOOK - Application Updated
         if (updates.status && updates.status !== previousStatus) {
-          console.log('📝 Triggering webhook for application update:', updatedApp.company_name);
           await webhooks.onApplicationUpdated(updatedApp, previousStatus);
           
           // Send specific event webhooks
           if (updates.status === 'interview') {
-            console.log('🎯 Triggering interview scheduled webhook');
             await webhooks.onInterviewScheduled(updatedApp);
           } else if (updates.status === 'offer') {
-            console.log('🎉 Triggering offer received webhook');
             await webhooks.onOfferReceived(updatedApp);
           }
         }
       }
 
-      await fetchApplications();
+      // Optimistically update the list
+      setApplications(prev => 
+        prev.map(app => app.id === id ? { ...app, ...updates } : app)
+      );
       toast.success('Application updated successfully!');
     } catch (error: any) {
       console.error('Error updating application:', error);
@@ -275,7 +236,8 @@ export function useJobApplications() {
 
       if (error) throw error;
 
-      await fetchApplications();
+      // Optimistically update the list
+      setApplications(prev => prev.filter(app => app.id !== id));
       toast.success('Application deleted successfully!');
     } catch (error: any) {
       console.error('Error deleting application:', error);
@@ -287,6 +249,7 @@ export function useJobApplications() {
   return {
     applications,
     loading,
+    error,
     addApplication,
     updateApplication,
     deleteApplication,
