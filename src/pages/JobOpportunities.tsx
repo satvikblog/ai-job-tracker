@@ -3,8 +3,10 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Badge } from '../components/ui/Badge';
-import { Search, MapPin, Clock, DollarSign, Briefcase, ExternalLink, Filter, Calendar, Mail, Linkedin, Globe, Building, CheckCircle, AlertCircle, Star, Users, Award, Zap, FileText, Target, Phone, MessageSquare, Link2, Timer, Sparkles } from 'lucide-react';
+import { Modal } from '../components/ui/Modal';
+import { Search, MapPin, Clock, DollarSign, Briefcase, ExternalLink, Filter, Calendar, Mail, Linkedin, Globe, Building, CheckCircle, AlertCircle, Star, Users, Award, Zap, FileText, Target, Phone, MessageSquare, Link2, Timer, Sparkles, Eye, Trash2, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useJobApplications } from '../hooks/useJobApplications';
 import { motion } from 'framer-motion';
 import { format, parseISO } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -53,6 +55,12 @@ export function JobOpportunities() {
   const [employmentTypeFilter, setEmploymentTypeFilter] = useState('');
   const [seniorityFilter, setSeniorityFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<LinkedInJob | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
+  const [addingToApplications, setAddingToApplications] = useState<string | null>(null);
+
+  const { addApplication } = useJobApplications();
 
   useEffect(() => {
     fetchLinkedInJobs();
@@ -75,6 +83,69 @@ export function JobOpportunities() {
       toast.error('Failed to load job opportunities');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Convert LinkedIn job to job application format
+  const convertToJobApplication = (linkedInJob: LinkedInJob) => {
+    return {
+      company_name: linkedInJob.company_name || 'Unknown Company',
+      job_title: linkedInJob.title || 'Unknown Position',
+      job_link: linkedInJob.apply_url || null,
+      source_site: 'LinkedIn',
+      applied_on: new Date().toISOString().split('T')[0],
+      status: 'applied' as const,
+      next_follow_up_date: null,
+      notes: `LinkedIn Job Description:\n${linkedInJob.description || ''}\n\nSeniority: ${linkedInJob.seniority || 'Not specified'}\nEmployment Type: ${linkedInJob.employment_type || 'Not specified'}\nRecruiter: ${linkedInJob.recruiter_name || 'Not specified'}`,
+      salary: null,
+      location: linkedInJob.location || null,
+    };
+  };
+
+  const handleViewJob = (job: LinkedInJob) => {
+    setSelectedJob(job);
+    setIsViewModalOpen(true);
+  };
+
+  const handleDeleteJob = async (jobId: string) => {
+    if (!window.confirm('Are you sure you want to delete this job opportunity?')) {
+      return;
+    }
+
+    try {
+      setDeletingJobId(jobId);
+      
+      const { error } = await supabase
+        .from('linkedin_jobs')
+        .delete()
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      // Remove from local state
+      setLinkedInJobs(prev => prev.filter(job => job.id !== jobId));
+      toast.success('Job opportunity deleted successfully!');
+    } catch (error: any) {
+      console.error('Error deleting job:', error);
+      toast.error('Failed to delete job opportunity');
+    } finally {
+      setDeletingJobId(null);
+    }
+  };
+
+  const handleAddToApplications = async (linkedInJob: LinkedInJob) => {
+    try {
+      setAddingToApplications(linkedInJob.id);
+      
+      const applicationData = convertToJobApplication(linkedInJob);
+      await addApplication(applicationData);
+      
+      toast.success(`Added "${linkedInJob.title}" to your job applications!`);
+    } catch (error: any) {
+      console.error('Error adding to applications:', error);
+      toast.error('Failed to add to job applications');
+    } finally {
+      setAddingToApplications(null);
     }
   };
 
@@ -188,24 +259,47 @@ export function JobOpportunities() {
               
               {/* Action Buttons */}
               <div className="flex flex-col space-y-2 lg:ml-6">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={() => handleViewJob(job)}
+                    leftIcon={<Eye className="w-4 h-4" />}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 lg:flex-none"
+                  >
+                    View
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteJob(job.id)}
+                    isLoading={deletingJobId === job.id}
+                    leftIcon={<Trash2 className="w-4 h-4" />}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 lg:flex-none text-error-400 hover:text-error-300"
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    onClick={() => handleAddToApplications(job)}
+                    isLoading={addingToApplications === job.id}
+                    leftIcon={<Plus className="w-4 h-4" />}
+                    variant="primary"
+                    size="sm"
+                    className="flex-1 lg:flex-none"
+                    glow
+                  >
+                    Applied
+                  </Button>
+                </div>
+                
                 {job.apply_url && (
                   <Button
                     onClick={() => window.open(job.apply_url, '_blank')}
                     leftIcon={<ExternalLink className="w-4 h-4" />}
-                    className="w-full lg:w-auto"
+                    className="w-full"
                     glow
                   >
                     Apply on LinkedIn
-                  </Button>
-                )}
-                {job.recruiter_profile_url && (
-                  <Button
-                    onClick={() => window.open(job.recruiter_profile_url, '_blank')}
-                    variant="outline"
-                    leftIcon={<Users className="w-4 h-4" />}
-                    className="w-full lg:w-auto"
-                  >
-                    View Recruiter
                   </Button>
                 )}
               </div>
@@ -217,17 +311,25 @@ export function JobOpportunities() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left Column - Job Details */}
               <div className="lg:col-span-2 space-y-6">
-                {/* Job Description */}
+                {/* Job Description Preview */}
                 {job.description && (
                   <div className="bg-gradient-to-r from-primary-900/20 to-primary-800/20 border border-primary-600/30 rounded-xl p-4">
                     <h3 className="text-lg font-semibold text-primary-300 mb-4 flex items-center space-x-2">
                       <FileText className="w-5 h-5" />
-                      <span>Job Description</span>
+                      <span>Job Description Preview</span>
                     </h3>
                     <div className="bg-dark-800/30 rounded-lg p-4">
-                      <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-slate-300 leading-relaxed line-clamp-4">
                         {job.description}
                       </p>
+                      <Button
+                        onClick={() => handleViewJob(job)}
+                        variant="ghost"
+                        size="sm"
+                        className="mt-2 text-primary-400 hover:text-primary-300"
+                      >
+                        Read full description →
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -317,40 +419,17 @@ export function JobOpportunities() {
                   </div>
                 </div>
 
-                {/* Meta Information */}
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-600/30 rounded-xl p-4">
-                  <h3 className="text-lg font-semibold text-slate-300 mb-4 flex items-center space-x-2">
-                    <FileText className="w-5 h-5" />
-                    <span>Job Details</span>
-                  </h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Added:</span>
-                      <span className="text-slate-200">{format(parseISO(job.created_at), 'MMM dd, yyyy')}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Source:</span>
-                      <span className="text-slate-200">{job.source || 'LinkedIn'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Job ID:</span>
-                      <span className="text-slate-200 font-mono text-xs">{job.id.substring(0, 12)}...</span>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Quick Actions */}
                 <div className="space-y-2">
-                  {job.apply_url && (
-                    <Button
-                      onClick={() => window.open(job.apply_url, '_blank')}
-                      className="w-full"
-                      leftIcon={<ExternalLink className="w-4 h-4" />}
-                      glow
-                    >
-                      Apply for this Position
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => handleAddToApplications(job)}
+                    isLoading={addingToApplications === job.id}
+                    className="w-full"
+                    leftIcon={<Plus className="w-4 h-4" />}
+                    glow
+                  >
+                    Add to Applications
+                  </Button>
                   {job.recruiter_profile_url && (
                     <Button
                       onClick={() => window.open(job.recruiter_profile_url, '_blank')}
@@ -579,7 +658,115 @@ export function JobOpportunities() {
             <div className="text-sm text-slate-400">Detailed Posts</div>
           </div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* View Job Modal */}
+      <Modal
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        title={selectedJob ? `${selectedJob.title} at ${selectedJob.company_name}` : 'Job Details'}
+        size="xl"
+      >
+        {selectedJob && (
+          <div className="space-y-6">
+            {/* Job Header */}
+            <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-blue-900/20 to-blue-800/20 border border-blue-600/30 rounded-xl">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Linkedin className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-slate-100 mb-2">{selectedJob.title}</h2>
+                <p className="text-lg text-slate-300 font-medium mb-3">{selectedJob.company_name}</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedJob.location && (
+                    <Badge variant="default" className="flex items-center space-x-1">
+                      <MapPin className="w-3 h-3" />
+                      <span>{selectedJob.location}</span>
+                    </Badge>
+                  )}
+                  {selectedJob.employment_type && (
+                    <Badge variant={getEmploymentTypeColor(selectedJob.employment_type)}>
+                      {selectedJob.employment_type}
+                    </Badge>
+                  )}
+                  {selectedJob.seniority && (
+                    <Badge variant={getSeniorityColor(selectedJob.seniority)}>
+                      {selectedJob.seniority}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Job Description */}
+            {selectedJob.description && (
+              <div>
+                <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center space-x-2">
+                  <FileText className="w-5 h-5 text-primary-400" />
+                  <span>Job Description</span>
+                </h3>
+                <div className="bg-dark-800/30 rounded-lg p-4 max-h-96 overflow-y-auto">
+                  <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                    {selectedJob.description}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Recruiter Info */}
+            {(selectedJob.recruiter_name || selectedJob.recruiter_profile) && (
+              <div>
+                <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center space-x-2">
+                  <Users className="w-5 h-5 text-warning-400" />
+                  <span>Recruiter Information</span>
+                </h3>
+                <div className="bg-dark-800/30 rounded-lg p-4">
+                  {selectedJob.recruiter_name && (
+                    <p className="text-slate-300 mb-2">
+                      <span className="text-slate-400">Name:</span> {selectedJob.recruiter_name}
+                    </p>
+                  )}
+                  {selectedJob.recruiter_profile && (
+                    <p className="text-slate-300">
+                      <span className="text-slate-400">Profile:</span> {selectedJob.recruiter_profile}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-700/50">
+              <Button
+                onClick={() => handleAddToApplications(selectedJob)}
+                isLoading={addingToApplications === selectedJob.id}
+                leftIcon={<Plus className="w-4 h-4" />}
+                glow
+              >
+                Add to Applications
+              </Button>
+              {selectedJob.apply_url && (
+                <Button
+                  onClick={() => window.open(selectedJob.apply_url, '_blank')}
+                  leftIcon={<ExternalLink className="w-4 h-4" />}
+                  variant="outline"
+                >
+                  Apply on LinkedIn
+                </Button>
+              )}
+              {selectedJob.recruiter_profile_url && (
+                <Button
+                  onClick={() => window.open(selectedJob.recruiter_profile_url, '_blank')}
+                  leftIcon={<Linkedin className="w-4 h-4" />}
+                  variant="outline"
+                >
+                  Contact Recruiter
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
