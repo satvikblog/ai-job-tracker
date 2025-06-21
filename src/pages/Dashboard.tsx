@@ -6,10 +6,12 @@ import { StatusFlowChart } from '../components/dashboard/StatusFlowChart';
 import { ResponseRateFlow } from '../components/dashboard/ResponseRateFlow';
 import { Briefcase, Clock, CheckCircle, TrendingUp, Target, Calendar, Award, Search } from 'lucide-react';
 import { useDashboardData } from '../hooks/useDashboardData';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export function Dashboard() {
   const { stats, monthlyTrends, loading } = useDashboardData();
+  const navigate = useNavigate();
 
   const responseRate = useMemo(() => {
     if (!stats || stats.totalApplications === 0) return 0;
@@ -29,6 +31,34 @@ export function Dashboard() {
     };
   }, [stats]);
 
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'add-application':
+        navigate('/applications');
+        // Small delay to ensure navigation completes, then trigger the add form
+        setTimeout(() => {
+          // Dispatch a custom event that the Applications page can listen to
+          window.dispatchEvent(new CustomEvent('openApplicationForm'));
+        }, 100);
+        break;
+      case 'schedule-followup':
+        navigate('/follow-ups');
+        // Trigger follow-up form
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('openFollowUpForm'));
+        }, 100);
+        break;
+      case 'view-analytics':
+        // Stay on dashboard and scroll to charts
+        const chartsSection = document.querySelector('[data-charts-section]');
+        if (chartsSection) {
+          chartsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        break;
+      default:
+        break;
+    }
+  };
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -112,7 +142,7 @@ export function Dashboard() {
       </div>
 
       {/* Charts and Recent Applications */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" data-charts-section>
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -159,21 +189,30 @@ export function Dashboard() {
           <span>Quick Actions</span>
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-primary-500/50 transition-all duration-300 cursor-pointer">
-            <Briefcase className="w-8 h-8 text-primary-400 mx-auto mb-2" />
+          <button
+            onClick={() => handleQuickAction('add-application')}
+            className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-primary-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
+          >
+            <Briefcase className="w-8 h-8 text-primary-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
             <p className="text-sm font-medium text-slate-200">Add Application</p>
             <p className="text-xs text-slate-400">Track a new job application</p>
-          </div>
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-secondary-500/50 transition-all duration-300 cursor-pointer">
-            <Clock className="w-8 h-8 text-secondary-400 mx-auto mb-2" />
+          </button>
+          <button
+            onClick={() => handleQuickAction('schedule-followup')}
+            className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-secondary-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
+          >
+            <Clock className="w-8 h-8 text-secondary-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
             <p className="text-sm font-medium text-slate-200">Schedule Follow-up</p>
             <p className="text-xs text-slate-400">Set reminder for follow-up</p>
-          </div>
-          <div className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-accent-500/50 transition-all duration-300 cursor-pointer">
-            <TrendingUp className="w-8 h-8 text-accent-400 mx-auto mb-2" />
+          </button>
+          <button
+            onClick={() => handleQuickAction('view-analytics')}
+            className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-accent-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
+          >
+            <TrendingUp className="w-8 h-8 text-accent-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
             <p className="text-sm font-medium text-slate-200">View Analytics</p>
             <p className="text-xs text-slate-400">Analyze your progress</p>
-          </div>
+          </button>
         </div>
       </motion.div>
     </div>

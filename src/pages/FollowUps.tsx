@@ -28,6 +28,17 @@ export function FollowUps() {
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
+  // Listen for dashboard quick action events
+  useEffect(() => {
+    const handleOpenForm = () => {
+      setIsFormOpen(true);
+    };
+
+    window.addEventListener('openFollowUpForm', handleOpenForm);
+    return () => {
+      window.removeEventListener('openFollowUpForm', handleOpenForm);
+    };
+  }, []);
   const jobOptions = applications.map(app => ({
     value: app.id,
     label: `${app.company_name} - ${app.job_title}`

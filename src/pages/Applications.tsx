@@ -16,6 +16,17 @@ export function Applications() {
   const [editingApplication, setEditingApplication] = useState<JobApplication | undefined>();
   const [view, setView] = useState<'table' | 'kanban'>('table');
 
+  // Listen for dashboard quick action events
+  useEffect(() => {
+    const handleOpenForm = () => {
+      setIsFormOpen(true);
+    };
+
+    window.addEventListener('openApplicationForm', handleOpenForm);
+    return () => {
+      window.removeEventListener('openApplicationForm', handleOpenForm);
+    };
+  }, []);
   const handleAddApplication = async (data: any) => {
     try {
       await addApplication(data);
