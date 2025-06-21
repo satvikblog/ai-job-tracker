@@ -4,7 +4,7 @@ import { RecentApplications } from '../components/dashboard/RecentApplications';
 import { ApplicationChart } from '../components/dashboard/ApplicationChart';
 import { StatusFlowChart } from '../components/dashboard/StatusFlowChart';
 import { ResponseRateFlow } from '../components/dashboard/ResponseRateFlow';
-import { Briefcase, Clock, CheckCircle, TrendingUp, Target, Calendar, Award } from 'lucide-react';
+import { Briefcase, Clock, CheckCircle, TrendingUp, Target, Calendar, Award, Search } from 'lucide-react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { motion } from 'framer-motion';
 
@@ -63,7 +63,7 @@ export function Dashboard() {
       </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <StatsCard
           title="Total Applications"
           value={stats?.totalApplications || 0}
@@ -74,12 +74,21 @@ export function Dashboard() {
           color="primary"
         />
         <StatsCard
+          title="Job Opportunities"
+          value={stats?.totalJobOpportunities || 0}
+          icon={<Search className="w-6 h-6" />}
+          change={stats?.totalJobOpportunities ? "LinkedIn sourced" : "No opportunities"}
+          changeType="neutral"
+          delay={0.2}
+          color="secondary"
+        />
+        <StatsCard
           title="Pending Follow-ups"
           value={stats?.pendingFollowups || 0}
           icon={<Clock className="w-6 h-6" />}
           change={stats?.pendingFollowups ? `${stats.pendingFollowups} due this week` : "No follow-ups"}
           changeType="neutral"
-          delay={0.2}
+          delay={0.3}
           color="warning"
         />
         <StatsCard
@@ -88,7 +97,7 @@ export function Dashboard() {
           icon={<Award className="w-6 h-6" />}
           change={stats?.offerCount ? "+1 this month" : "Keep applying!"}
           changeType="positive"
-          delay={0.3}
+          delay={0.4}
           color="success"
         />
         <StatsCard
@@ -97,8 +106,8 @@ export function Dashboard() {
           icon={<TrendingUp className="w-6 h-6" />}
           change={responseRate > 0 ? "+5% improvement" : "Track responses"}
           changeType="positive"
-          delay={0.4}
-          color="secondary"
+          delay={0.5}
+          color="accent"
         />
       </div>
 

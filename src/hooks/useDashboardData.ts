@@ -13,6 +13,7 @@ interface DashboardStats {
   pendingFollowups: number;
   avgResponseTimeDays: number;
   recentApplications: any[];
+  totalJobOpportunities: number;
 }
 
 interface MonthlyTrend {
@@ -38,6 +39,13 @@ export function useDashboardData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Fetch job opportunities count
+      const { data: jobOpportunitiesData, error: jobOpportunitiesError } = await supabase
+        .from('linkedin_jobs')
+        .select('id', { count: 'exact', head: true });
+
+      const jobOpportunitiesCount = jobOpportunitiesData?.length || 0;
+
       // Use optimized function for dashboard data
       const { data: dashboardData, error: dashboardError } = await supabase
         .rpc('get_user_dashboard_data', { p_user_id: user.id });
@@ -60,7 +68,8 @@ export function useDashboardData() {
           noResponseCount: Number(data.no_response_count) || 0,
           pendingFollowups: Number(data.pending_followups) || 0,
           avgResponseTimeDays: Number(data.avg_response_time_days) || 0,
-          recentApplications: data.recent_applications || []
+          recentApplications: data.recent_applications || [],
+          totalJobOpportunities: jobOpportunitiesCount
         });
       }
 
@@ -90,6 +99,13 @@ export function useDashboardData() {
   };
 
   const fetchDashboardDataFallback = async (userId: string) => {
+    // Fetch job opportunities count
+    const { data: jobOpportunitiesData } = await supabase
+      .from('linkedin_jobs')
+      .select('id', { count: 'exact', head: true });
+
+    const jobOpportunitiesCount = jobOpportunitiesData?.length || 0;
+
     // Fallback to regular queries if optimized function is not available
     const { data: applications, error } = await supabase
       .from('job_applications')
@@ -118,7 +134,8 @@ export function useDashboardData() {
       noResponseCount: statusCounts['no-response'] || 0,
       pendingFollowups,
       avgResponseTimeDays: 0, // Calculate if needed
-      recentApplications: applications.slice(0, 5)
+      recentApplications: applications.slice(0, 5),
+      totalJobOpportunities: jobOpportunitiesCount
     });
   };
 
