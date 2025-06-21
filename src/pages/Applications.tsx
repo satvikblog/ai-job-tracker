@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/Button';
 import { ApplicationForm } from '../components/applications/ApplicationForm';
 import { ApplicationTable } from '../components/applications/ApplicationTable';
