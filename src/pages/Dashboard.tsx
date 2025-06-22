@@ -19,47 +19,16 @@ export function Dashboard() {
   useEffect(() => {
     const fetchJobOpportunitiesCount = async () => {
       try {
-        // First try the optimized search function that the Job Opportunities page uses
-        const { data, error } = await supabase
-          .rpc('search_job_opportunities', {
-            p_search_term: '',
-            p_location: '',
-            p_job_type: '',
-            p_source: '',
-            p_limit: 1000,
-            p_offset: 0
-          });
+        // Use the exact query you specified: SELECT COUNT(*) FROM linkedin_jobs;
+        const { count, error } = await supabase
+          .from('linkedin_jobs')
+          .select('*', { count: 'exact', head: true });
 
-        if (!error && data) {
-          setJobOpportunitiesCount(data.length);
-        } else {
-          // Fallback to direct table query
-          const { data: fallbackData, error: fallbackError } = await supabase
-            .from('job_leads')
-            .select('id', { count: 'exact', head: true })
-            .eq('is_valid_opportunity', true);
-            
-          if (!fallbackError) {
-            const count = fallbackData?.length || 0;
-            setJobOpportunitiesCount(count);
-          }
-        }
+        if (error) throw error;
+        setJobOpportunitiesCount(count || 0);
       } catch (error) {
         console.error('Error fetching job opportunities count:', error);
-        // Final fallback - try direct count
-        try {
-          const { count, error: countError } = await supabase
-            .from('job_leads')
-            .select('*', { count: 'exact', head: true })
-            .eq('is_valid_opportunity', true);
-            
-          if (!countError && count !== null) {
-            setJobOpportunitiesCount(count);
-          }
-        } catch (finalError) {
-          console.error('Final fallback failed:', finalError);
-          setJobOpportunitiesCount(count);
-        }
+        setJobOpportunitiesCount(0);
       }
     };
 
