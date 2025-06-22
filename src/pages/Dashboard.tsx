@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { RecentApplications } from '../components/dashboard/RecentApplications';
 import { ApplicationChart } from '../components/dashboard/ApplicationChart';
@@ -7,11 +7,35 @@ import { ResponseRateFlow } from '../components/dashboard/ResponseRateFlow';
 import { Briefcase, Clock, CheckCircle, TrendingUp, Target, Calendar, Award, Search } from 'lucide-react';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 
 export function Dashboard() {
   const { stats, monthlyTrends, loading } = useDashboardData();
   const navigate = useNavigate();
+  const [jobOpportunitiesCount, setJobOpportunitiesCount] = useState(0);
+
+  // Fetch job opportunities count separately
+  useEffect(() => {
+    const fetchJobOpportunitiesCount = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('linkedin_jobs')
+          .select('id', { count: 'exact', head: true });
+
+        if (!error) {
+          // Get the count from the response headers or data length
+          const count = data?.length || 0;
+          setJobOpportunitiesCount(count);
+        }
+      } catch (error) {
+        console.error('Error fetching job opportunities count:', error);
+        setJobOpportunitiesCount(0);
+      }
+    };
+
+    fetchJobOpportunitiesCount();
+  }, []);
 
   const responseRate = useMemo(() => {
     if (!stats || stats.totalApplications === 0) return 0;
@@ -105,9 +129,9 @@ export function Dashboard() {
         />
         <StatsCard
           title="Job Opportunities"
-          value={stats?.totalJobOpportunities || 0}
+          value={jobOpportunitiesCount}
           icon={<Search className="w-6 h-6" />}
-          change={stats?.totalJobOpportunities ? "LinkedIn sourced" : "No opportunities"}
+          change={jobOpportunitiesCount > 0 ? "LinkedIn sourced" : "No opportunities"}
           changeType="neutral"
           delay={0.2}
           color="secondary"
