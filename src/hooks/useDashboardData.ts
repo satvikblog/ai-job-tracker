@@ -44,7 +44,7 @@ export function useDashboardData() {
         .from('linkedin_jobs')
         .select('*', { count: 'exact', head: true });
 
-      const jobOpportunitiesCount = jobOpportunitiesError ? 0 : (jobOpportunitiesData || 0);
+      const jobOpportunitiesCount = jobOpportunitiesError ? 0 : (jobOpportunitiesData?.length || 0);
 
       // Use optimized function for dashboard data
       const { data: dashboardData, error: dashboardError } = await supabase
@@ -100,9 +100,9 @@ export function useDashboardData() {
 
   const fetchDashboardDataFallback = async (userId: string) => {
     // Fetch job opportunities count
-    const { count: jobOpportunitiesCount, error: jobOpportunitiesError } = await supabase
+    const { data: jobOpportunitiesData, count: jobOpportunitiesCount, error: jobOpportunitiesError } = await supabase
       .from('linkedin_jobs')
-      .select('*', { count: 'exact', head: true });
+      .select('*', { count: 'exact' });
 
     // Fallback to regular queries if optimized function is not available
     const { data: applications, error } = await supabase
