@@ -42,9 +42,9 @@ export function useDashboardData() {
       // Fetch job opportunities count
       const { data: jobOpportunitiesData, error: jobOpportunitiesError } = await supabase
         .from('linkedin_jobs')
-        .select('id', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true });
 
-      const jobOpportunitiesCount = jobOpportunitiesData?.length || 0;
+      const jobOpportunitiesCount = jobOpportunitiesError ? 0 : (jobOpportunitiesData || 0);
 
       // Use optimized function for dashboard data
       const { data: dashboardData, error: dashboardError } = await supabase
@@ -100,11 +100,9 @@ export function useDashboardData() {
 
   const fetchDashboardDataFallback = async (userId: string) => {
     // Fetch job opportunities count
-    const { data: jobOpportunitiesData } = await supabase
+    const { count: jobOpportunitiesCount, error: jobOpportunitiesError } = await supabase
       .from('linkedin_jobs')
-      .select('id', { count: 'exact', head: true });
-
-    const jobOpportunitiesCount = jobOpportunitiesData?.length || 0;
+      .select('*', { count: 'exact', head: true });
 
     // Fallback to regular queries if optimized function is not available
     const { data: applications, error } = await supabase
@@ -135,7 +133,7 @@ export function useDashboardData() {
       pendingFollowups,
       avgResponseTimeDays: 0, // Calculate if needed
       recentApplications: applications.slice(0, 5),
-      totalJobOpportunities: jobOpportunitiesCount
+      totalJobOpportunities: jobOpportunitiesError ? 0 : (jobOpportunitiesCount || 0)
     });
   };
 
