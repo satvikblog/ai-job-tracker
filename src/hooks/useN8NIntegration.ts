@@ -9,27 +9,16 @@ interface N8NRequest {
   request_id: string;
   timestamp: string;
   data: {
-    // Resume specific data
-    company_name?: string;
-    job_title?: string;
-    job_description?: string;
+    company_name: string;
+    job_title: string;
+    job_description: string;
     selected_job_id?: string;
-    
-    // Cover letter specific data
+    // Cover letter specific
     hiring_manager?: string;
     tone?: string;
     personal_experience?: string;
     why_company?: string;
   };
-}
-
-interface N8NResponse {
-  request_id: string;
-  type: 'resume' | 'cover-letter';
-  status: 'success' | 'error';
-  content?: string;
-  error_message?: string;
-  processing_time?: number;
 }
 
 export function useN8NIntegration() {
@@ -115,13 +104,7 @@ export function useN8NIntegration() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { data: settings } = await supabase
-        .from('user_settings')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      // For now, we'll use a default webhook URL or get it from webhooks table
+      // Get webhook URL from webhooks table
       const { data: webhooks } = await supabase
         .from('webhooks')
         .select('*')
@@ -130,7 +113,7 @@ export function useN8NIntegration() {
         .limit(1);
 
       if (!webhooks || webhooks.length === 0) {
-        throw new Error('No active webhook configured. Please set up your N8N webhook in Settings.');
+        throw new Error('No active webhook configured. Please set up your N8N webhook in Settings > Webhooks.');
       }
 
       const webhookUrl = webhooks[0].url;
@@ -157,7 +140,7 @@ export function useN8NIntegration() {
           
           attempts++;
           
-          // Check if we received a response (this would be set by the webhook endpoint)
+          // Check if we received a response
           const response = await checkForResponse(requestId);
           
           if (response) {
@@ -195,9 +178,9 @@ export function useN8NIntegration() {
     }
   };
 
-  const checkForResponse = async (requestId: string): Promise<N8NResponse | null> => {
+  const checkForResponse = async (requestId: string) => {
     try {
-      // Check our database for the response (this would be inserted by our webhook endpoint)
+      // Check our database for the response
       const { data, error } = await supabase
         .from('ai_generations')
         .select('*')
@@ -240,6 +223,7 @@ export function useN8NIntegration() {
     generatedContent,
     currentRequestId,
     generateContent,
-    resetState
+    resetState,
+    setGeneratedContent
   };
 }
