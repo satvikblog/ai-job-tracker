@@ -11,7 +11,7 @@ export const N8N_RAILWAY_CONFIG = {
   WEBHOOK_URL: 'https://primary-production-130e0.up.railway.app/webhook-test/job-application-received',
   
   // Timeout settings
-  PROCESSING_TIMEOUT: 75000, // 75 seconds
+  PROCESSING_TIMEOUT: 200000, // 75 seconds
   POLL_INTERVAL: 1000, // 1 second
   
   // Progress settings
