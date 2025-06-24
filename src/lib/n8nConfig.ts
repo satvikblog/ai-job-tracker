@@ -15,7 +15,7 @@ export const N8N_RAILWAY_CONFIG = {
   POLL_INTERVAL: 1000, // 1 second
   
   // Progress settings
-  PROGRESS_DURATION: 70, // 70 seconds for progress bar
+  PROGRESS_DURATION: 240, // 70 seconds for progress bar
   
   // Request headers
   HEADERS: {
