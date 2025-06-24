@@ -111,29 +111,12 @@ export function useN8NIntegration() {
       setLoading(true);
       setGeneratedContent('');
       
-      // Get user's webhook URL from settings
+      // Use your Railway N8N webhook URL
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { data: settings } = await supabase
-        .from('user_settings')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      // For now, we'll use a default webhook URL or get it from webhooks table
-      const { data: webhooks } = await supabase
-        .from('webhooks')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('enabled', true)
-        .limit(1);
-
-      if (!webhooks || webhooks.length === 0) {
-        throw new Error('No active webhook configured. Please set up your N8N webhook in Settings.');
-      }
-
-      const webhookUrl = webhooks[0].url;
+      // Your Railway N8N webhook URL
+      const webhookUrl = 'https://primary-production-130e0.up.railway.app/webhook-test/job-application-received';
       
       // Send request to N8N
       const requestId = await sendToN8N(type, formData, webhookUrl);

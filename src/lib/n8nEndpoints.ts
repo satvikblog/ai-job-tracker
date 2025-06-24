@@ -1,15 +1,12 @@
-// N8N Integration Endpoints and Configuration
-
-export const N8N_ENDPOINTS = {
-  // Webhook endpoints that your N8N workflow should call
-  RESUME_WEBHOOK: '/api/n8n/resume-response',
-  COVER_LETTER_WEBHOOK: '/api/n8n/cover-letter-response',
-  
-  // Status endpoint for checking processing status
-  STATUS_ENDPOINT: '/api/n8n/status'
-};
+// N8N Integration Configuration for Railway Webhook
 
 export const N8N_CONFIG = {
+  // Your Railway N8N webhook URL
+  WEBHOOK_URL: 'https://primary-production-130e0.up.railway.app/webhook-test/job-application-received',
+  
+  // Response endpoint (Supabase Edge Function)
+  RESPONSE_ENDPOINT: 'https://zeiivnxtkcqwlnmtxyfd.supabase.co/functions/v1/n8n-response',
+
   // Timeout settings
   PROCESSING_TIMEOUT: 70000, // 70 seconds
   POLL_INTERVAL: 1000, // 1 second
