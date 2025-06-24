@@ -51,20 +51,22 @@ export function useN8NIntegration() {
       data
     };
 
-    console.log('🚀 Sending to N8N:', payload);
+    console.log('🚀 Sending to N8N Railway:', payload);
 
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'JobTracker-AI/1.0',
-        'X-Request-Source': 'jobtracker-ai'
+        'X-Request-Source': 'jobtracker-ai',
+        'X-Railway-Domain': 'tracker.satvik.live'
       },
       body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-      throw new Error(`N8N webhook failed: ${response.status} ${response.statusText}`);
+      const errorText = await response.text().catch(() => 'Unknown error');
+      throw new Error(`N8N Railway webhook failed: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     return requestId;

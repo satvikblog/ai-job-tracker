@@ -19,7 +19,7 @@ export function Dashboard() {
   useEffect(() => {
     const fetchJobOpportunitiesCount = async () => {
       try {
-        // Use the exact query you specified: SELECT COUNT(*) FROM linkedin_jobs;
+        // Use the exact query: SELECT COUNT(*) FROM linkedin_jobs;
         const { count, error } = await supabase
           .from('linkedin_jobs')
           .select('*', { count: 'exact', head: true });
