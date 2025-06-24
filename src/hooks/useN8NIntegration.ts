@@ -73,7 +73,7 @@ export function useN8NIntegration() {
     return requestId;
   };
 
-  const startProgressTimer = (duration: number = 65) => {
+  const startProgressTimer = (duration: number = 240) => {
     setTimeRemaining(duration);
     setProgress(0);
     
@@ -118,7 +118,7 @@ export function useN8NIntegration() {
       
       // Start polling for response
       const pollForResponse = async () => {
-        const maxAttempts = 70; // 70 seconds max wait
+        const maxAttempts = 240; // 70 seconds max wait
         let attempts = 0;
         
         const poll = async (): Promise<void> => {
