@@ -2,13 +2,13 @@
 
 export const N8N_RAILWAY_CONFIG = {
   // Your Railway domain
-  DOMAIN: 'https://tracker.satvik.live',
+  DOMAIN: 'https://primary-production-130e0.up.railway.app',
   
   // Webhook endpoints
-  WEBHOOK_PATH: '/webhook/job-application-received',
+  WEBHOOK_PATH: '/webhook-test/job-application-received',
   
   // Full webhook URL for your Railway N8N instance
-  WEBHOOK_URL: 'https://tracker.satvik.live/webhook/job-application-received',
+  WEBHOOK_URL: 'https://primary-production-130e0.up.railway.app/webhook-test/job-application-received',
   
   // Timeout settings
   PROCESSING_TIMEOUT: 75000, // 75 seconds
@@ -22,7 +22,7 @@ export const N8N_RAILWAY_CONFIG = {
     'Content-Type': 'application/json',
     'User-Agent': 'JobTracker-AI/1.0',
     'X-Request-Source': 'jobtracker-ai',
-    'X-Railway-Domain': 'tracker.satvik.live'
+    'X-Railway-Domain': 'primary-production-130e0.up.railway.app'
   }
 };
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { N8N_RAILWAY_CONFIG } from '../lib/n8nConfig';
 import toast from 'react-hot-toast';
 
 interface N8NRequest {
@@ -102,23 +103,11 @@ export function useN8NIntegration() {
       setLoading(true);
       setGeneratedContent('');
       
-      // Get user's webhook URL from settings
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      // Get webhook URL from webhooks table
-      const { data: webhooks } = await supabase
-        .from('webhooks')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('enabled', true)
-        .limit(1);
-
-      if (!webhooks || webhooks.length === 0) {
-        throw new Error('No active webhook configured. Please set up your N8N webhook in Settings > Webhooks.');
-      }
-
-      const webhookUrl = webhooks[0].url;
+      // Use the Railway webhook URL directly
+      const webhookUrl = N8N_RAILWAY_CONFIG.WEBHOOK_URL;
       
       // Send request to N8N
       const requestId = await sendToN8N(type, formData, webhookUrl);
