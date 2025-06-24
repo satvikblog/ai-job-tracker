@@ -5,10 +5,10 @@ export const N8N_RAILWAY_CONFIG = {
   DOMAIN: 'https://primary-production-130e0.up.railway.app',
   
   // Webhook endpoints
-  WEBHOOK_PATH: '/webhook/job-application-received',
+  WEBHOOK_PATH: '/webhook-test/job-application-received',
   
   // Full webhook URL for your Railway N8N instance
-  WEBHOOK_URL: 'https://primary-production-130e0.up.railway.app/webhook/job-application-received',
+  WEBHOOK_URL: 'https://primary-production-130e0.up.railway.app/webhook-test/job-application-received',
   
   // Timeout settings
   PROCESSING_TIMEOUT: 200000, // 75 seconds
