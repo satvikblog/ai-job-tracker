@@ -20,8 +20,9 @@ export function Settings() {
   const [settings, setSettings] = useState<DatabaseType['public']['Tables']['user_settings']['Row'] | null>(null);
   const [profile, setProfile] = useState({
     full_name: '',
-    email: '',
+    email: ''
   });
+  const [aiProvider, setAiProvider] = useState<string>('n8n');
   const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
   const [editingWebhook, setEditingWebhook] = useState<DatabaseType['public']['Tables']['webhooks']['Row'] | null>(null);
   
@@ -68,6 +69,7 @@ export function Settings() {
       }
 
       setSettings(data);
+      setAiProvider(data?.ai_provider || 'n8n');
     } catch (error) {
       console.error('Error fetching settings:', error);
     }
@@ -382,6 +384,44 @@ export function Settings() {
                   API Keys & Integrations
                 </h2>
                 <div className="space-y-6">
+                  {/* AI Provider Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      AI Provider
+                    </label>
+                    <select
+                      value={aiProvider}
+                      onChange={(e) => setAiProvider(e.target.value)}
+                      className="w-full px-4 py-3 bg-dark-800/70 border-slate-600 border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      <option value="n8n" className="bg-dark-800 text-slate-100">N8N Workflow</option>
+                      <option value="gemini" className="bg-dark-800 text-slate-100">Google Gemini</option>
+                      <option value="openai" className="bg-dark-800 text-slate-100">OpenAI</option>
+                    </select>
+                    <p className="text-sm text-gray-400 mt-1">
+                      Select your preferred AI provider for resume and cover letter generation
+                    </p>
+                  </div>
+
+                  {/* Gemini API Key (only shown when Gemini is selected) */}
+                  {aiProvider === 'gemini' && (
+                    <div>
+                      <Input
+                        label="Google Gemini API Key"
+                        type="password"
+                        placeholder="AIza..."
+                        value={settings?.gemini_api_key || ''}
+                        onChange={(e) => setSettings(prev => ({ ...prev, gemini_api_key: e.target.value } as any))}
+                        variant="glass"
+                      />
+                      <p className="text-sm text-gray-400 mt-1">
+                        Required for direct Google Gemini integration
+                      </p>
+                    </div>
+                  )}
+
+                  {/* OpenAI API Key (only shown when OpenAI is selected) */}
+                  {aiProvider === 'openai' && (
                   <div>
                     <Input
                       label="OpenAI API Key"
@@ -395,6 +435,7 @@ export function Settings() {
                       Required for AI-powered resume and cover letter generation
                     </p>
                   </div>
+                  )}
 
                   <div className="bg-gradient-to-r from-primary-900/20 to-secondary-900/20 border border-primary-600/30 rounded-xl p-4">
                     <h3 className="text-sm font-medium text-primary-300 mb-2 flex items-center space-x-2">
@@ -425,7 +466,11 @@ export function Settings() {
 
                   <div className="flex justify-end">
                     <Button
-                      onClick={() => saveSettings({ openai_api_key: settings?.openai_api_key })}
+                      onClick={() => saveSettings({ 
+                        ai_provider: aiProvider,
+                        openai_api_key: aiProvider === 'openai' ? settings?.openai_api_key : null,
+                        gemini_api_key: aiProvider === 'gemini' ? settings?.gemini_api_key : null
+                      })}
                       isLoading={loading}
                       leftIcon={<Save className="w-4 h-4" />}
                     >

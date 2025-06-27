@@ -5,7 +5,7 @@ import { Textarea } from '../components/ui/Textarea';
 import { Input } from '../components/ui/Input';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
 import { FileText, Sparkles, Copy, Download, Save, Zap, Target, Brain, TrendingUp } from 'lucide-react';
-import { useN8NIntegration } from '../hooks/useN8NIntegration';
+import { useAIGenerationService } from '../hooks/useAIGenerationService';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -50,7 +50,7 @@ export function ResumeGenerator() {
     generateContent, 
     resetState,
     setGeneratedContent 
-  } = useN8NIntegration();
+  } = useAIGenerationService();
 
   // Fetch AI Resume jobs on component mount
   useEffect(() => {
@@ -413,7 +413,7 @@ export function ResumeGenerator() {
                   leftIcon={<Sparkles className="w-5 h-5" />}
                   glow
                 >
-                  Generate AI Resume Suggestions
+                  Generate with AI
                 </Button>
               </div>
             </Card>
@@ -506,7 +506,7 @@ export function ResumeGenerator() {
                   <span className="w-2 h-2 bg-primary-400 rounded-full"></span>
                   <span>Data Source:</span>
                 </h4>
-                <ul className="space-y-2 text-slate-400">
+                <ul className="space-y-2 text-slate-400 text-xs">
                   <li className="flex items-start space-x-2">
                     <span className="text-primary-400 mt-1">•</span>
                     <span>All data sourced from AI Resume table</span>
@@ -530,22 +530,22 @@ export function ResumeGenerator() {
                   <span className="w-2 h-2 bg-secondary-400 rounded-full"></span>
                   <span>Features:</span>
                 </h4>
-                <ul className="space-y-2 text-slate-400">
+                <ul className="space-y-2 text-slate-400 text-xs">
                   <li className="flex items-start space-x-2">
                     <span className="text-secondary-400 mt-1">•</span>
-                    <span>Real-time data updates</span>
+                    <span>Google Gemini or N8N integration</span>
                   </li>
                   <li className="flex items-start space-x-2">
                     <span className="text-secondary-400 mt-1">•</span>
-                    <span>Manual data entry supported</span>
+                    <span>ATS optimization suggestions</span>
                   </li>
                   <li className="flex items-start space-x-2">
                     <span className="text-secondary-400 mt-1">•</span>
-                    <span>Processing status tracking</span>
+                    <span>Keyword extraction and matching</span>
                   </li>
                   <li className="flex items-start space-x-2">
                     <span className="text-secondary-400 mt-1">•</span>
-                    <span>Generated content storage</span>
+                    <span>Professional formatting tips</span>
                   </li>
                 </ul>
               </div>

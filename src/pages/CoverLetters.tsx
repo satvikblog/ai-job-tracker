@@ -6,7 +6,7 @@ import { Textarea } from '../components/ui/Textarea';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
 import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare } from 'lucide-react';
 import { useJobApplications } from '../hooks/useJobApplications';
-import { useN8NIntegration } from '../hooks/useN8NIntegration';
+import { useAIGenerationService } from '../hooks/useAIGenerationService';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
@@ -38,7 +38,7 @@ export function CoverLetters() {
     generatedContent, 
     generateContent, 
     resetState 
-  } = useN8NIntegration();
+  } = useAIGenerationService();
 
   const jobOptions = [
     { value: '', label: 'Select a job application...' },
@@ -295,7 +295,7 @@ export function CoverLetters() {
                   leftIcon={<Sparkles className="w-5 h-5" />}
                   glow
                 >
-                  Generate with N8N AI
+                  Generate with AI
                 </Button>
               </div>
             </Card>
@@ -393,16 +393,16 @@ export function CoverLetters() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-300">
               <div>
                 <h4 className="font-medium text-slate-200 mb-2">How it works:</h4>
-                <ul className="space-y-1 text-slate-400">
-                  <li>• Sends data to N8N webhook</li>
-                  <li>• AI processes job requirements</li>
+                <ul className="space-y-1 text-slate-400 text-xs">
+                  <li>• Uses Google Gemini or N8N workflow</li>
+                  <li>• Analyzes job requirements</li>
                   <li>• Generates personalized content</li>
                   <li>• Returns optimized cover letter</li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-medium text-slate-200 mb-2">Features:</h4>
-                <ul className="space-y-1 text-slate-400">
+                <ul className="space-y-1 text-slate-400 text-xs">
                   <li>• 5 different tone options</li>
                   <li>• Company-specific customization</li>
                   <li>• Experience integration</li>
