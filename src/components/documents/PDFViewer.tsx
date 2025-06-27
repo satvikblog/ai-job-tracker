@@ -21,15 +21,33 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
         setLoading(true);
         setError(null);
         
-        // For demonstration purposes, we'll simulate PDF text extraction
-        // In a real implementation, you would use a PDF parsing library
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+        // Check if URL is valid
+        if (!url || url.includes('your_supabase_project_url')) {
+          throw new Error('Supabase configuration is not set up. Please check your environment variables.');
+        }
+
+        try {
+          // Test if the URL is accessible
+          const response = await fetch(url, { method: 'HEAD' });
+          
+          if (!response.ok) {
+            if (response.status === 404) {
+              throw new Error('Document not found. The file may have been deleted or moved.');
+            } else if (response.status === 403) {
+              throw new Error('Access denied. Please check your Supabase storage permissions.');
+            } else {
+              throw new Error(`Failed to access document: ${response.status} ${response.statusText}`);
+            }
+          }
+        } catch (fetchError: any) {
+          if (fetchError.message.includes('Failed to fetch')) {
+            throw new Error('Unable to connect to storage. Please check your internet connection and Supabase configuration.');
+          }
+          throw fetchError;
         }
         
-        // Simulate PDF text extraction (in a real app, you'd use a PDF parsing library)
+        // For demonstration purposes, we'll simulate PDF text extraction
+        // In a real implementation, you would use a PDF parsing library
         setTimeout(() => {
           // This is a placeholder for actual PDF content
           const extractedText = `
@@ -146,6 +164,14 @@ nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
               </div>
               <h3 className="text-lg font-medium text-slate-300 mb-2">Failed to Load Document</h3>
               <p className="text-slate-400 mb-4">{error}</p>
+              {error?.includes('Supabase configuration') && (
+                <div className="bg-warning-900/20 border border-warning-500/30 rounded-lg p-3 mb-4 text-left">
+                  <p className="text-warning-400 text-sm">
+                    <strong>Setup Required:</strong> Please ensure your <code>.env</code> file contains valid 
+                    <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> values from your Supabase project.
+                  </p>
+                </div>
+              )}
               <Button onClick={handleDownload} variant="primary">
                 Download Instead
               </Button>
