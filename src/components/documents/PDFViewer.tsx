@@ -84,7 +84,11 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
             setLoading(false);
           };
           
-          reader.readAsText(blob);
+          if (fileName.toLowerCase().endsWith('.pdf')) {
+            reader.readAsBinaryString(blob);
+          } else {
+            reader.readAsText(blob);
+          }
         } catch (fetchError: any) {
           if (fetchError.message.includes('Failed to fetch')) {
             throw new Error('Unable to connect to storage. Please check your internet connection and Supabase configuration.');
@@ -105,58 +109,113 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
   // Function to extract text from PDF content
   const extractTextFromPDF = (data: string): string => {
     try {
-      // Look for text content between stream and endstream tags
-      const streamMatches = data.match(/stream([\s\S]*?)endstream/g);
-      
-      if (!streamMatches || streamMatches.length === 0) {
-        return "Could not extract text content from PDF. The file may be encrypted or contain only images.";
-      }
-      
-      // Process each stream to extract text
+      // First attempt: Look for text content between BT and ET tags (Begin Text/End Text)
+      const textMatches = data.match(/BT[\s\S]*?ET/g);
       let extractedText = '';
-      for (const stream of streamMatches) {
-        // Remove stream and endstream tags
-        const content = stream.replace(/stream|endstream/g, '');
-        
-        // Clean up the content
-        const cleanedContent = content
-          .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
-          .replace(/\s+/g, ' ')                 // Normalize whitespace
-          .trim();
-        
-        if (cleanedContent.length > 50) {  // Only add substantial content
-          extractedText += cleanedContent + '\n\n';
+      
+      if (textMatches && textMatches.length > 0) {
+        // Process each text block
+        for (const textBlock of textMatches) {
+          // Extract text strings (usually in parentheses)
+          const stringMatches = textBlock.match(/\((.*?)\)/g);
+          if (stringMatches) {
+            for (const match of stringMatches) {
+              // Remove parentheses and handle escapes
+              const text = match.substring(1, match.length - 1)
+                .replace(/\\n/g, '\n')
+                .replace(/\\r/g, '\r')
+                .replace(/\\t/g, '\t')
+                .replace(/\\\\/g, '\\')
+                .replace(/\\\(/g, '(')
+                .replace(/\\\)/g, ')');
+              
+              if (text.trim().length > 0) {
+                extractedText += text + ' ';
+              }
+            }
+          }
         }
       }
       
-      // Further clean up the extracted text
+      // Second attempt: If first method didn't yield good results, try extracting text objects
+      if (extractedText.trim().length < 100) {
+        const textObjectMatches = data.match(/\/(T[a-zA-Z0-9*]+)\s+(\d+)\s+Tf[\s\S]*?\[(.*?)\]/g);
+        if (textObjectMatches && textObjectMatches.length > 0) {
+          extractedText = '';
+          for (const match of textObjectMatches) {
+            const contentMatches = match.match(/\[(.*?)\]/);
+            if (contentMatches && contentMatches[1]) {
+              extractedText += contentMatches[1]
+                .replace(/\\n/g, '\n')
+                .replace(/\\r/g, '\r')
+                .replace(/\\t/g, '\t')
+                .replace(/\\\\/g, '\\')
+                .replace(/\\\(/g, '(')
+                .replace(/\\\)/g, ')')
+                .replace(/\\(\d{3})/g, (match, octal) => String.fromCharCode(parseInt(octal, 8)))
+                .replace(/[()\\]/g, '') + ' ';
+            }
+          }
+        }
+      }
+      
+      // Third attempt: Extract text from streams
+      if (extractedText.trim().length < 100) {
+        const streamMatches = data.match(/stream([\s\S]*?)endstream/g);
+        if (streamMatches && streamMatches.length > 0) {
+          extractedText = '';
+          for (const stream of streamMatches) {
+            // Extract content between stream and endstream
+            const content = stream.replace(/stream|endstream/g, '');
+            
+            // Clean up the content - keep only printable ASCII and basic whitespace
+            const cleanedContent = content
+              .replace(/[^\x20-\x7E\n\r\t]/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim();
+            
+            if (cleanedContent.length > 50) {
+              extractedText += cleanedContent + '\n\n';
+            }
+          }
+        }
+      }
+      
+      // Fourth attempt: Extract text from parentheses
+      if (extractedText.trim().length < 100) {
+        const parenthesesMatches = data.match(/\(([^)]+)\)/g);
+        if (parenthesesMatches && parenthesesMatches.length > 0) {
+          extractedText = '';
+          for (const match of parenthesesMatches) {
+            const text = match.substring(1, match.length - 1)
+              .replace(/\\n/g, '\n')
+              .replace(/\\r/g, '\r')
+              .replace(/\\t/g, '\t')
+              .replace(/\\\\/g, '\\')
+              .replace(/\\\(/g, '(')
+              .replace(/\\\)/g, ')');
+            
+            if (text.trim().length > 1) {
+              extractedText += text + ' ';
+            }
+          }
+        }
+      }
+      
+      // Final cleanup
       extractedText = extractedText
-        .replace(/\\n/g, '\n')             // Convert escaped newlines
-        .replace(/\\t/g, '\t')             // Convert escaped tabs
-        .replace(/\\r/g, '')               // Remove escaped carriage returns
-        .replace(/\\/g, '')                // Remove remaining backslashes
-        .replace(/\s+/g, ' ')              // Normalize whitespace again
+        .replace(/\s+/g, ' ')
+        .replace(/\s+\n/g, '\n')
+        .replace(/\n\s+/g, '\n')
+        .replace(/\n+/g, '\n\n')
         .trim();
       
-      // If we still don't have meaningful content, try a different approach
-      if (extractedText.length < 100) {
-        // Look for text between parentheses, which often contains actual text in PDFs
-        const textMatches = data.match(/\(([^)]+)\)/g);
-        if (textMatches && textMatches.length > 0) {
-          extractedText = textMatches
-            .map(match => match.substring(1, match.length - 1))
-            .filter(text => text.length > 1)
-            .join(' ')
-            .replace(/\\n/g, '\n')
-            .replace(/\\t/g, '\t')
-            .replace(/\\r/g, '')
-            .replace(/\\/g, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-        }
+      // If we still don't have meaningful content, provide a fallback message
+      if (extractedText.trim().length < 50) {
+        return "Could not extract meaningful text content from this PDF. The file may be scanned, contain only images, or use a format that requires specialized parsing.";
       }
       
-      return extractedText || "Could not extract meaningful text content from this PDF. The file may contain only images or be in a format that requires specialized parsing.";
+      return extractedText;
     } catch (error) {
       console.error('Error extracting text from PDF:', error);
       return "Error extracting text from PDF. Please download the file to view its contents.";
@@ -170,9 +229,7 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
       const textContent = data
         .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
         .replace(/\s+/g, ' ')                 // Normalize whitespace
-        .split(' ')
-        .filter(word => word.length > 1)      // Filter out single characters
-        .join(' ');
+        .trim();
       
       // Look for common document sections
       const sections = [
@@ -196,7 +253,7 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
       
       // If we couldn't find structured content, return a reasonable portion of the text
       if (structuredContent.length < 100) {
-        return textContent.substring(0, 2000);
+        return textContent.substring(0, 5000);
       }
       
       return structuredContent;
