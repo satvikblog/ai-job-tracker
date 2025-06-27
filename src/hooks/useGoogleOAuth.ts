@@ -120,16 +120,16 @@ export function useGoogleOAuth() {
         .select('*')
         .eq('user_id', user.id)
         .eq('provider', 'google')
-        .single();
+        .maybeSingle();
 
-      // Handle the case where no token exists
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No token found, user is not authenticated
-          setIsAuthenticated(false);
-          return;
-        }
         console.error('Error loading OAuth status:', error);
+        return;
+      }
+
+      // Handle the case where no token exists (tokens will be null)
+      if (!tokens) {
+        setIsAuthenticated(false);
         return;
       }
 
