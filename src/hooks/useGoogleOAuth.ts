@@ -116,14 +116,14 @@ export function useGoogleOAuth() {
       if (!user) return;
 
       const { data: tokens, error } = await supabase
-        .from('oauth_tokens')
         .select('*')
-        .eq('user_id', user.id)
-        .eq('provider', 'google')
-        .maybeSingle();
-
-      if (error) {
         console.error('Error loading OAuth status:', error);
+        return;
+      }
+
+      // Handle the case where no token exists (tokens will be null)
+      if (!tokens) {
+        setIsAuthenticated(false);
         return;
       }
 

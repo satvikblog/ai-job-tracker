@@ -37,7 +37,8 @@ export function CoverLetters() {
     timeRemaining, 
     generatedContent, 
     generateContent, 
-    resetState 
+    resetState,
+    setGeneratedContent
   } = useAIGenerationService();
 
   const jobOptions = [
@@ -138,7 +139,7 @@ export function CoverLetters() {
             </h1>
             <p className="text-slate-400 mt-2 flex items-center space-x-2 text-sm lg:text-base">
               <Target className="w-4 h-4" />
-              <span>Create personalized, compelling cover letters powered by N8N workflow</span>
+              <span>Create personalized, compelling cover letters powered by AI</span>
             </p>
           </div>
 
@@ -148,7 +149,7 @@ export function CoverLetters() {
               <div className="flex items-center space-x-2">
                 <Brain className="w-4 h-4 lg:w-5 lg:h-5 text-primary-400" />
                 <div>
-                  <p className="text-xs lg:text-sm text-primary-300 font-medium">N8N Powered</p>
+                  <p className="text-xs lg:text-sm text-primary-300 font-medium">AI Powered</p>
                   <p className="text-xs text-slate-400">Smart Writing</p>
                 </div>
               </div>
@@ -175,8 +176,8 @@ export function CoverLetters() {
               <div className="flex items-center space-x-2">
                 <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 text-accent-400" />
                 <div>
-                  <p className="text-xs lg:text-sm text-accent-300 font-medium">60-70s</p>
-                  <p className="text-xs text-slate-400">Processing</p>
+                  <p className="text-xs lg:text-sm text-accent-300 font-medium">Fast</p>
+                  <p className="text-xs text-slate-400">Generation</p>
                 </div>
               </div>
             </div>
@@ -263,7 +264,7 @@ export function CoverLetters() {
 
                 <Textarea
                   label="Job Description *"
-                  placeholder="Paste the job description here for N8N AI analysis..."
+                  placeholder="Paste the job description here for AI analysis..."
                   rows={window.innerWidth < 640 ? 4 : 6}
                   value={formData.jobDescription}
                   onChange={(e) => handleInputChange('jobDescription', e.target.value)}
@@ -314,7 +315,7 @@ export function CoverLetters() {
                     <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                   </div>
                   <h2 className="text-lg font-semibold text-slate-100">
-                    N8N Generated Cover Letter
+                    AI Generated Cover Letter
                   </h2>
                 </div>
                 
@@ -369,7 +370,7 @@ export function CoverLetters() {
                       </div>
                       <h3 className="text-lg font-medium text-slate-300 mb-2">Ready to Generate</h3>
                       <p className="text-slate-400 max-w-sm text-sm">
-                        Fill in the details and click "Generate with N8N AI" to create your personalized cover letter
+                        Fill in the details and click "Generate with AI" to create your personalized cover letter
                       </p>
                     </div>
                   </div>
@@ -379,7 +380,7 @@ export function CoverLetters() {
           </motion.div>
         </div>
 
-        {/* N8N Integration Info */}
+        {/* AI Integration Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -388,7 +389,7 @@ export function CoverLetters() {
           <Card className="bg-gradient-to-r from-primary-900/20 to-secondary-900/20 border border-primary-600/30">
             <h3 className="text-lg font-semibold text-slate-100 mb-4 flex items-center space-x-2">
               <Zap className="w-5 h-5 text-primary-400" />
-              <span>🔗 N8N Workflow Integration</span>
+              <span>🔗 AI Integration</span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-300">
               <div>
@@ -411,8 +412,8 @@ export function CoverLetters() {
               </div>
               <div>
                 <h4 className="font-medium text-slate-200 mb-2">Processing:</h4>
-                <ul className="space-y-1 text-slate-400">
-                  <li>• 60-70 second generation</li>
+                <ul className="space-y-1 text-slate-400 text-xs">
+                  <li>• Fast generation with Gemini</li>
                   <li>• Real-time progress tracking</li>
                   <li>• Instant copy & export</li>
                   <li>• Ready-to-send format</li>

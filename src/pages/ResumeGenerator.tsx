@@ -12,22 +12,22 @@ import toast from 'react-hot-toast';
 
 interface AIResumeData {
   id: string;
-  linkedin_job_id: string;
-  title: string;
-  company_name: string;
-  description: string;
-  user_id: string;
-  resume_content: string;
-  keywords_extracted: string[];
-  skills_required: string[];
-  experience_level: string;
-  ats_score: number;
-  suggestions_count: number;
-  is_processed: boolean;
-  processing_status: string;
-  generated_at: string;
-  created_at: string;
-  updated_at: string;
+  linkedin_job_id: string | null;
+  title: string | null;
+  company_name: string | null;
+  description: string | null;
+  user_id: string | null;
+  resume_content: string | null;
+  keywords_extracted: string[] | null;
+  skills_required: string[] | null;
+  experience_level: string | null;
+  ats_score: number | null;
+  suggestions_count: number | null;
+  is_processed: boolean | null;
+  processing_status: string | null;
+  generated_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export function ResumeGenerator() {
@@ -81,7 +81,7 @@ export function ResumeGenerator() {
     { value: '', label: 'Select a job opportunity...' },
     ...aiResumeJobs.map(job => ({
       value: job.id,
-      label: `${job.company_name} - ${job.title}`
+      label: `${job.company_name || 'Unknown Company'} - ${job.title || 'Unknown Position'}`
     }))
   ];
 
@@ -479,7 +479,7 @@ export function ResumeGenerator() {
                       </div>
                       <h3 className="text-lg font-medium text-slate-300 mb-2">Ready to Generate</h3>
                       <p className="text-slate-400 max-w-sm text-sm">
-                        Select a job opportunity and click "Generate AI Resume Suggestions" to see personalized recommendations
+                        Select a job opportunity and click "Generate with AI" to see personalized recommendations
                       </p>
                     </div>
                   </div>
