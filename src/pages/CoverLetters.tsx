@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -7,8 +7,24 @@ import { ProgressScreen } from '../components/ui/ProgressScreen';
 import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare } from 'lucide-react';
 import { useJobApplications } from '../hooks/useJobApplications';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
+import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+
+interface LinkedInJob {
+  id: string;
+  title: string;
+  company_name: string;
+  description: string;
+  location: string;
+}
+
+interface AIResumeData {
+  id: string;
+  title: string | null;
+  company_name: string | null;
+  description: string | null;
+}
 
 const toneOptions = [
   { value: 'professional', label: 'Professional' },
@@ -21,6 +37,7 @@ const toneOptions = [
 export function CoverLetters() {
   const [formData, setFormData] = useState({
     selectedJobId: '',
+    jobSource: 'linkedin', // 'linkedin', 'ai_resume', or 'manual'
     companyName: '',
     jobTitle: '',
     hiringManager: '',
@@ -29,6 +46,10 @@ export function CoverLetters() {
     personalExperience: '',
     whyCompany: ''
   });
+  
+  const [linkedInJobs, setLinkedInJobs] = useState<LinkedInJob[]>([]);
+  const [aiResumeJobs, setAiResumeJobs] = useState<AIResumeData[]>([]);
+  const [loadingJobs, setLoadingJobs] = useState(true);
   
   const { applications } = useJobApplications();
   const { 
@@ -41,27 +62,113 @@ export function CoverLetters() {
     setGeneratedContent
   } = useAIGenerationService();
 
-  const jobOptions = [
-    { value: '', label: 'Select a job application...' },
-    ...applications.map(app => ({
-      value: app.id,
-      label: `${app.company_name} - ${app.job_title}`
-    }))
-  ];
+  // Fetch LinkedIn jobs and AI Resume data on component mount
+  useEffect(() => {
+    fetchJobData();
+  }, []);
+
+  const fetchJobData = async () => {
+    try {
+      setLoadingJobs(true);
+      
+      // Fetch LinkedIn jobs
+      const { data: linkedInData, error: linkedInError } = await supabase
+        .from('linkedin_jobs')
+        .select('id, title, company_name, description, location')
+        .order('created_at', { ascending: false });
+
+      if (linkedInError) throw linkedInError;
+      setLinkedInJobs(linkedInData || []);
+      
+      // Fetch AI Resume data
+      const { data: aiResumeData, error: aiResumeError } = await supabase
+        .from('ai_resume')
+        .select('id, title, company_name, description')
+        .order('created_at', { ascending: false });
+
+      if (aiResumeError) throw aiResumeError;
+      setAiResumeJobs(aiResumeData || []);
+      
+    } catch (error: any) {
+      console.error('Error fetching job data:', error);
+      toast.error('Failed to load job opportunities');
+    } finally {
+      setLoadingJobs(false);
+    }
+  };
+
+  // Combine job options from different sources
+  const getJobOptions = () => {
+    const baseOptions = [
+      { value: '', label: 'Select a job...', group: 'Select Source' }
+    ];
+    
+    const linkedInOptions = linkedInJobs.map(job => ({
+      value: `linkedin:${job.id}`,
+      label: `${job.company_name} - ${job.title}`,
+      group: 'LinkedIn Jobs'
+    }));
+    
+    const aiResumeOptions = aiResumeJobs.map(job => ({
+      value: `ai_resume:${job.id}`,
+      label: `${job.company_name} - ${job.title}`,
+      group: 'AI Resume Jobs'
+    }));
+    
+    const applicationOptions = applications.map(app => ({
+      value: `application:${app.id}`,
+      label: `${app.company_name} - ${app.job_title}`,
+      group: 'My Applications'
+    }));
+    
+    return [
+      ...baseOptions,
+      ...linkedInOptions,
+      ...aiResumeOptions,
+      ...applicationOptions
+    ];
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Auto-fill company and job title when job is selected
     if (field === 'selectedJobId' && value) {
-      const selectedApp = applications.find(app => app.id === value);
-      if (selectedApp) {
-        setFormData(prev => ({
-          ...prev,
-          companyName: selectedApp.company_name,
-          jobTitle: selectedApp.job_title,
-          jobDescription: selectedApp.notes || ''
-        }));
+      const [source, id] = value.split(':');
+      
+      if (source === 'linkedin') {
+        const selectedJob = linkedInJobs.find(job => job.id === id);
+        if (selectedJob) {
+          setFormData(prev => ({
+            ...prev,
+            jobSource: 'linkedin',
+            companyName: selectedJob.company_name,
+            jobTitle: selectedJob.title,
+            jobDescription: selectedJob.description || ''
+          }));
+        }
+      } else if (source === 'ai_resume') {
+        const selectedJob = aiResumeJobs.find(job => job.id === id);
+        if (selectedJob) {
+          setFormData(prev => ({
+            ...prev,
+            jobSource: 'ai_resume',
+            companyName: selectedJob.company_name || '',
+            jobTitle: selectedJob.title || '',
+            jobDescription: selectedJob.description || ''
+          }));
+        }
+      } else if (source === 'application') {
+        const selectedApp = applications.find(app => app.id === id);
+        if (selectedApp) {
+          setFormData(prev => ({
+            ...prev,
+            jobSource: 'application',
+            companyName: selectedApp.company_name,
+            jobTitle: selectedApp.job_title,
+            jobDescription: selectedApp.notes || ''
+          }));
+        }
       }
     }
   };
@@ -86,10 +193,73 @@ export function CoverLetters() {
         tone: formData.tone,
         personal_experience: formData.personalExperience,
         why_company: formData.whyCompany,
-        selected_job_id: formData.selectedJobId || null
+        selected_job_id: formData.selectedJobId.split(':')[1] || null,
+        job_source: formData.jobSource
       });
+      
+      // After generation, save to n8n_generations_cover_letter table
+      if (generatedContent) {
+        await saveGenerationToDatabase(formData, generatedContent);
+      }
     } catch (error) {
       // Error handled in hook
+    }
+  };
+
+  const saveGenerationToDatabase = async (formData: any, content: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      // Extract job ID and source
+      let jobId = null;
+      if (formData.selectedJobId) {
+        const [source, id] = formData.selectedJobId.split(':');
+        if (source === 'linkedin') {
+          jobId = id;
+        }
+      }
+      
+      // Calculate word count
+      const wordCount = content.split(/\s+/).length;
+      
+      // Calculate personalization score based on presence of company name and job title
+      const contentLower = content.toLowerCase();
+      const companyNameLower = formData.companyName.toLowerCase();
+      const jobTitleLower = formData.jobTitle.toLowerCase();
+      
+      let personalizationScore = 50; // Base score
+      
+      if (contentLower.includes(companyNameLower)) personalizationScore += 15;
+      if (contentLower.includes(jobTitleLower)) personalizationScore += 15;
+      if (formData.personalExperience && contentLower.includes(formData.personalExperience.toLowerCase().substring(0, 20))) personalizationScore += 10;
+      if (formData.whyCompany && contentLower.includes(formData.whyCompany.toLowerCase().substring(0, 20))) personalizationScore += 10;
+      
+      // Clamp score between 0-100
+      personalizationScore = Math.min(100, Math.max(0, personalizationScore));
+      
+      // Save to database
+      const { error } = await supabase
+        .from('n8n_generations_cover_letter')
+        .insert({
+          job_id: jobId,
+          job_type: jobId ? 'linkedin' : 'application',
+          company_name: formData.companyName,
+          job_title: formData.jobTitle,
+          job_description: formData.jobDescription,
+          content: content,
+          tone: formData.tone,
+          keywords: [], // Would be extracted by AI in a real implementation
+          personalization_score: personalizationScore,
+          word_count: wordCount,
+          user_id: user.id
+        });
+
+      if (error) {
+        console.error('Error saving cover letter generation:', error);
+      }
+    } catch (error) {
+      console.error('Error saving cover letter generation:', error);
     }
   };
 
@@ -114,6 +284,28 @@ export function CoverLetters() {
   const handleCancel = () => {
     resetState();
   };
+
+  if (loadingJobs) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading job opportunities...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Group options by source
+  const jobOptions = getJobOptions();
+  const groupedOptions: Record<string, { value: string; label: string }[]> = {};
+  
+  jobOptions.forEach(option => {
+    if (!groupedOptions[option.group]) {
+      groupedOptions[option.group] = [];
+    }
+    groupedOptions[option.group].push({ value: option.value, label: option.label });
+  });
 
   return (
     <>
@@ -204,17 +396,21 @@ export function CoverLetters() {
               <div className="space-y-4 lg:space-y-6 mobile-form">
                 <div className="w-full">
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Link to Job Application (Optional)
+                    Select Job Opportunity
                   </label>
                   <select
                     value={formData.selectedJobId}
                     onChange={(e) => handleInputChange('selectedJobId', e.target.value)}
                     className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   >
-                    {jobOptions.map((option) => (
-                      <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
-                        {option.label}
-                      </option>
+                    {Object.entries(groupedOptions).map(([group, options]) => (
+                      <optgroup key={group} label={group}>
+                        {options.map(option => (
+                          <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+                            {option.label}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>
@@ -226,6 +422,7 @@ export function CoverLetters() {
                     value={formData.companyName}
                     onChange={(e) => handleInputChange('companyName', e.target.value)}
                     variant="glass"
+                    disabled={!!formData.selectedJobId}
                   />
                   <Input
                     label="Job Title *"
@@ -233,6 +430,7 @@ export function CoverLetters() {
                     value={formData.jobTitle}
                     onChange={(e) => handleInputChange('jobTitle', e.target.value)}
                     variant="glass"
+                    disabled={!!formData.selectedJobId}
                   />
                 </div>
 
@@ -269,6 +467,7 @@ export function CoverLetters() {
                   value={formData.jobDescription}
                   onChange={(e) => handleInputChange('jobDescription', e.target.value)}
                   variant="glass"
+                  disabled={!!formData.selectedJobId}
                 />
 
                 <Textarea
