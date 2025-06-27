@@ -61,8 +61,8 @@ export function useDocuments() {
         throw new Error('User not authenticated');
       }
 
-      // Create a storage path based on user ID and file type
-      const filePath = `${user.id}/${fileType}/${Date.now()}_${file.name}`;
+      // Simple file path without categorization
+      const filePath = `${Date.now()}_${file.name}`;
       
       // Upload file to Supabase Storage
       const { data: storageData, error: storageError } = await supabase.storage
@@ -101,7 +101,7 @@ export function useDocuments() {
       return data;
     } catch (error: any) {
       console.error('Error uploading document:', error);
-      toast.error('Failed to upload document');
+      toast.error('Failed to upload document: ' + error.message);
       throw error;
     }
   };
