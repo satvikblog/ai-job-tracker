@@ -180,20 +180,76 @@ export function useJobApplications() {
       const currentApp = applications.find(app => app.id === id);
       const previousStatus = currentApp?.status;
 
+      // Separate contact fields from job application fields
+      const contactFields = ['contact_name', 'contact_email', 'contact_linkedin', 'contact_phone'];
+      const contactData: any = {};
+      const jobAppUpdates: any = {};
+      
+      // Split the updates into contact and job application data
+      Object.keys(updates).forEach(key => {
+        if (contactFields.includes(key)) {
+          contactData[key.replace('contact_', '')] = (updates as any)[key];
+        } else {
+          jobAppUpdates[key] = (updates as any)[key];
+        }
+      });
+
       // First update the application
       const { error: updateError } = await supabase
         .from('job_applications')
-        .update(updates)
+        .update(jobAppUpdates)
         .eq('id', id);
 
       if (updateError) {
         throw updateError;
       }
 
+      // Handle contact information separately
+      if (Object.keys(contactData).length > 0) {
+        // Check if contact exists for this application
+        const { data: existingContact } = await supabase
+          .from('contacts')
+          .select('id')
+          .eq('job_application_id', id)
+          .single();
+
+        // Check if any contact data is provided
+        const hasContactData = Object.values(contactData).some(value => 
+          value && value.toString().trim() !== '' && value !== 'N/A'
+        );
+
+        if (hasContactData) {
+          if (existingContact) {
+            // Update existing contact
+            await supabase
+              .from('contacts')
+              .update(contactData)
+              .eq('id', existingContact.id);
+          } else {
+            // Create new contact
+            await supabase
+              .from('contacts')
+              .insert({
+                job_application_id: id,
+                ...contactData
+              });
+          }
+        } else if (existingContact) {
+          // Delete existing contact if all fields are empty
+          await supabase
+            .from('contacts')
+            .delete()
+            .eq('id', existingContact.id);
+        }
+      }
+
       // Get the updated application data
       const { data: updatedApp, error: fetchError } = await supabase
         .from('job_applications')
-        .select('*')
+        .select(`
+          *,
+          contacts (*)
+        `)
         .eq('id', id)
         .single();
 
@@ -203,13 +259,13 @@ export function useJobApplications() {
 
       if (updatedApp) {
         // 📝 TRIGGER WEBHOOK - Application Updated
-        if (updates.status && updates.status !== previousStatus) {
+        if (jobAppUpdates.status && jobAppUpdates.status !== previousStatus) {
           await webhooks.onApplicationUpdated(updatedApp, previousStatus);
           
           // Send specific event webhooks
-          if (updates.status === 'interview') {
+          if (jobAppUpdates.status === 'interview') {
             await webhooks.onInterviewScheduled(updatedApp);
-          } else if (updates.status === 'offer') {
+          } else if (jobAppUpdates.status === 'offer') {
             await webhooks.onOfferReceived(updatedApp);
           }
         }
@@ -217,7 +273,7 @@ export function useJobApplications() {
 
       // Optimistically update the list
       setApplications(prev => 
-        prev.map(app => app.id === id ? { ...app, ...updates } : app)
+        prev.map(app => app.id === id ? { ...app, ...updatedApp } : app)
       );
       toast.success('Application updated successfully!');
     } catch (error: any) {

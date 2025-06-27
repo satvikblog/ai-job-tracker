@@ -38,6 +38,9 @@ const sourceOptions = [
 ];
 
 export function ApplicationForm({ isOpen, onClose, onSubmit, application }: ApplicationFormProps) {
+  // Extract contact information from the application's contacts array
+  const contact = application?.contacts?.[0];
+  
   const { register, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       company_name: application?.company_name || '',
@@ -50,10 +53,10 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
       notes: application?.notes || '',
       salary: application?.salary || '',
       location: application?.location || '',
-      contact_name: '',
-      contact_email: '',
-      contact_linkedin: '',
-      contact_phone: '',
+      contact_name: contact?.name || '',
+      contact_email: contact?.email || '',
+      contact_linkedin: contact?.linkedin || '',
+      contact_phone: contact?.phone || '',
       career_page_company: '',
     }
   });
