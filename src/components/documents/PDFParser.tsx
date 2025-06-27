@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { FileText, Upload, Check, X, Copy, Download } from 'lucide-react';
+import { FileText, Upload, Check, X, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface PDFParserProps {
