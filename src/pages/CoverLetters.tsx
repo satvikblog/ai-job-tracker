@@ -178,8 +178,7 @@ export function CoverLetters() {
     
     return [
       ...baseOptions,
-      ...aiResumeOptions,
-      ...applicationOptions
+      ...resumeOptions
     ];
   };
 
