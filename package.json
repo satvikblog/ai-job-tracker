@@ -26,7 +26,6 @@
     "recharts": "^2.12.0"
   },
   "devDependencies": {
-    "@supabase/cli": "^1.200.3",
     "@eslint/js": "^9.9.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
