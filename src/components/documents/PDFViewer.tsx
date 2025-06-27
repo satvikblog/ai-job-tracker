@@ -55,47 +55,36 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
           // For PDFs and other documents, we need to fetch the actual content
           const blob = await response.blob();
           
-          // Use PDF.js or other libraries for PDF parsing in a real implementation
-          // For now, we'll extract text using a simple approach
-          try {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-              try {
-                // This is a simplified approach - in a real app, use proper PDF parsing
-                const text = e.target?.result as string;
-                
-                // Extract text content - this is a very basic extraction
-                // In a real app, use PDF.js or a server-side parser
-                let extractedText = '';
-                
-                if (fileName.toLowerCase().endsWith('.pdf')) {
-                  // For PDFs, we'd normally use PDF.js
-                  // This is a placeholder for actual PDF parsing
-                  extractedText = extractTextFromBinaryData(text);
-                } else {
-                  // For other document types
-                  extractedText = text;
-                }
-                
+          // Use FileReader to read the blob
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const text = e.target?.result as string;
+              
+              // For PDFs, extract text content properly
+              if (fileName.toLowerCase().endsWith('.pdf')) {
+                // Extract text from PDF content
+                const extractedText = extractTextFromPDF(text);
                 setPdfContent(extractedText);
-              } catch (parseError) {
-                console.error('Error parsing document content:', parseError);
-                setError('Failed to parse document content. Please try downloading instead.');
-              } finally {
-                setLoading(false);
+              } else {
+                // For other document types
+                const extractedText = extractTextFromBinaryData(text);
+                setPdfContent(extractedText);
               }
-            };
-            
-            reader.onerror = () => {
-              setError('Failed to read document content');
+            } catch (parseError) {
+              console.error('Error parsing document content:', parseError);
+              setError('Failed to parse document content. Please try downloading instead.');
+            } finally {
               setLoading(false);
-            };
-            
-            reader.readAsText(blob);
-          } catch (readError) {
-            console.error('Error reading blob:', readError);
-            throw new Error('Failed to read document content');
-          }
+            }
+          };
+          
+          reader.onerror = () => {
+            setError('Failed to read document content');
+            setLoading(false);
+          };
+          
+          reader.readAsText(blob);
         } catch (fetchError: any) {
           if (fetchError.message.includes('Failed to fetch')) {
             throw new Error('Unable to connect to storage. Please check your internet connection and Supabase configuration.');
@@ -104,36 +93,117 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
         }
         
       } catch (error: any) {
-        console.error('Error fetching PDF:', error);
-        setError(error.message || 'Failed to load PDF');
+        console.error('Error fetching document:', error);
+        setError(error.message || 'Failed to load document');
         setLoading(false);
       }
     };
 
     fetchPdfContent();
-  }, [url, fileName]);
+  }, [url, fileName, isTextFile]);
 
-  // Function to extract text from binary data
+  // Function to extract text from PDF content
+  const extractTextFromPDF = (data: string): string => {
+    try {
+      // Look for text content between stream and endstream tags
+      const streamMatches = data.match(/stream([\s\S]*?)endstream/g);
+      
+      if (!streamMatches || streamMatches.length === 0) {
+        return "Could not extract text content from PDF. The file may be encrypted or contain only images.";
+      }
+      
+      // Process each stream to extract text
+      let extractedText = '';
+      for (const stream of streamMatches) {
+        // Remove stream and endstream tags
+        const content = stream.replace(/stream|endstream/g, '');
+        
+        // Clean up the content
+        const cleanedContent = content
+          .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
+          .replace(/\s+/g, ' ')                 // Normalize whitespace
+          .trim();
+        
+        if (cleanedContent.length > 50) {  // Only add substantial content
+          extractedText += cleanedContent + '\n\n';
+        }
+      }
+      
+      // Further clean up the extracted text
+      extractedText = extractedText
+        .replace(/\\n/g, '\n')             // Convert escaped newlines
+        .replace(/\\t/g, '\t')             // Convert escaped tabs
+        .replace(/\\r/g, '')               // Remove escaped carriage returns
+        .replace(/\\/g, '')                // Remove remaining backslashes
+        .replace(/\s+/g, ' ')              // Normalize whitespace again
+        .trim();
+      
+      // If we still don't have meaningful content, try a different approach
+      if (extractedText.length < 100) {
+        // Look for text between parentheses, which often contains actual text in PDFs
+        const textMatches = data.match(/\(([^)]+)\)/g);
+        if (textMatches && textMatches.length > 0) {
+          extractedText = textMatches
+            .map(match => match.substring(1, match.length - 1))
+            .filter(text => text.length > 1)
+            .join(' ')
+            .replace(/\\n/g, '\n')
+            .replace(/\\t/g, '\t')
+            .replace(/\\r/g, '')
+            .replace(/\\/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        }
+      }
+      
+      return extractedText || "Could not extract meaningful text content from this PDF. The file may contain only images or be in a format that requires specialized parsing.";
+    } catch (error) {
+      console.error('Error extracting text from PDF:', error);
+      return "Error extracting text from PDF. Please download the file to view its contents.";
+    }
+  };
+
+  // Function to extract text from binary data for non-PDF documents
   const extractTextFromBinaryData = (data: string): string => {
-    // This is a very simplified approach to extract text from binary data
-    // In a real implementation, use a proper PDF parsing library
-    
-    // Remove non-printable characters and extract text-like content
-    const textContent = data
-      .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
-      .replace(/\s+/g, ' ')                 // Normalize whitespace
-      .split(' ')
-      .filter(word => word.length > 1)      // Filter out single characters
-      .join(' ');
-    
-    // Extract what looks like the actual content
-    // This is very basic and won't work well for all PDFs
-    const extractedText = textContent
-      .split(' ')
-      .slice(0, 1000)                       // Limit to first 1000 words
-      .join(' ');
-    
-    return extractedText || `Could not extract text content from ${fileName}. Please download the file to view it.`;
+    try {
+      // Remove non-printable characters and extract text-like content
+      const textContent = data
+        .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
+        .replace(/\s+/g, ' ')                 // Normalize whitespace
+        .split(' ')
+        .filter(word => word.length > 1)      // Filter out single characters
+        .join(' ');
+      
+      // Look for common document sections
+      const sections = [
+        'summary', 'objective', 'experience', 'education', 'skills', 
+        'projects', 'certifications', 'references', 'publications'
+      ];
+      
+      let structuredContent = '';
+      
+      // Try to extract sections
+      for (const section of sections) {
+        const regex = new RegExp(`(^|\\s)${section}[:\\s](.{10,500})`, 'gi');
+        const matches = textContent.match(regex);
+        
+        if (matches && matches.length > 0) {
+          for (const match of matches) {
+            structuredContent += match + '\n\n';
+          }
+        }
+      }
+      
+      // If we couldn't find structured content, return a reasonable portion of the text
+      if (structuredContent.length < 100) {
+        return textContent.substring(0, 2000);
+      }
+      
+      return structuredContent;
+    } catch (error) {
+      console.error('Error extracting text from binary data:', error);
+      return "Error extracting text from document. Please download the file to view its contents.";
+    }
   };
 
   const handleCopyContent = () => {
