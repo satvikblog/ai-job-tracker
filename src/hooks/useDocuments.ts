@@ -56,12 +56,28 @@ export function useDocuments() {
   const uploadDocument = async (file: File, fileType: Document['file_type'], linkedJobId?: string) => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
       if (userError || !user) {
         throw new Error('User not authenticated');
       }
 
-      // For now, we'll create a mock URL since we don't have storage set up
-      const mockUrl = `https://example.com/documents/${file.name}`;
+      // Create a storage path based on user ID and file type
+      const filePath = `${user.id}/${fileType}/${Date.now()}_${file.name}`;
+      
+      // Upload file to Supabase Storage
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('documents')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (storageError) throw storageError;
+      
+      // Get public URL for the uploaded file
+      const { data: { publicUrl } } = supabase.storage
+        .from('documents')
+        .getPublicUrl(filePath);
 
       // Save document record
       const { data, error } = await supabase
@@ -70,7 +86,7 @@ export function useDocuments() {
           user_id: user.id,
           file_name: file.name,
           file_type: fileType,
-          file_url: mockUrl,
+          file_url: publicUrl,
           file_size: file.size,
           linked_job_id: linkedJobId,
         })
@@ -92,12 +108,41 @@ export function useDocuments() {
 
   const deleteDocument = async (id: string, fileUrl?: string) => {
     try {
+      // Get document details first to get the storage path
+      const { data: document, error: fetchError } = await supabase
+        .from('documents')
+        .select('file_url')
+        .eq('id', id)
+        .single();
+        
+      if (fetchError) throw fetchError;
+      
+      // Delete from database
       const { error } = await supabase
         .from('documents')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
+      
+      // Try to delete from storage if URL exists
+      if (document?.file_url) {
+        try {
+          // Extract the path from the URL
+          const url = new URL(document.file_url);
+          const pathMatch = url.pathname.match(/\/storage\/v1\/object\/public\/documents\/(.+)$/);
+          
+          if (pathMatch && pathMatch[1]) {
+            const storagePath = pathMatch[1];
+            await supabase.storage
+              .from('documents')
+              .remove([storagePath]);
+          }
+        } catch (storageError) {
+          console.error('Error deleting file from storage:', storageError);
+          // Continue even if storage deletion fails
+        }
+      }
 
       // Optimistically update the list
       setDocuments(prev => prev.filter(doc => doc.id !== id));

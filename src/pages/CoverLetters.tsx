@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { Modal } from '../components/ui/Modal';
 import { Textarea } from '../components/ui/Textarea';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
-import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare } from 'lucide-react';
+import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare, FileText } from 'lucide-react';
 import { useJobApplications } from '../hooks/useJobApplications';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
+import { PDFParser } from '../components/documents/PDFParser';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -37,6 +39,7 @@ const toneOptions = [
 export function CoverLetters() {
   const [formData, setFormData] = useState({
     selectedJobId: '',
+    selectedResumeId: '',
     jobSource: 'linkedin', // 'linkedin', 'ai_resume', or 'manual'
     companyName: '',
     jobTitle: '',
@@ -49,7 +52,9 @@ export function CoverLetters() {
   
   const [linkedInJobs, setLinkedInJobs] = useState<LinkedInJob[]>([]);
   const [aiResumeJobs, setAiResumeJobs] = useState<AIResumeData[]>([]);
+  const [documents, setDocuments] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
+  const [isPDFParserOpen, setIsPDFParserOpen] = useState(false);
   
   const { applications } = useJobApplications();
   const { 
@@ -65,7 +70,27 @@ export function CoverLetters() {
   // Fetch LinkedIn jobs and AI Resume data on component mount
   useEffect(() => {
     fetchJobData();
+    fetchDocuments();
   }, []);
+
+  const fetchDocuments = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('file_type', ['resume', 'cover-letter'])
+        .order('uploaded_on', { ascending: false });
+        
+      if (error) throw error;
+      setDocuments(data || []);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    }
+  };
 
   const fetchJobData = async () => {
     try {
@@ -97,6 +122,14 @@ export function CoverLetters() {
     }
   };
 
+  const handleParsedContent = (content: string) => {
+    setFormData(prev => ({
+      ...prev,
+      personalExperience: content
+    }));
+    setIsPDFParserOpen(false);
+  };
+
   // Combine job options from different sources
   const getJobOptions = () => {
     const baseOptions = [
@@ -124,6 +157,27 @@ export function CoverLetters() {
     return [
       ...baseOptions,
       ...linkedInOptions,
+      ...aiResumeOptions,
+      ...applicationOptions
+    ];
+  };
+
+  // Get resume options from documents
+  const getResumeOptions = () => {
+    const baseOptions = [
+      { value: '', label: 'No resume selected', group: 'Select Resume' }
+    ];
+    
+    const resumeOptions = documents
+      .filter(doc => doc.file_type === 'resume')
+      .map(doc => ({
+        value: doc.id,
+        label: doc.file_name,
+        group: 'My Resumes'
+      }));
+    
+    return [
+      ...baseOptions,
       ...aiResumeOptions,
       ...applicationOptions
     ];
@@ -459,6 +513,36 @@ export function CoverLetters() {
                     </select>
                   </div>
                 </div>
+                
+                {/* Resume Selection */}
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Select Resume (Optional)
+                  </label>
+                  <div className="flex space-x-2">
+                    <select
+                      value={formData.selectedResumeId}
+                      onChange={(e) => handleInputChange('selectedResumeId', e.target.value)}
+                      className="flex-1 px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      {getResumeOptions().map((option) => (
+                        <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsPDFParserOpen(true)}
+                      leftIcon={<FileText className="w-4 h-4" />}
+                    >
+                      Parse Resume
+                    </Button>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Select a resume to extract your experience or parse a new one
+                  </p>
+                </div>
 
                 <Textarea
                   label="Job Description *"
@@ -622,6 +706,19 @@ export function CoverLetters() {
           </Card>
         </motion.div>
       </div>
+      
+      {/* PDF Parser Modal */}
+      <Modal
+        isOpen={isPDFParserOpen}
+        onClose={() => setIsPDFParserOpen(false)}
+        title="Parse Resume"
+        size="lg"
+      >
+        <PDFParser 
+          onParsedContent={handleParsedContent} 
+          onClose={() => setIsPDFParserOpen(false)}
+        />
+      </Modal>
     </>
   );
 }

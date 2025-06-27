@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
+import { PDFViewer } from '../components/documents/PDFViewer';
 import { Upload, File, Download, Trash2, Search, Plus, FileText, Award, FolderOpen } from 'lucide-react';
 import { useDocuments } from '../hooks/useDocuments';
 import { useJobApplications } from '../hooks/useJobApplications';
@@ -39,6 +41,7 @@ export function Documents() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('');
   const [uploadType, setUploadType] = useState<Database['public']['Tables']['documents']['Row']['file_type']>('resume');
+  const [viewingDocument, setViewingDocument] = useState<Database['public']['Tables']['documents']['Row'] | null>(null);
   const [linkedJobId, setLinkedJobId] = useState<string>('');
 
   const jobOptions = [
@@ -91,8 +94,22 @@ export function Documents() {
     }
   };
 
+  const handleViewDocument = (document: Database['public']['Tables']['documents']['Row']) => {
+    setViewingDocument(document);
+  };
+
   const handleDownload = (document: Database['public']['Tables']['documents']['Row']) => {
-    window.open(document.file_url, '_blank');
+    // If it's a PDF or document, open in our viewer
+    if (document.file_type === 'resume' || document.file_type === 'cover-letter' || 
+        document.file_name.toLowerCase().endsWith('.pdf') || 
+        document.file_name.toLowerCase().endsWith('.doc') || 
+        document.file_name.toLowerCase().endsWith('.docx') || 
+        document.file_name.toLowerCase().endsWith('.txt')) {
+      handleViewDocument(document);
+    } else {
+      // For other file types, download directly
+      window.open(document.file_url, '_blank');
+    }
   };
 
   if (loading) {
@@ -291,11 +308,12 @@ export function Documents() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Button
-                      variant="outline"
+                      variant="primary"
                       size="sm"
                       onClick={() => handleDownload(document)}
+                      leftIcon={<FileText className="w-4 h-4" />}
                     >
-                      <Download className="w-4 h-4" />
+                      View
                     </Button>
                     <Button
                       variant="outline"
@@ -342,5 +360,14 @@ export function Documents() {
         </motion.div>
       )}
     </div>
+      {/* Document Viewer Modal */}
+      {viewingDocument && (
+        <PDFViewer
+          url={viewingDocument.file_url}
+          fileName={viewingDocument.file_name}
+          onClose={() => setViewingDocument(null)}
+        />
+      )}
+
   );
 }
