@@ -211,7 +211,7 @@ export function useJobApplications() {
           .from('contacts')
           .select('id')
           .eq('job_application_id', id)
-          .single();
+          .maybeSingle();
 
         // Check if any contact data is provided
         const hasContactData = Object.values(contactData).some(value => 

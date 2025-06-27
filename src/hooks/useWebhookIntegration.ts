@@ -119,7 +119,7 @@ export function useWebhookIntegration() {
 
   const sendWebhook = async (event: string, application: JobApplication, additionalData?: any) => {
     const activeWebhooks = webhooks.filter(webhook => 
-      webhook.enabled && webhook.events.includes(event)
+      webhook.enabled && webhook.events.includes(event) && webhook.url && webhook.url.trim()
     );
 
     if (activeWebhooks.length === 0) {
@@ -155,14 +155,21 @@ export function useWebhookIntegration() {
 
         console.log(`Sending webhook "${webhook.name}" for ${event}:`, payload);
 
+        // Add timeout and better error handling for fetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
         const response = await fetch(webhook.url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'User-Agent': 'JobTracker-AI/1.0'
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         const responseText = response.ok 
           ? await response.text().catch(() => 'OK') 
@@ -186,7 +193,16 @@ export function useWebhookIntegration() {
         return { webhook, success: true, response: responseText };
 
       } catch (error: any) {
-        console.error(`❌ Webhook "${webhook.name}" failed:`, error);
+        let errorMessage = error.message;
+        
+        // Provide more specific error messages
+        if (error.name === 'AbortError') {
+          errorMessage = 'Request timeout (10s) - webhook endpoint may be unreachable';
+        } else if (error.message === 'Failed to fetch') {
+          errorMessage = 'Network error - check if webhook URL is accessible and CORS is configured';
+        }
+        
+        console.error(`❌ Webhook "${webhook.name || 'Unnamed'}" failed:`, errorMessage);
         
         // Update webhook status with error
         await supabase
@@ -194,11 +210,11 @@ export function useWebhookIntegration() {
           .update({
             last_triggered_at: new Date().toISOString(),
             last_status: 'failed',
-            last_response: error.message.substring(0, 1000)
+            last_response: errorMessage.substring(0, 1000)
           })
           .eq('id', webhook.id);
 
-        return { webhook, success: false, error: error.message };
+        return { webhook, success: false, error: errorMessage };
       }
     });
 
