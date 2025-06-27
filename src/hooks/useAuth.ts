@@ -14,6 +14,7 @@ export function useAuth() {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
+      console.log('Getting initial session...');
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
@@ -26,6 +27,7 @@ export function useAuth() {
           if (session?.user) {
             debouncedEnsureProfile(session.user);
           }
+          console.log('Session loaded successfully:', !!session);
         }
       } catch (error) {
         console.error('Error in getInitialSession:', error);
@@ -39,8 +41,8 @@ export function useAuth() {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {      
+      console.log('Auth state changed:', event, session?.user?.email || 'No user');
       
       setSession(session);
       setUser(session?.user ?? null);
