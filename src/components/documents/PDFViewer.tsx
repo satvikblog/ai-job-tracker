@@ -22,8 +22,8 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
         setError(null);
         
         // Check if URL is valid
-        if (!url || url.includes('your_supabase_project_url')) {
-          throw new Error('Supabase configuration is not set up. Please check your environment variables.');
+        if (!url) {
+          throw new Error('Invalid document URL');
         }
 
         try {
@@ -53,9 +53,7 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
           const extractedText = `
 # ${fileName}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, 
-nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt,
-nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
+This is a sample document content for ${fileName}.
 
 ## Professional Experience
 
@@ -95,12 +93,12 @@ nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
     };
 
     fetchPdfContent();
-  }, [url]);
+  }, [url, fileName]);
 
   const handleCopyContent = () => {
     if (pdfContent) {
       navigator.clipboard.writeText(pdfContent);
-      toast.success('PDF content copied to clipboard!');
+      toast.success('Content copied to clipboard!');
     }
   };
 
@@ -109,82 +107,76 @@ nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
   };
 
   return (
-    <Card className="fixed inset-0 z-50 flex flex-col bg-dark-900/95 backdrop-blur-xl border-none rounded-none">
-      <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-            <FileText className="w-5 h-5 text-white" />
-          </div>
-          <h2 className="text-lg font-semibold text-white truncate max-w-md">
-            {fileName}
-          </h2>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleCopyContent}
-            leftIcon={<Copy className="w-4 h-4" />}
-            disabled={loading || !!error}
-          >
-            Copy Text
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDownload}
-            leftIcon={<Download className="w-4 h-4" />}
-          >
-            Download
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="p-2 rounded-full"
-          >
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
-      </div>
-      
-      <div className="flex-1 overflow-auto p-4">
-        {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
-              <p className="text-slate-400">Loading document content...</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <Card className="w-full max-w-4xl max-h-[90vh] flex flex-col bg-dark-900/95 backdrop-blur-xl">
+        <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-white" />
             </div>
+            <h2 className="text-lg font-semibold text-white truncate max-w-md">
+              {fileName}
+            </h2>
           </div>
-        ) : error ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-error-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-error-400" />
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopyContent}
+              leftIcon={<Copy className="w-4 h-4" />}
+              disabled={loading || !!error}
+            >
+              Copy Text
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownload}
+              leftIcon={<Download className="w-4 h-4" />}
+            >
+              Download
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="p-2 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+        
+        <div className="flex-1 overflow-auto p-4">
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                <p className="text-slate-400">Loading document content...</p>
               </div>
-              <h3 className="text-lg font-medium text-slate-300 mb-2">Failed to Load Document</h3>
-              <p className="text-slate-400 mb-4">{error}</p>
-              {error?.includes('Supabase configuration') && (
-                <div className="bg-warning-900/20 border border-warning-500/30 rounded-lg p-3 mb-4 text-left">
-                  <p className="text-warning-400 text-sm">
-                    <strong>Setup Required:</strong> Please ensure your <code>.env</code> file contains valid 
-                    <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> values from your Supabase project.
-                  </p>
-                </div>
-              )}
-              <Button onClick={handleDownload} variant="primary">
-                Download Instead
-              </Button>
             </div>
-          </div>
-        ) : (
-          <div className="bg-dark-800 rounded-lg p-6 max-w-4xl mx-auto">
-            <pre className="whitespace-pre-wrap font-mono text-sm text-slate-300 leading-relaxed">
-              {pdfContent}
-            </pre>
-          </div>
-        )}
-      </div>
-    </Card>
+          ) : error ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-error-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-error-400" />
+                </div>
+                <h3 className="text-lg font-medium text-slate-300 mb-2">Failed to Load Document</h3>
+                <p className="text-slate-400 mb-4">{error}</p>
+                <Button onClick={handleDownload} variant="primary">
+                  Download Instead
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-dark-800 rounded-lg p-6">
+              <pre className="whitespace-pre-wrap font-mono text-sm text-slate-300 leading-relaxed">
+                {pdfContent}
+              </pre>
+            </div>
+          )}
+        </div>
+      </Card>
+    </div>
   );
 }

@@ -60,9 +60,9 @@ export function useDocuments() {
       if (userError || !user) {
         throw new Error('User not authenticated');
       }
-
-      // Create file path with user ID for proper RLS
-      const filePath = `${user.id}/${Date.now()}_${file.name}`;
+      
+      // Create a simple file path without user ID for easier access
+      const filePath = `${Date.now()}_${file.name}`;
       
       // Upload file to Supabase Storage
       const { data: storageData, error: storageError } = await supabase.storage
@@ -129,15 +129,15 @@ export function useDocuments() {
       if (document?.file_url) {
         try {
           // Extract the path from the URL
-          const url = new URL(document.file_url);
-          const pathMatch = url.pathname.match(/\/storage\/v1\/object\/public\/documents\/(.+)$/);
+          // Get just the filename from the URL
+          const url = document.file_url;
+          const filename = url.split('/').pop();
           
-          if (pathMatch && pathMatch[1]) {
-            const storagePath = pathMatch[1];
-            console.log('Attempting to delete storage path:', storagePath);
+          if (filename) {
+            console.log('Attempting to delete file:', filename);
             await supabase.storage
               .from('documents')
-              .remove([storagePath]);
+              .remove([filename]);
           }
         } catch (storageError) {
           console.error('Error deleting file from storage:', storageError);
