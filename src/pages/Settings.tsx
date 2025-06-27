@@ -671,6 +671,9 @@ export function Settings() {
                 pattern: {
                   value: /^https?:\/\/.+/,
                   message: 'Please enter a valid URL'
+                },
+                validate: {
+                  notEmpty: (value) => value.trim() !== '' || 'URL cannot be empty'
                 }
               })}
               className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
@@ -682,6 +685,9 @@ export function Settings() {
                 <span>{errors.url.message}</span>
               </p>
             )}
+            <p className="text-xs text-slate-400 mt-1">
+              ⚠️ For local development: Ensure your webhook endpoint is accessible from the browser and has CORS enabled
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
