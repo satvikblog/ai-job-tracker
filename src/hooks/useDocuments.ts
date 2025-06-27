@@ -61,8 +61,8 @@ export function useDocuments() {
         throw new Error('User not authenticated');
       }
 
-      // Simple file path without categorization
-      const filePath = `${Date.now()}_${file.name}`;
+      // Create file path with user ID for proper RLS
+      const filePath = `${user.id}/${Date.now()}_${file.name}`;
       
       // Upload file to Supabase Storage
       const { data: storageData, error: storageError } = await supabase.storage
@@ -134,6 +134,7 @@ export function useDocuments() {
           
           if (pathMatch && pathMatch[1]) {
             const storagePath = pathMatch[1];
+            console.log('Attempting to delete storage path:', storagePath);
             await supabase.storage
               .from('documents')
               .remove([storagePath]);
