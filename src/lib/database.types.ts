@@ -49,6 +49,7 @@ export interface Database {
           notes: string | null
           salary: string | null
           location: string | null
+          career_page_company: string | null
           created_at: string
           updated_at: string
         }
@@ -65,6 +66,7 @@ export interface Database {
           notes?: string | null
           salary?: string | null
           location?: string | null
+          career_page_company?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -81,6 +83,7 @@ export interface Database {
           notes?: string | null
           salary?: string | null
           location?: string | null
+          career_page_company?: string | null
           created_at?: string
           updated_at?: string
         }
