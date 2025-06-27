@@ -14,6 +14,7 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pdfContent, setPdfContent] = useState<string | null>(null);
+  const [isTextFile, setIsTextFile] = useState(false);
 
   useEffect(() => {
     const fetchPdfContent = async () => {
@@ -26,9 +27,12 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
           throw new Error('Invalid document URL');
         }
 
+        // Check if it's a text file
+        setIsTextFile(fileName.toLowerCase().endsWith('.txt'));
+
         try {
           // Test if the URL is accessible
-          const response = await fetch(url, { method: 'HEAD' });
+          const response = await fetch(url);
           
           if (!response.ok) {
             if (response.status === 404) {
@@ -39,51 +43,65 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
               throw new Error(`Failed to access document: ${response.status} ${response.statusText}`);
             }
           }
+          
+          // For text files, we can directly get the content
+          if (isTextFile) {
+            const text = await response.text();
+            setPdfContent(text);
+            setLoading(false);
+            return;
+          }
+          
+          // For PDFs and other documents, we need to fetch the actual content
+          const blob = await response.blob();
+          
+          // Use PDF.js or other libraries for PDF parsing in a real implementation
+          // For now, we'll extract text using a simple approach
+          try {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+              try {
+                // This is a simplified approach - in a real app, use proper PDF parsing
+                const text = e.target?.result as string;
+                
+                // Extract text content - this is a very basic extraction
+                // In a real app, use PDF.js or a server-side parser
+                let extractedText = '';
+                
+                if (fileName.toLowerCase().endsWith('.pdf')) {
+                  // For PDFs, we'd normally use PDF.js
+                  // This is a placeholder for actual PDF parsing
+                  extractedText = extractTextFromBinaryData(text);
+                } else {
+                  // For other document types
+                  extractedText = text;
+                }
+                
+                setPdfContent(extractedText);
+              } catch (parseError) {
+                console.error('Error parsing document content:', parseError);
+                setError('Failed to parse document content. Please try downloading instead.');
+              } finally {
+                setLoading(false);
+              }
+            };
+            
+            reader.onerror = () => {
+              setError('Failed to read document content');
+              setLoading(false);
+            };
+            
+            reader.readAsText(blob);
+          } catch (readError) {
+            console.error('Error reading blob:', readError);
+            throw new Error('Failed to read document content');
+          }
         } catch (fetchError: any) {
           if (fetchError.message.includes('Failed to fetch')) {
             throw new Error('Unable to connect to storage. Please check your internet connection and Supabase configuration.');
           }
           throw fetchError;
         }
-        
-        // For demonstration purposes, we'll simulate PDF text extraction
-        // In a real implementation, you would use a PDF parsing library
-        setTimeout(() => {
-          // This is a placeholder for actual PDF content
-          const extractedText = `
-# ${fileName}
-
-This is a sample document content for ${fileName}.
-
-## Professional Experience
-
-* Senior Software Engineer, ABC Company (2020-Present)
-  - Developed and maintained web applications using React, Node.js, and PostgreSQL
-  - Led a team of 5 developers to deliver projects on time and within budget
-  - Implemented CI/CD pipelines using GitHub Actions
-
-* Software Developer, XYZ Inc. (2018-2020)
-  - Built RESTful APIs using Express.js and MongoDB
-  - Collaborated with UX designers to implement responsive UI components
-  - Reduced application load time by 40% through code optimization
-
-## Skills
-
-* Programming Languages: JavaScript, TypeScript, Python, Java
-* Frameworks & Libraries: React, Node.js, Express, Django
-* Databases: PostgreSQL, MongoDB, Redis
-* Tools: Git, Docker, Kubernetes, AWS
-
-## Education
-
-* Bachelor of Science in Computer Science, University of Technology (2014-2018)
-  - GPA: 3.8/4.0
-  - Relevant coursework: Data Structures, Algorithms, Database Systems, Web Development
-`;
-          
-          setPdfContent(extractedText);
-          setLoading(false);
-        }, 1500);
         
       } catch (error: any) {
         console.error('Error fetching PDF:', error);
@@ -94,6 +112,29 @@ This is a sample document content for ${fileName}.
 
     fetchPdfContent();
   }, [url, fileName]);
+
+  // Function to extract text from binary data
+  const extractTextFromBinaryData = (data: string): string => {
+    // This is a very simplified approach to extract text from binary data
+    // In a real implementation, use a proper PDF parsing library
+    
+    // Remove non-printable characters and extract text-like content
+    const textContent = data
+      .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
+      .replace(/\s+/g, ' ')                 // Normalize whitespace
+      .split(' ')
+      .filter(word => word.length > 1)      // Filter out single characters
+      .join(' ');
+    
+    // Extract what looks like the actual content
+    // This is very basic and won't work well for all PDFs
+    const extractedText = textContent
+      .split(' ')
+      .slice(0, 1000)                       // Limit to first 1000 words
+      .join(' ');
+    
+    return extractedText || `Could not extract text content from ${fileName}. Please download the file to view it.`;
+  };
 
   const handleCopyContent = () => {
     if (pdfContent) {

@@ -39,92 +39,58 @@ export function PDFParser({ onParsedContent, onClose }: PDFParserProps) {
   const handleParse = async () => {
     if (!file) return;
 
+    const reader = new FileReader();
     setParsing(true);
     setError(null);
 
     try {
-      // In a real implementation, you would use a PDF parsing library or API
-      // For this demo, we'll simulate parsing with a timeout
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Simulate extracted text based on file type
-      let extractedText = '';
+      // Read the file as text
+      reader.onload = async (e) => {
+        try {
+          const content = e.target?.result as string;
+          
+          // Process the content based on file type
+          let extractedText = '';
+          
+          if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+            // For text files, use the content directly
+            extractedText = content;
+          } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+            // For PDFs, extract text from binary data
+            // This is a simplified approach - in a real app, use PDF.js
+            extractedText = extractTextFromBinaryData(content, file.name);
+          } else {
+            // For Word docs and other formats
+            // In a real app, you'd use specific libraries for each format
+            extractedText = extractTextFromBinaryData(content, file.name);
+          }
+          
+          setParsedContent(extractedText);
+          onParsedContent(extractedText);
+          toast.success('Document parsed successfully!');
+        } catch (parseError: any) {
+          console.error('Error parsing file:', parseError);
+          setError(parseError.message || 'Failed to parse document');
+          toast.error('Failed to parse document');
+        } finally {
+          setParsing(false);
+        }
+      };
       
-      if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        extractedText = `
-# Resume: ${file.name}
-
-## Professional Experience
-
-* Senior Software Engineer, ABC Company (2020-Present)
-  - Developed and maintained web applications using React, Node.js, and PostgreSQL
-  - Led a team of 5 developers to deliver projects on time and within budget
-  - Implemented CI/CD pipelines using GitHub Actions
-
-* Software Developer, XYZ Inc. (2018-2020)
-  - Built RESTful APIs using Express.js and MongoDB
-  - Collaborated with UX designers to implement responsive UI components
-  - Reduced application load time by 40% through code optimization
-
-## Skills
-
-* Programming Languages: JavaScript, TypeScript, Python, Java
-* Frameworks & Libraries: React, Node.js, Express, Django
-* Databases: PostgreSQL, MongoDB, Redis
-* Tools: Git, Docker, Kubernetes, AWS
-
-## Education
-
-* Bachelor of Science in Computer Science, University of Technology (2014-2018)
-  - GPA: 3.8/4.0
-  - Relevant coursework: Data Structures, Algorithms, Database Systems, Web Development
-`;
-      } else if (file.type === 'application/msword' || 
-                file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-                file.name.endsWith('.doc') || 
-                file.name.endsWith('.docx')) {
-        extractedText = `
-# Resume: ${file.name}
-
-## Professional Experience
-
-* Product Manager, Tech Solutions Inc. (2019-Present)
-  - Managed product roadmap for SaaS platform with 50,000+ users
-  - Collaborated with engineering and design teams to deliver new features
-  - Increased user retention by 25% through data-driven improvements
-
-* Business Analyst, Data Insights Co. (2017-2019)
-  - Conducted market research and competitive analysis
-  - Created detailed product requirements documents
-  - Supported sales team with technical demonstrations
-
-## Skills
-
-* Product Management: Roadmapping, User Stories, Agile/Scrum, JIRA
-* Analytics: SQL, Tableau, Google Analytics, A/B Testing
-* Technical: HTML/CSS, Basic JavaScript, API Integration
-* Soft Skills: Leadership, Communication, Stakeholder Management
-
-## Education
-
-* MBA, Business School (2015-2017)
-* Bachelor of Business Administration (2011-2015)
-`;
+      reader.onerror = (e) => {
+        console.error('Error reading file:', e);
+        setError('Failed to read file');
+        toast.error('Failed to read file');
+        setParsing(false);
+      };
+      
+      // Read the file
+      if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+        reader.readAsText(file);
       } else {
-        extractedText = `
-# Resume: ${file.name}
-
-This is the extracted content from your text file.
-
-The content includes your professional experience, skills, and education.
-
-For a real implementation, this would contain the actual text from your document.
-`;
+        // For binary files like PDFs and Word docs
+        reader.readAsBinaryString(file);
       }
-
-      setParsedContent(extractedText);
-      onParsedContent(extractedText);
-      toast.success('Document parsed successfully!');
     } catch (error: any) {
       console.error('Error parsing document:', error);
       setError(error.message || 'Failed to parse document');
@@ -132,6 +98,53 @@ For a real implementation, this would contain the actual text from your document
     } finally {
       setParsing(false);
     }
+  };
+
+  // Function to extract text from binary data
+  const extractTextFromBinaryData = (data: string, filename: string): string => {
+    // This is a very simplified approach to extract text from binary data
+    // In a real implementation, use a proper PDF parsing library
+    
+    // Remove non-printable characters and extract text-like content
+    const textContent = data
+      .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
+      .replace(/\s+/g, ' ')                 // Normalize whitespace
+      .split(' ')
+      .filter(word => word.length > 1)      // Filter out single characters
+      .join(' ');
+    
+    // Try to extract what looks like the actual content
+    let extractedText = '';
+    
+    // Look for common resume sections
+    const sections = [
+      'experience', 'education', 'skills', 'projects', 'certifications',
+      'work experience', 'professional experience', 'employment history',
+      'technical skills', 'summary', 'objective', 'profile'
+    ];
+    
+    // Try to find and extract sections
+    let foundSections = false;
+    for (const section of sections) {
+      const sectionRegex = new RegExp(`(^|\\s)${section}[:\\s]`, 'i');
+      if (sectionRegex.test(textContent)) {
+        foundSections = true;
+        const sectionIndex = textContent.search(sectionRegex);
+        if (sectionIndex !== -1) {
+          extractedText += textContent.substring(sectionIndex, sectionIndex + 500) + '\n\n';
+        }
+      }
+    }
+    
+    // If no sections found, just take a chunk of the text
+    if (!foundSections) {
+      extractedText = textContent.substring(0, 2000);
+    }
+    
+    // Format the extracted text
+    extractedText = `# Extracted from: ${filename}\n\n${extractedText}`;
+    
+    return extractedText || `Could not extract text content from ${filename}. Please try a different file format.`;
   };
 
   const handleCopyContent = () => {
