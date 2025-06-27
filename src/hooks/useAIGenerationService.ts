@@ -217,10 +217,13 @@ Ensure the letter includes:
           content = await callGeminiAPI(prompt, settings.gemini_api_key);
           
           // Update progress to 100%
-          clearInterval(timer);
-          setProgress(100);
-          setTimeRemaining(0);
-          setGeneratedContent(content);
+          setTimeout(() => {
+            clearInterval(timer);
+            setProgress(100);
+            setTimeRemaining(0);
+            setGeneratedContent(content);
+            setLoading(false);
+          }, 1000);
           
           // Update AI Resume table if it's a resume generation
           if (type === 'resume' && formData.selected_job_id) {
@@ -275,6 +278,11 @@ Ensure the letter includes:
                 if (response.status === 'success' && response.content) {
                   setGeneratedContent(response.content);
                   
+                  // Ensure loading state is reset
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, 1000);
+                  
                   // Update AI Resume table if it's a resume generation
                   if (type === 'resume' && formData.selected_job_id) {
                     await updateAiResumeTable(formData.selected_job_id, response.content, user.id);
@@ -285,7 +293,6 @@ Ensure the letter includes:
                   throw new Error(response.error_message || 'Generation failed');
                 }
                 
-                setLoading(false);
                 return;
               }
               

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from './Card';
 import { Sparkles, Clock, Zap, Brain, Cpu, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 
 interface ProgressScreenProps {
   type: 'resume' | 'cover-letter';
@@ -16,6 +17,16 @@ export function ProgressScreen({ type, progress, timeRemaining, onCancel }: Prog
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
+  // Auto-close when progress reaches 100%
+  useEffect(() => {
+    if (progress >= 100 && onCancel) {
+      const timer = setTimeout(() => {
+        onCancel();
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [progress, onCancel]);
 
   const getProgressMessage = () => {
     if (progress < 20) return 'Analyzing job requirements...';
