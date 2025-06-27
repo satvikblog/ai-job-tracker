@@ -67,6 +67,14 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
   const handleFormSubmit = async (data: any) => {
     console.log('Form data being submitted:', data);
     
+    // Convert empty date strings to null to prevent database errors
+    if (data.next_follow_up_date === '') {
+      data.next_follow_up_date = null;
+    }
+    if (data.applied_on === '') {
+      data.applied_on = null;
+    }
+    
     setIsSubmitting(true);
     try {
       await onSubmit(data);
