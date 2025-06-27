@@ -214,6 +214,7 @@ export interface Database {
           google_oauth_enabled: boolean
           google_client_id: string | null
           last_gmail_sync: string | null
+          gemini_api_key: string | null
           ai_provider: string | null
           created_at: string
           updated_at: string
@@ -227,6 +228,7 @@ export interface Database {
           google_oauth_enabled?: boolean
           google_client_id?: string | null
           last_gmail_sync?: string | null
+          gemini_api_key?: string | null
           ai_provider?: string | null
           created_at?: string
           updated_at?: string
@@ -240,6 +242,7 @@ export interface Database {
           google_oauth_enabled?: boolean
           google_client_id?: string | null
           last_gmail_sync?: string | null
+          gemini_api_key?: string | null
           ai_provider?: string | null
           created_at?: string
           updated_at?: string
