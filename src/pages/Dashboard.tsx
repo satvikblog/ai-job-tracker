@@ -232,7 +232,7 @@ export function Dashboard() {
             className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-accent-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
           >
             <TrendingUp className="w-8 h-8 text-accent-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
-            <p className="text-sm font-medium text-slate-200">View Analytics</p>
+            <p className="text-sm font-medium text-slate-200">View Analytics </p>
             <p className="text-xs text-slate-400">Analyze your progress</p>
           </button>
         </div>
