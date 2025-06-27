@@ -116,7 +116,13 @@ export function useGoogleOAuth() {
       if (!user) return;
 
       const { data: tokens, error } = await supabase
+        .from('oauth_tokens')
         .select('*')
+        .eq('user_id', user.id)
+        .eq('provider', 'google')
+        .single();
+
+      if (error) {
         console.error('Error loading OAuth status:', error);
         return;
       }
