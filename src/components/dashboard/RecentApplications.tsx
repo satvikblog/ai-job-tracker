@@ -4,9 +4,8 @@ import { motion } from 'framer-motion';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
-import { ArrowRight, Building, MapPin, Calendar, ExternalLink, Briefcase } from 'lucide-react';
+import { ArrowRight, Building, MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { Database } from '../../lib/database.types';
-import { format } from 'date-fns';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
@@ -25,7 +24,6 @@ const statusColors = {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   const recent = applications.slice(0, 5);
-  const navigate = useNavigate();
 
   return (
     <Card className="bg-card border-card-border">
@@ -41,7 +39,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
         <Button 
           variant="ghost" 
           size="sm"
-          onClick={() => navigate('/applications')}
+          onClick={() => window.location.href = '/#/applications'}
           rightIcon={<ArrowRight className="w-4 h-4" />}
           className="text-muted hover:text-foreground"
         >
