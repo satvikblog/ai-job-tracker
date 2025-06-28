@@ -55,9 +55,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   ...props
 }, ref) => {
   const iconSizes = {
-    sm: 'w-4 h-4',
-    md: 'w-4 h-4',
-    lg: 'w-5 h-5'
+    sm: "px-3.5 py-2.5 text-xs",
+    md: "px-5 py-3.5 text-sm",
+    lg: "px-7 py-4 text-base",
   };
 
   const sizeValue = size || 'md';
@@ -67,18 +67,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.97 }}
       className={cn(buttonVariants({ variant, size, glow, className }))}
-      disabled={disabled || isLoading}
+      disabled={disabled || isLoading} 
       ref={ref}
       {...props}
     >
       {isLoading ? (
-        <div className="w-4 h-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+        <div className="w-5 h-5 animate-spin rounded-full border-2 border-current border-t-transparent mr-3" />
       ) : leftIcon ? (
-        <span className={`${iconSizes[sizeValue]} mr-2 transition-transform duration-200 group-hover:scale-110`}>{leftIcon}</span>
+        <span className={`${iconSizes[sizeValue]} mr-3 transition-transform duration-200 group-hover:scale-110`}>{leftIcon}</span>
       ) : null}
       <span className="transition-all duration-200">{children}</span>
       {rightIcon && !isLoading && (
-        <span className={`${iconSizes[sizeValue]} ml-2 transition-transform duration-200 group-hover:scale-110`}>{rightIcon}</span>
+        <span className={`${iconSizes[sizeValue]} ml-3 transition-transform duration-200 group-hover:scale-110`}>{rightIcon}</span>
       )}
     </motion.button>
   );
