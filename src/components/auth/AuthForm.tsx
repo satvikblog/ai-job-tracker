@@ -352,9 +352,9 @@ export function AuthForm() {
           <motion.form 
             onSubmit={handleSubmit} 
             className="space-y-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
             {isSignUp && (
               <motion.div
@@ -365,6 +365,7 @@ export function AuthForm() {
                 <Input
                   label="Full Name"
                   type="text"
+                  className="rounded-xl shadow-sm"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   leftIcon={<User className="w-4 h-4" />}
@@ -377,11 +378,12 @@ export function AuthForm() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
             >
               <Input
                 label="Email"
                 type="email"
+                className="rounded-xl shadow-sm"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 leftIcon={<Mail className="w-4 h-4" />}
@@ -393,11 +395,12 @@ export function AuthForm() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
             >
               <Input
                 label="Password"
                 type="password"
+                className="rounded-xl shadow-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 leftIcon={<Lock className="w-4 h-4" />}
@@ -410,11 +413,11 @@ export function AuthForm() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.5 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
             >
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full rounded-xl py-3 shadow-md"
                 isLoading={loading}
                 disabled={connectionStatus !== 'connected'}
                 glow={true}
