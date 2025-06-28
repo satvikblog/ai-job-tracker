@@ -224,30 +224,35 @@ export function Settings() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6"
       >
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold gradient-text flex items-center space-x-3">
-            <SettingsIcon className="w-6 h-6 lg:w-8 lg:h-8 text-primary-500" />
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-lg">
+            <SettingsIcon className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gradient">
             <span>Settings</span>
           </h1>
-          <p className="text-slate-400 mt-1 text-sm lg:text-base">
-            Manage your account preferences and integrations
-          </p>
         </div>
         <Button variant="outline" onClick={handleSignOut} leftIcon={<LogOut className="w-4 h-4" />}>
           Sign Out
         </Button>
       </motion.div>
 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="text-muted mb-6">Manage your account preferences and integrations</motion.div>
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.2 }}
         >
-          <Card>
+          <Card elevation="raised">
             <nav className="space-y-2">
               {tabs.map((tab) => (
                 <button
@@ -255,8 +260,8 @@ export function Settings() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`w-full flex items-center space-x-3 px-3 py-2 lg:py-3 rounded-lg text-left transition-colors text-sm lg:text-base ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-primary-600/20 to-secondary-600/20 text-white border border-primary-500/30'
-                      : 'text-slate-300 hover:bg-dark-700/50 border border-transparent'
+                      ? 'bg-gradient-to-r from-primary/20 to-secondary/20 text-foreground border border-primary/30 shadow-sm'
+                      : 'text-muted hover:bg-card-hover border border-transparent'
                   }`}
                 >
                   <tab.icon className="w-4 h-4 lg:w-5 lg:h-5" />
@@ -276,9 +281,12 @@ export function Settings() {
             transition={{ duration: 0.3 }}
           >
             {activeTab === 'profile' && (
-              <Card>
-                <h2 className="text-lg font-semibold text-white mb-6">
+              <Card elevation="raised">
+                <h2 className="text-lg font-semibold text-foreground mb-6 flex items-center space-x-2">
+                  <User className="w-5 h-5 text-primary" />
+                  <span>
                   Profile Information
+                  </span>
                 </h2>
                 <div className="space-y-6">
                   <Input
@@ -306,9 +314,12 @@ export function Settings() {
             )}
 
             {activeTab === 'notifications' && (
-              <Card>
-                <h2 className="text-lg font-semibold text-white mb-6">
+              <Card elevation="raised">
+                <h2 className="text-lg font-semibold text-foreground mb-6 flex items-center space-x-2">
+                  <Bell className="w-5 h-5 text-primary" />
+                  <span>
                   Notification Preferences
+                  </span>
                 </h2>
                 <div className="space-y-6">
                   <div>
@@ -379,9 +390,12 @@ export function Settings() {
             )}
 
             {activeTab === 'api-keys' && (
-              <Card>
-                <h2 className="text-lg font-semibold text-white mb-6">
+              <Card elevation="raised">
+                <h2 className="text-lg font-semibold text-foreground mb-6 flex items-center space-x-2">
+                  <Key className="w-5 h-5 text-primary" />
+                  <span>
                   API Keys & Integrations
+                  </span>
                 </h2>
                 <div className="space-y-6">
                   {/* AI Provider Selection */}
@@ -483,7 +497,7 @@ export function Settings() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button
+                    <Button 
                       onClick={() => saveSettings({ 
                         ai_provider: aiProvider,
                         openai_api_key: aiProvider === 'openai' ? settings?.openai_api_key : settings?.openai_api_key,
@@ -492,6 +506,7 @@ export function Settings() {
                       })}
                       isLoading={loading}
                       leftIcon={<Save className="w-4 h-4" />}
+                      glow
                     >
                       Save API Keys
                     </Button>
@@ -512,10 +527,10 @@ export function Settings() {
             )}
 
             {activeTab === 'webhooks' && (
-              <Card>
+              <Card elevation="raised">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-white flex items-center space-x-2">
-                    <Webhook className="w-5 h-5" />
+                  <h2 className="text-lg font-semibold text-foreground flex items-center space-x-2">
+                    <Webhook className="w-5 h-5 text-primary" />
                     <span>Webhook Management</span>
                   </h2>
                   <Button
@@ -529,7 +544,7 @@ export function Settings() {
                 
                 <div className="space-y-6">
                   {/* Info Card */}
-                  <div className="bg-gradient-to-r from-primary-900/20 to-secondary-900/20 border border-primary-600/30 rounded-xl p-4">
+                  <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/30 rounded-xl p-4 shadow-sm">
                     <h3 className="text-sm font-medium text-primary-300 mb-3 flex items-center space-x-2">
                       <Activity className="w-4 h-4" />
                       <span>🔗 Multiple Webhook Support</span>
