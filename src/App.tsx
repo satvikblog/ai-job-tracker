@@ -1,5 +1,6 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthForm } from './components/auth/AuthForm';
 import { Layout } from './components/layout/Layout';
 import { Dashboard } from './pages/Dashboard';
@@ -31,22 +32,24 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-900 font-inter">
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="applications" element={<Applications />} />
-            <Route path="job-opportunities" element={<JobOpportunities />} />
-            <Route path="resume" element={<ResumeGenerator />} />
-            <Route path="cover-letters" element={<CoverLetters />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="follow-ups" element={<FollowUps />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-        </Routes>
-      </div>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary font-inter transition-colors duration-300">
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="applications" element={<Applications />} />
+              <Route path="job-opportunities" element={<JobOpportunities />} />
+              <Route path="resume" element={<ResumeGenerator />} />
+              <Route path="cover-letters" element={<CoverLetters />} />
+              <Route path="documents" element={<Documents />} />
+              <Route path="follow-ups" element={<FollowUps />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

@@ -1,70 +1,83 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import { cn } from '../../utils/cn';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   variant?: 'default' | 'glass';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-export function Input({
+export const Input = forwardRef<HTMLInputElement, InputProps>(({
   label,
   error,
   leftIcon,
   rightIcon,
   variant = 'default',
+  size = 'md',
   className = '',
   ...props
-}: InputProps) {
+}, ref) => {
   const variantStyles = {
-    default: 'bg-dark-800/70 border-slate-600',
-    glass: 'bg-dark-800/30 border-slate-600/50 backdrop-blur-xl'
+    default: 'bg-input border-border',
+    glass: 'bg-input/50 border-border/50 backdrop-blur-xl'
+  };
+  
+  const sizeStyles = {
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-4 py-3 text-base',
+    lg: 'px-5 py-4 text-lg'
   };
 
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           {label}
         </label>
       )}
       <div className="relative">
         {leftIcon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-            <span className="text-slate-400 transition-colors duration-200">
+            <span className="text-muted transition-colors duration-200">
               {leftIcon}
             </span>
           </div>
         )}
         <input
+          ref={ref}
           className={`
-            w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
-            focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500
-            text-slate-100 placeholder-slate-400
+            w-full ${sizeStyles[size]} ${variantStyles[variant]} border rounded-lg
+            focus:ring-2 focus:ring-primary/30 focus:border-primary
+            text-foreground placeholder:text-muted
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-all duration-200
             ${leftIcon ? 'pl-10' : ''}
             ${rightIcon ? 'pr-10' : ''}
-            ${error ? 'border-error-500 focus:ring-error-500/30 focus:border-error-500' : ''}
-            ${className}
+            ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}
           `}
+          className={cn(className)}
           {...props}
         />
         {rightIcon && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none z-10">
-            <span className="text-slate-400 transition-colors duration-200">
+            <span className="text-muted transition-colors duration-200">
               {rightIcon}
             </span>
           </div>
         )}
       </div>
       {error && (
-        <p className="mt-2 text-sm text-error-400 flex items-center space-x-1">
-          <span className="text-error-500">⚠️</span>
+        <p className="mt-2 text-sm text-error flex items-center space-x-1">
+          <span className="text-error">⚠️</span>
           <span>{error}</span>
         </p>
       )}
     </div>
   );
-}
+});
+
+Input.displayName = 'Input';

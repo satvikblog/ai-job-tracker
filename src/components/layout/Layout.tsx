@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { MobileNavigation } from './MobileNavigation';
+import { ThemeToggle } from './ThemeToggle';
 import { Toaster } from 'react-hot-toast';
 import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -12,7 +13,7 @@ export function Layout() {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-850">
+    <div className="flex h-screen bg-gradient-to-br from-background to-background-secondary transition-colors duration-300">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar />
@@ -21,12 +22,12 @@ export function Layout() {
       {/* Mobile Menu Button */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 bg-dark-800/90 backdrop-blur-sm border-slate-600/50"
+          className="p-2 bg-card/90 backdrop-blur-sm"
         >
-          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isMobileMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
         </Button>
       </div>
 
@@ -34,7 +35,7 @@ export function Layout() {
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-colors duration-300"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div className="relative w-64 h-full">
@@ -44,7 +45,7 @@ export function Layout() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto transition-colors duration-300">
         <div className="p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -59,6 +60,11 @@ export function Layout() {
           </AnimatePresence>
         </div>
       </main>
+      
+      {/* Theme Toggle (Mobile) */}
+      <div className="fixed bottom-20 right-4 lg:hidden z-30">
+        <ThemeToggle />
+      </div>
 
       {/* Mobile Bottom Navigation */}
       <div className="lg:hidden">
@@ -68,29 +74,33 @@ export function Layout() {
       <Toaster 
         position="top-right"
         toastOptions={{
-          duration: 4000,
+          duration: 3000,
           style: {
-            background: 'rgba(30, 41, 59, 0.95)',
-            color: '#f1f5f9',
+            background: 'var(--toast-background)',
+            color: 'var(--toast-foreground)',
             borderRadius: '12px',
             padding: '16px',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
+            border: '1px solid var(--toast-border)',
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3)',
+            boxShadow: 'var(--toast-shadow)',
             fontSize: '14px',
             maxWidth: '90vw',
           },
           success: {
             style: {
-              border: '1px solid rgba(34, 197, 94, 0.3)',
-              background: 'rgba(21, 128, 61, 0.1)',
+              border: '1px solid var(--success-border)',
+              background: 'var(--success-background)',
+              color: 'var(--success-foreground)',
             },
+            icon: <CheckCircle className="w-5 h-5 text-success" />,
           },
           error: {
             style: {
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              background: 'rgba(185, 28, 28, 0.1)',
+              border: '1px solid var(--error-border)',
+              background: 'var(--error-background)',
+              color: 'var(--error-foreground)',
             },
+            icon: <AlertCircle className="w-5 h-5 text-error" />,
           },
         }}
       />

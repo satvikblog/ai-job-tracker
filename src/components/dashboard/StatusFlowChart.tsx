@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
-import { BarChart3, ArrowRight } from 'lucide-react';
+import { BarChart3, ArrowRight, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface StatusFlowChartProps {
@@ -49,15 +49,28 @@ const statusConfig = {
 
 export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
   const totalApplications = Object.values(statusData).reduce((sum, count) => sum + count, 0);
-  const statusEntries = Object.entries(statusData).filter(([_, count]) => count > 0);
+  const statusEntries = Object.entries(statusData)
+    .filter(([_, count]) => count > 0)
+    .sort((a, b) => {
+      // Custom sort order for status flow
+      const order = {
+        'applied': 1,
+        'followed-up': 2,
+        'interview': 3,
+        'offer': 4,
+        'rejected': 5,
+        'no-response': 6
+      };
+      return (order[a[0] as keyof typeof order] || 99) - (order[b[0] as keyof typeof order] || 99);
+    });
   
   return (
-    <Card className="bg-gradient-to-br from-dark-800/80 to-dark-900/80 border border-slate-700/50">
+    <Card className="bg-card border-card-border">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
-          <BarChart3 className="w-5 h-5 text-white" />
+        <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary-accent rounded-xl flex items-center justify-center shadow-md">
+          <BarChart3 className="w-5 h-5 text-secondary-foreground" />
         </div>
-        <h2 className="text-lg font-semibold text-slate-100">
+        <h2 className="text-lg font-semibold text-foreground">
           Application Status Flow
         </h2>
       </div>
@@ -65,7 +78,7 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
       {totalApplications > 0 ? (
         <div className="space-y-6">
           {/* Sankey Flow Visualization */}
-          <div className="relative">
+          <div className="relative space-y-4">
             {statusEntries.map(([status, count], index) => {
               const config = statusConfig[status as keyof typeof statusConfig];
               const percentage = (count / totalApplications) * 100;
@@ -73,17 +86,17 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
               
               return (
                 <motion.div
-                  key={status}
+                  key={`status-${status}`}
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay, duration: 0.6 }}
-                  className="relative mb-4 last:mb-0"
+                  className="relative"
                 >
                   {/* Flow Node */}
                   <div className="flex items-center space-x-4">
                     {/* Status Info */}
-                    <div className="flex-shrink-0 w-32">
-                      <Badge variant={status as any} className="w-full justify-center">
+                    <div className="flex-shrink-0 w-36">
+                      <Badge variant={status as any} className="w-full justify-center py-1.5">
                         {config.label}
                       </Badge>
                     </div>
@@ -92,9 +105,9 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
                     <div className="flex-1 relative">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${percentage}%` }}
+                        animate={{ width: `${Math.max(percentage, 2)}%` }}
                         transition={{ delay: delay + 0.3, duration: 0.8, ease: "easeOut" }}
-                        className={`h-8 bg-gradient-to-r ${config.color} rounded-lg relative overflow-hidden`}
+                        className={`h-10 bg-gradient-to-r ${config.color} rounded-lg relative overflow-hidden`}
                       >
                         {/* Flow Lines */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -114,7 +127,7 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
                         
                         {/* Count Display */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-white font-bold text-sm">
+                          <span className="text-white font-bold text-sm drop-shadow-md">
                             {count}
                           </span>
                         </div>
@@ -123,7 +136,7 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
                     
                     {/* Percentage */}
                     <div className="flex-shrink-0 w-16 text-right">
-                      <span className={`text-sm font-medium ${config.textColor}`}>
+                      <span className={`text-sm font-medium ${config.textColor} drop-shadow-sm`}>
                         {percentage.toFixed(1)}%
                       </span>
                     </div>
@@ -132,12 +145,12 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
                   {/* Connection Flow */}
                   {index < statusEntries.length - 1 && (
                     <motion.div
-                      initial={{ opacity: 0, scaleY: 0 }}
-                      animate={{ opacity: 0.3, scaleY: 1 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ delay: delay + 1, duration: 0.4 }}
-                      className="flex items-center justify-center my-2"
+                      className="flex items-center justify-center my-3 ml-36"
                     >
-                      <ArrowRight className="w-4 h-4 text-slate-500" />
+                      <ChevronRight className="w-5 h-5 text-muted animate-pulse" />
                     </motion.div>
                   )}
                 </motion.div>
@@ -146,23 +159,23 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
           </div>
           
           {/* Flow Summary */}
-          <div className="pt-4 border-t border-slate-700/50">
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-primary-900/20 border border-primary-600/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-primary-300">{totalApplications}</div>
-                <div className="text-xs text-slate-400">Total Flow</div>
+          <div className="pt-4 border-t border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+              <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
+                <div className="text-lg font-bold text-primary">{totalApplications}</div>
+                <div className="text-xs text-muted">Total Flow</div>
               </div>
-              <div className="bg-success-900/20 border border-success-600/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-success-300">
+              <div className="bg-success/10 border border-success/30 rounded-lg p-3">
+                <div className="text-lg font-bold text-success">
                   {((statusData.interview || 0) + (statusData.offer || 0))}
                 </div>
-                <div className="text-xs text-slate-400">Positive Flow</div>
+                <div className="text-xs text-muted">Positive Flow</div>
               </div>
-              <div className="bg-secondary-900/20 border border-secondary-600/30 rounded-lg p-3">
-                <div className="text-lg font-bold text-secondary-300">
+              <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3">
+                <div className="text-lg font-bold text-secondary">
                   {statusData.offer || 0}
                 </div>
-                <div className="text-xs text-slate-400">Success Flow</div>
+                <div className="text-xs text-muted">Success Flow</div>
               </div>
             </div>
           </div>
@@ -170,11 +183,11 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
       ) : (
         <div className="flex items-center justify-center h-48">
           <div className="text-center">
-            <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BarChart3 className="w-8 h-8 text-slate-500" />
+            <div className="w-16 h-16 bg-card-hover rounded-full flex items-center justify-center mx-auto mb-4">
+              <BarChart3 className="w-8 h-8 text-muted" />
             </div>
-            <p className="text-slate-400">No status data available</p>
-            <p className="text-slate-500 text-sm mt-1">Add applications to see flow</p>
+            <p className="text-muted">No status data available</p>
+            <p className="text-muted-foreground text-sm mt-1">Add applications to see flow</p>
           </div>
         </div>
       )}

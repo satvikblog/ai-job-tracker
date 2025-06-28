@@ -4,17 +4,19 @@ import { motion } from 'framer-motion';
 interface CardProps {
   children: React.ReactNode;
   className?: string;
+  variant?: 'default' | 'primary' | 'secondary' | 'accent';
   hover?: boolean;
   padding?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'glass' | 'gradient';
+  elevation?: 'flat' | 'raised' | 'elevated';
 }
 
 export function Card({ 
   children, 
   className = '', 
+  variant = 'default',
   hover = false, 
   padding = 'md',
-  variant = 'default'
+  elevation = 'flat'
 }: CardProps) {
   const paddingStyles = {
     sm: 'p-4',
@@ -23,21 +25,28 @@ export function Card({
   };
 
   const variantStyles = {
-    default: 'bg-dark-800/70 backdrop-blur-sm border border-slate-700/50',
-    glass: 'bg-dark-800/30 backdrop-blur-xl border border-slate-600/30',
-    gradient: 'bg-gradient-to-br from-dark-800/80 to-dark-900/80 backdrop-blur-sm border border-slate-700/50'
+    default: 'bg-card border-card-border',
+    primary: 'bg-card border-primary/30',
+    secondary: 'bg-card border-secondary/30',
+    accent: 'bg-card border-accent/30'
   };
 
-  const baseStyles = `${variantStyles[variant]} rounded-xl shadow-dark transition-all duration-300 ${paddingStyles[padding]}`;
+  const elevationStyles = {
+    flat: 'shadow-sm',
+    raised: 'shadow-md',
+    elevated: 'shadow-lg'
+  };
+
+  const baseStyles = `${variantStyles[variant]} rounded-xl ${elevationStyles[elevation]} backdrop-blur-sm transition-all duration-300 ${paddingStyles[padding]}`;
   
   if (hover) {
     return (
       <motion.div
         whileHover={{ 
           y: -4, 
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.1)' 
+          boxShadow: 'var(--shadow-hover)'
         }}
-        className={`${baseStyles} hover:border-primary-500/30 cursor-pointer ${className}`}
+        className={`${baseStyles} hover:border-primary/30 cursor-pointer ${className}`}
       >
         {children}
       </motion.div>

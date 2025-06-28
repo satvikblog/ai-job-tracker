@@ -1,51 +1,56 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import { cn } from '../../utils/cn';
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
   monospace?: boolean;
   variant?: 'default' | 'glass';
+  className?: string;
 }
 
-export function Textarea({
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
   label,
   error,
   monospace = false,
   variant = 'default',
   className = '',
   ...props
-}: TextareaProps) {
+}, ref) => {
   const variantStyles = {
-    default: 'bg-dark-800/70 border-slate-600',
-    glass: 'bg-dark-800/30 border-slate-600/50 backdrop-blur-xl'
+    default: 'bg-input border-border',
+    glass: 'bg-input/50 border-border/50 backdrop-blur-xl'
   };
 
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           {label}
         </label>
       )}
       <textarea
+        ref={ref}
         className={`
           w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
           ${monospace ? 'font-mono text-sm' : ''}
-          focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500
-          text-slate-100 placeholder-slate-400
+          focus:ring-2 focus:ring-primary/30 focus:border-primary
+          text-foreground placeholder:text-muted
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-all duration-200 resize-none
-          ${error ? 'border-error-500 focus:ring-error-500/30 focus:border-error-500' : ''}
-          ${className}
+          ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}
         `}
+        className={cn(className)}
         {...props}
       />
       {error && (
-        <p className="mt-2 text-sm text-error-400 flex items-center space-x-1">
-          <span className="text-error-500">⚠️</span>
+        <p className="mt-2 text-sm text-error flex items-center space-x-1">
+          <span className="text-error">⚠️</span>
           <span>{error}</span>
         </p>
       )}
     </div>
   );
-}
+});
+
+Textarea.displayName = 'Textarea';

@@ -1,103 +1,96 @@
 import React from 'react';
 import { Card } from '../ui/Card';
-import { TrendingUp } from 'lucide-react';
+import { AreaChart, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface ApplicationChartProps {
   data: { month: string; count: number }[];
 }
 
 export function ApplicationChart({ data }: ApplicationChartProps) {
+  const { theme, colorScheme } = useTheme();
   const maxValue = Math.max(...data.map(d => d.count), 1);
+  const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  
+  // Get colors based on theme and color scheme
+  const getBarColor = (index: number) => {
+    const colors = {
+      blue: ['#3b82f6', '#60a5fa', '#93c5fd'],
+      purple: ['#8b5cf6', '#a78bfa', '#c4b5fd'],
+      green: ['#10b981', '#34d399', '#6ee7b7'],
+      red: ['#ef4444', '#f87171', '#fca5a5'],
+      gray: ['#6b7280', '#9ca3af', '#d1d5db']
+    };
+    
+    const colorSet = colors[colorScheme as keyof typeof colors] || colors.blue;
+    return colorSet[index % colorSet.length];
+  };
+  
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-card border border-card-border p-2 rounded-md shadow-md">
+          <p className="text-sm font-medium text-foreground">{`${label}: ${payload[0].value}`}</p>
+          <p className="text-xs text-muted">Applications</p>
+        </div>
+      );
+    }
+    return null;
+  };
   
   return (
-    <Card className="bg-gradient-to-br from-dark-800/80 to-dark-900/80 border border-slate-700/50">
+    <Card className="bg-card border-card-border">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-          <TrendingUp className="w-5 h-5 text-white" />
+        <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-md">
+          <AreaChart className="w-5 h-5 text-primary-foreground" />
         </div>
-        <h2 className="text-lg font-semibold text-slate-100">
+        <h2 className="text-lg font-semibold text-foreground">
           Application Flow Trends
         </h2>
       </div>
       
-      <div className="h-64 relative">
+      <div className="h-72 relative">
         {data.length > 0 ? (
-          <div className="flex items-end justify-between h-full space-x-4 px-4">
-            {data.map((item, index) => {
-              const height = (item.count / maxValue) * 100;
-              const delay = index * 0.1;
-              
-              return (
-                <div key={item.month} className="flex-1 flex flex-col items-center">
-                  {/* Flow Node */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: delay + 0.3, duration: 0.5 }}
-                    className="mb-2 text-center"
-                  >
-                    <div className="text-lg font-bold text-slate-100 mb-1">
-                      {item.count}
-                    </div>
-                    <div className="text-xs text-slate-400 font-medium">
-                      {item.month}
-                    </div>
-                  </motion.div>
-                  
-                  {/* Sankey Flow Bar */}
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: `${height}%` }}
-                    transition={{ delay, duration: 0.8, ease: "easeOut" }}
-                    className="w-full relative rounded-t-lg overflow-hidden"
-                    style={{ minHeight: '8px' }}
-                  >
-                    {/* Gradient Flow */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-600 via-primary-500 to-secondary-400 opacity-90" />
-                    
-                    {/* Flow Lines */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                    
-                    {/* Shimmer Effect */}
-                    <motion.div
-                      initial={{ x: '-100%' }}
-                      animate={{ x: '100%' }}
-                      transition={{ 
-                        delay: delay + 1, 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        repeatDelay: 3 
-                      }}
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
-                    />
-                  </motion.div>
-                  
-                  {/* Connection Flow to Next */}
-                  {index < data.length - 1 && (
-                    <motion.div
-                      initial={{ opacity: 0, scaleX: 0 }}
-                      animate={{ opacity: 0.3, scaleX: 1 }}
-                      transition={{ delay: delay + 1.2, duration: 0.6 }}
-                      className="absolute top-1/2 w-8 h-0.5 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full"
-                      style={{ 
-                        left: `${((index + 1) / data.length) * 100 - 8}%`,
-                        transform: 'translateY(-50%)'
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={data}
+              margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+            >
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                vertical={false} 
+                stroke={isDarkMode ? 'rgba(203, 213, 225, 0.1)' : 'rgba(15, 23, 42, 0.1)'} 
+              />
+              <XAxis 
+                dataKey="month" 
+                tick={{ fill: isDarkMode ? '#cbd5e1' : '#334155' }}
+                axisLine={{ stroke: isDarkMode ? 'rgba(203, 213, 225, 0.2)' : 'rgba(15, 23, 42, 0.2)' }}
+              />
+              <YAxis 
+                tick={{ fill: isDarkMode ? '#cbd5e1' : '#334155' }}
+                axisLine={{ stroke: isDarkMode ? 'rgba(203, 213, 225, 0.2)' : 'rgba(15, 23, 42, 0.2)' }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                {data.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={getBarColor(index)}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-8 h-8 text-slate-500" />
+              <div className="w-16 h-16 bg-card-hover rounded-full flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-8 h-8 text-muted" />
               </div>
-              <p className="text-slate-400">No data available yet</p>
-              <p className="text-slate-500 text-sm mt-1">Start applying to see trends</p>
+              <p className="text-muted">No data available yet</p>
+              <p className="text-muted-foreground text-sm mt-1">Start applying to see trends</p>
             </div>
           </div>
         )}
@@ -105,10 +98,10 @@ export function ApplicationChart({ data }: ApplicationChartProps) {
       
       {/* Flow Legend */}
       {data.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-slate-700/50">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-6 pt-4 border-t border-border">
+          <div className="flex items-center justify-between text-xs text-muted">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-r from-primary-500 to-secondary-400 rounded-full"></div>
+              <div className="w-3 h-3 bg-gradient-to-r from-primary to-primary-accent rounded-full"></div>
               <span>Application Flow</span>
             </div>
             <div className="flex items-center space-x-4">

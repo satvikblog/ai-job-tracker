@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { Sparkles, Mail, Lock, User, AlertCircle, Settings } from 'lucide-react';
+import { ThemeToggle } from '../layout/ThemeToggle';
+import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { testConnection } from '../../lib/supabase';
@@ -82,21 +83,25 @@ export function AuthForm() {
   // Show configuration screen if not connected
   if (connectionStatus === 'disconnected') {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <Card className="p-8">
+          <Card className="p-8 border-card-border bg-card">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Settings className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-br from-warning to-error rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
+                <Settings className="w-8 h-8 text-white animate-pulse" />
               </div>
-              <h1 className="text-2xl font-bold text-white">
+              <h1 className="text-2xl font-bold text-foreground">
                 Configuration Required
               </h1>
-              <p className="text-gray-400 mt-2">
+              <p className="text-muted mt-2">
                 Please set up your Supabase connection
               </p>
             </div>
@@ -161,21 +166,25 @@ export function AuthForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <Card className="p-8">
+        <Card className="p-8 border-card-border bg-card">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold text-foreground">
               JobTracker AI
             </h1>
-            <p className="text-gray-400 mt-2">
+            <p className="text-muted mt-2">
               {isSignUp ? 'Create your account' : 'Welcome back'}
             </p>
             
@@ -183,17 +192,17 @@ export function AuthForm() {
             <div className="mt-4">
               <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
                 connectionStatus === 'connected' 
-                  ? 'bg-green-900/20 text-green-300 border border-green-600/30'
-                  : connectionStatus === 'checking'
-                  ? 'bg-yellow-900/20 text-yellow-300 border border-yellow-600/30'
-                  : 'bg-red-900/20 text-red-300 border border-red-600/30'
+                  ? 'bg-success/20 text-success border border-success/30'
+                  : connectionStatus === 'checking' 
+                  ? 'bg-warning/20 text-warning border border-warning/30'
+                  : 'bg-error/20 text-error border border-error/30'
               }`}>
                 <div className={`w-2 h-2 rounded-full ${
                   connectionStatus === 'connected' 
-                    ? 'bg-green-400 animate-pulse'
+                    ? 'bg-success animate-pulse'
                     : connectionStatus === 'checking'
-                    ? 'bg-yellow-400 animate-pulse'
-                    : 'bg-red-400'
+                    ? 'bg-warning animate-pulse'
+                    : 'bg-error'
                 }`}></div>
                 <span>
                   {connectionStatus === 'connected' && 'Connected to Supabase'}
@@ -205,9 +214,9 @@ export function AuthForm() {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-900/20 border border-red-500 rounded-lg flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 text-red-400" />
-              <span className="text-red-400 text-sm">{error}</span>
+            <div className="mb-4 p-3 bg-error/20 border border-error/50 rounded-lg flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 text-error" />
+              <span className="text-error text-sm">{error}</span>
             </div>
           )}
 
@@ -268,11 +277,11 @@ export function AuthForm() {
                 ? 'Already have an account? Sign in' 
                 : "Don't have an account? Sign up"
               }
-            </button>
+            </button> 
           </div>
 
           {isSignUp && (
-            <div className="mt-4 text-xs text-gray-400 text-center">
+            <div className="mt-4 text-xs text-muted text-center">
               By creating an account, you agree to our Terms of Service and Privacy Policy.
             </div>
           )}

@@ -1,56 +1,61 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import { cn } from '../../utils/cn';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
   options: { value: string; label: string }[];
   variant?: 'default' | 'glass';
+  className?: string;
 }
 
-export function Select({
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   label,
   error,
   options,
   variant = 'default',
   className = '',
   ...props
-}: SelectProps) {
+}, ref) => {
   const variantStyles = {
-    default: 'bg-dark-800/70 border-slate-600',
-    glass: 'bg-dark-800/30 border-slate-600/50 backdrop-blur-xl'
+    default: 'bg-input border-border',
+    glass: 'bg-input/50 border-border/50 backdrop-blur-xl'
   };
 
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           {label}
         </label>
       )}
       <select
+        ref={ref}
         className={`
           w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
-          focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500
-          text-slate-100
+          focus:ring-2 focus:ring-primary/30 focus:border-primary
+          text-foreground
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-all duration-200
-          ${error ? 'border-error-500 focus:ring-error-500/30 focus:border-error-500' : ''}
-          ${className}
+          ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}
         `}
+        className={cn(className)}
         {...props}
       >
         {options.map((option) => (
-          <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+          <option key={option.value} value={option.value} className="bg-background text-foreground">
             {option.label}
           </option>
         ))}
       </select>
       {error && (
-        <p className="mt-2 text-sm text-error-400 flex items-center space-x-1">
-          <span className="text-error-500">⚠️</span>
+        <p className="mt-2 text-sm text-error flex items-center space-x-1">
+          <span className="text-error">⚠️</span>
           <span>{error}</span>
         </p>
       )}
     </div>
   );
-}
+});
+
+Select.displayName = 'Select';

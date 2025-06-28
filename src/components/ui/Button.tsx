@@ -1,67 +1,87 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../utils/cn';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
+const buttonVariants = cva(
+  "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm",
+        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm",
+        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary backdrop-blur-sm",
+        ghost: "hover:bg-card-hover text-foreground hover:text-primary",
+        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm",
+        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm",
+        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm",
+      },
+      size: {
+        sm: "px-3 py-2 text-sm",
+        md: "px-4 py-2.5 text-sm",
+        lg: "px-6 py-3 text-base",
+      },
+      glow: {
+        true: "shadow-glow hover:shadow-glow-lg",
+        false: "",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "md",
+      glow: false,
+    },
+  }
+);
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  glow?: boolean;
+  className?: string;
 }
 
-export function Button({
-  children,
-  variant = 'primary',
-  size = 'md',
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
+  className,
+  variant,
+  size,
+  glow,
   isLoading = false,
   leftIcon,
   rightIcon,
-  glow = false,
-  className = '',
+  children,
   disabled,
   ...props
-}: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-900 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm';
-  
-  const variants = {
-    primary: `bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white focus:ring-primary-500 border border-primary-500/20 ${glow ? 'shadow-glow hover:shadow-glow-lg' : 'shadow-lg'}`,
-    secondary: `bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 text-white focus:ring-secondary-500 border border-secondary-500/20 ${glow ? 'shadow-[0_0_20px_rgba(217,70,239,0.4)]' : 'shadow-lg'}`,
-    outline: 'border border-slate-600 hover:border-primary-500 bg-dark-800/50 hover:bg-dark-700/70 text-slate-300 hover:text-white focus:ring-primary-500 backdrop-blur-sm',
-    ghost: 'hover:bg-dark-700/50 text-slate-300 hover:text-white focus:ring-primary-500',
-    danger: `bg-gradient-to-r from-error-600 to-error-700 hover:from-error-700 hover:to-error-800 text-white focus:ring-error-500 border border-error-500/20 ${glow ? 'shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'shadow-lg'}`,
-    success: `bg-gradient-to-r from-success-600 to-success-700 hover:from-success-700 hover:to-success-800 text-white focus:ring-success-500 border border-success-500/20 ${glow ? 'shadow-[0_0_20px_rgba(34,197,94,0.4)]' : 'shadow-lg'}`
-  };
-
-  const sizes = {
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2.5 text-sm',
-    lg: 'px-6 py-3 text-base'
-  };
-
+}, ref) => {
   const iconSizes = {
     sm: 'w-4 h-4',
     md: 'w-4 h-4',
     lg: 'w-5 h-5'
   };
 
+  const sizeValue = size || 'md';
+
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={cn(buttonVariants({ variant, size, glow, className }))}
       disabled={disabled || isLoading}
+      ref={ref}
       {...props}
     >
       {isLoading ? (
         <div className="w-4 h-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
       ) : leftIcon ? (
-        <span className={`${iconSizes[size]} mr-2 transition-transform duration-200 group-hover:scale-110`}>{leftIcon}</span>
+        <span className={`${iconSizes[sizeValue]} mr-2 transition-transform duration-200 group-hover:scale-110`}>{leftIcon}</span>
       ) : null}
       <span className="transition-all duration-200">{children}</span>
       {rightIcon && !isLoading && (
-        <span className={`${iconSizes[size]} ml-2 transition-transform duration-200 group-hover:scale-110`}>{rightIcon}</span>
+        <span className={`${iconSizes[sizeValue]} ml-2 transition-transform duration-200 group-hover:scale-110`}>{rightIcon}</span>
       )}
     </motion.button>
   );
-}
+});
+
+Button.displayName = 'Button';
