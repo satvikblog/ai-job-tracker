@@ -346,7 +346,7 @@ export function AuthForm() {
             >
               <AlertCircle className="w-4 h-4 text-red-500" />
               <span className="text-red-500 text-sm">{error}</span>
-            </motion.div>
+            </motion.div> 
           )}
 
           <motion.form 
@@ -365,7 +365,7 @@ export function AuthForm() {
                 <Input
                   label="Full Name"
                   type="text"
-                  className="rounded-xl shadow-md"
+                  className="rounded-xl shadow-md mb-2"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   leftIcon={<User className="w-4 h-4" />}
@@ -383,7 +383,7 @@ export function AuthForm() {
               <Input
                 label="Email"
                 type="email"
-                className="rounded-xl shadow-md"
+                className="rounded-xl shadow-md mb-2"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 leftIcon={<Mail className="w-4 h-4" />}
@@ -400,7 +400,7 @@ export function AuthForm() {
               <Input
                 label="Password"
                 type="password"
-                className="rounded-xl shadow-md"
+                className="rounded-xl shadow-md mb-2"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 leftIcon={<Lock className="w-4 h-4" />}
@@ -419,7 +419,7 @@ export function AuthForm() {
                 type="submit"
                 className="w-full rounded-xl py-3 shadow-lg"
                 isLoading={loading}
-                disabled={connectionStatus !== 'connected'}
+                disabled={connectionStatus !== 'connected'} 
                 glow={true}
               >
                 {isSignUp ? 'Create Account' : 'Sign In'}
