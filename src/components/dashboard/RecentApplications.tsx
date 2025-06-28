@@ -43,7 +43,6 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
           variant="ghost" 
           size="sm" 
           onClick={() => navigate('/applications')}
-          onClick={() => navigate('/applications')}
           rightIcon={<ArrowRight className="w-4 h-4" />}
           className="text-muted hover:text-foreground"
         >
