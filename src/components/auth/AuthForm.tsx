@@ -3,7 +3,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { ThemeToggle } from '../layout/ThemeToggle';
-import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { testConnection } from '../../lib/supabase';
 import toast from 'react-hot-toast';
@@ -126,12 +126,12 @@ export function AuthForm() {
       </div>
       
       <div className="w-full max-w-md">
-        <Card className="p-6">
+        <Card className="p-8 shadow-lg rounded-xl">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               {isSignUp ? 'Create Account' : 'Welcome Back'}
             </h1>
             <p className="text-muted mt-1">
@@ -140,81 +140,84 @@ export function AuthForm() {
             
             {/* Connection Status */}
             <div className="mt-2">
-              <div className="inline-flex items-center space-x-2 px-2 py-1 rounded-full text-xs">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span className="text-green-500">Connected to Supabase</span>
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs bg-green-500/10 border border-green-500/30">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="text-green-500 font-medium">Connected to Supabase</span>
               </div>
             </div>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center space-x-2">
+            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center space-x-3">
               <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
               <span className="text-red-500 text-sm">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {isSignUp && (
-              <div>
-                <Input
-                  label="Full Name"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  leftIcon={<User className="w-5 h-5 text-muted" />}
-                  required
-                  placeholder="Enter your full name"
-                />
-              </div>
+              <Input
+                label="Full Name"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                leftIcon={<User className="w-5 h-5 text-muted" />}
+                required
+                placeholder="Enter your full name"
+                size="lg"
+                className="w-full"
+              />
             )}
             
-            <div>
-              <Input
-                label="Email Address"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                leftIcon={<Mail className="w-5 h-5 text-muted" />}
-                required
-                placeholder="Enter your email"
-              />
-            </div>
+            <Input
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              leftIcon={<Mail className="w-5 h-5 text-muted" />}
+              required
+              placeholder="Enter your email"
+              size="lg"
+              className="w-full"
+            />
             
-            <div>
-              <div className="relative">
-                <Input
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  leftIcon={<Lock className="w-5 h-5 text-muted" />}
-                  rightIcon={
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-foreground transition-colors"
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  }
-                  required
-                  placeholder="Enter your password"
-                  minLength={6}
-                />
-              </div>
+            <div className="relative">
+              <Input
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                leftIcon={<Lock className="w-5 h-5 text-muted" />}
+                required
+                placeholder="Enter your password"
+                minLength={6}
+                size="lg"
+                className="w-full pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              isLoading={loading}
-            >
-              {isSignUp ? 'Create Account' : 'Sign In'}
-            </Button>
+            <div className="pt-2">
+              <Button
+                type="submit"
+                className="w-full py-4 rounded-xl text-base"
+                isLoading={loading}
+                rightIcon={loading ? undefined : <ArrowRight className="w-5 h-5" />}
+                glow
+              >
+                {isSignUp ? 'Create Account' : 'Sign In'}
+              </Button>
+            </div>
           </form>
 
-          <div className="mt-4 text-center">
+          <div className="mt-6 text-center">
             <button
               type="button"
               onClick={() => {
@@ -230,7 +233,7 @@ export function AuthForm() {
             </button>
           </div>
           
-          <div className="mt-6 pt-4 border-t border-card-border/30 text-center">
+          <div className="mt-8 pt-6 border-t border-card-border/30 text-center">
             <div className="flex items-center justify-center space-x-2 text-xs text-muted">
               <CheckCircle className="w-4 h-4 text-green-500" />
               <span>Secure authentication powered by Supabase</span>
