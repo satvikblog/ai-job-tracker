@@ -133,17 +133,17 @@ export function AuthForm() {
                 </ol>
               </div>
 
-              <div className="bg-gray-800/80 rounded-lg p-4 shadow-inner">
-                <h4 className="text-gray-300 font-medium mb-3 tracking-wide">Environment Variables:</h4>
+              <div className="bg-card-hover rounded-lg p-4 shadow-inner">
+                <h4 className="text-foreground font-medium mb-3 tracking-wide">Environment Variables:</h4>
                 <div className="space-y-2 text-sm font-mono">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400">VITE_SUPABASE_URL</span>
+                    <span className="text-muted">VITE_SUPABASE_URL</span>
                     <span className={`text-xs px-2 py-1 rounded ${
                       supabaseUrl && 
                       !supabaseUrl.includes('placeholder') &&
                       !supabaseUrl.includes('your_supabase_project_url')
-                        ? 'bg-green-900/80 text-green-300 font-medium' 
-                        : 'bg-red-900/80 text-red-300 font-medium'
+                        ? 'bg-green-500/20 text-green-500 font-medium' 
+                        : 'bg-red-500/20 text-red-500 font-medium'
                     }`}>
                       {supabaseUrl && 
                        !supabaseUrl.includes('placeholder') &&
@@ -151,13 +151,13 @@ export function AuthForm() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400">VITE_SUPABASE_ANON_KEY</span>
+                    <span className="text-muted">VITE_SUPABASE_ANON_KEY</span>
                     <span className={`text-xs px-2 py-1 rounded ${
                       supabaseAnonKey && 
                       !supabaseAnonKey.includes('placeholder') &&
                       !supabaseAnonKey.includes('your_supabase_anon_key')
-                        ? 'bg-green-900/80 text-green-300 font-medium' 
-                        : 'bg-red-900/80 text-red-300 font-medium'
+                        ? 'bg-green-500/20 text-green-500 font-medium' 
+                        : 'bg-red-500/20 text-red-500 font-medium'
                     }`}>
                       {supabaseAnonKey && 
                        !supabaseAnonKey.includes('placeholder') &&
@@ -182,29 +182,19 @@ export function AuthForm() {
     );
   }
 
-  // Floating particles animation
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 1,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 20 + 10,
-    delay: Math.random() * 5
-  }));
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300 relative overflow-hidden">
-      {/* Web 3.0 Animated Background */}
+      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {particles.map((particle) => (
+        {Array.from({ length: 20 }).map((_, i) => (
           <motion.div
-            key={particle.id}
-            className="absolute rounded-full bg-yellow-400/20"
+            key={i}
+            className="absolute rounded-full bg-primary/10"
             style={{
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
+              width: `${Math.random() * 4 + 1}px`,
+              height: `${Math.random() * 4 + 1}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
             }}
             animate={{
               x: [
@@ -223,19 +213,19 @@ export function AuthForm() {
               scale: [1, 1.5, 1, 1.5]
             }}
             transition={{
-              duration: particle.duration,
+              duration: Math.random() * 20 + 10,
               repeat: Infinity,
               repeatType: "reverse",
-              delay: particle.delay,
+              delay: Math.random() * 5,
               ease: "easeInOut"
             }}
           />
         ))}
       </div>
       
-      {/* Animated Gradient Blob */}
+      {/* Animated Gradient Blobs */}
       <motion.div
-        className={`absolute w-96 h-96 rounded-full bg-gradient-to-r ${getGradientColors()} blur-3xl`}
+        className={`absolute w-96 h-96 rounded-full bg-gradient-to-r ${getGradientColors()} blur-3xl opacity-20`}
         animate={{
           x: [50, -50, 50],
           y: [20, -20, 20],
@@ -252,7 +242,7 @@ export function AuthForm() {
       />
       
       <motion.div
-        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-purple-500/30 to-yellow-400/30 blur-3xl"
+        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-purple-500/20 to-yellow-400/20 blur-3xl opacity-20"
         animate={{
           x: [-30, 30, -30],
           y: [-40, 40, -40],
@@ -268,16 +258,18 @@ export function AuthForm() {
         style={{ bottom: '20%', right: '30%', zIndex: -1 }}
       />
       
+      {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
       
+      {/* Auth Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
         className="w-full max-w-md relative z-10"
       >
-        <Card className="p-8 border-card-border/80 bg-card/80 backdrop-blur-xl shadow-lg">
+        <Card className="p-8 border-card-border/80 bg-card/90 backdrop-blur-xl shadow-lg">
           <motion.div 
             className="text-center mb-8"
             initial={{ scale: 0.9, opacity: 0 }}
@@ -444,7 +436,7 @@ export function AuthForm() {
                 setIsSignUp(!isSignUp);
                 setError('');
               }}
-              className="text-blue-500 hover:text-blue-400 text-sm transition-colors"
+              className="text-primary hover:text-primary-hover text-sm transition-colors"
             >
               {isSignUp 
                 ? 'Already have an account? Sign in' 
