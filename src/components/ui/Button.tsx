@@ -8,21 +8,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm font-semibold",
-        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm font-semibold",
-        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary backdrop-blur-sm",
-        ghost: "hover:bg-card-hover text-foreground hover:text-primary",
-        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm font-semibold",
-        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm font-semibold",
-        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm font-semibold",
+        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm font-semibold tracking-wide",
+        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm font-semibold tracking-wide",
+        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary backdrop-blur-sm font-medium",
+        ghost: "hover:bg-card-hover text-foreground hover:text-primary font-medium",
+        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm font-semibold tracking-wide",
+        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm font-semibold tracking-wide",
+        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm font-semibold tracking-wide",
       },
       size: {
-        sm: "px-3 py-2 text-sm",
+        sm: "px-3 py-2 text-xs",
         md: "px-4 py-2.5 text-sm",
         lg: "px-6 py-3 text-base",
       },
       glow: {
-        true: "shadow-glow hover:shadow-glow-lg",
+        true: "shadow-glow hover:shadow-glow-lg transition-shadow duration-300",
         false: "",
       },
     },

@@ -50,7 +50,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', footer, c
               `}
             >
               {/* Header - Fixed */}
-              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-card-border flex-shrink-0 bg-card/50">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-card-border flex-shrink-0 bg-card/80">
                 <h3 className="text-lg font-semibold text-foreground truncate pr-4">
                   {title}
                 </h3>

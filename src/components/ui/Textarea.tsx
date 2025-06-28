@@ -19,7 +19,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
 }, ref) => {
   const variantStyles = {
     default: 'bg-input border-border',
-    glass: 'bg-input/50 border-border/50 backdrop-blur-xl'
+    glass: 'bg-input/70 border-border/60 backdrop-blur-xl'
   };
 
   return (
@@ -33,11 +33,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
         ref={ref}
         className={cn(
           `w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
-          ${monospace ? 'font-mono text-sm' : ''}
+          ${monospace ? 'font-mono text-sm leading-relaxed' : ''}
           focus:ring-2 focus:ring-primary/30 focus:border-primary
-          text-foreground placeholder:text-muted
+          text-foreground placeholder:text-muted/80
           disabled:opacity-50 disabled:cursor-not-allowed
-          transition-all duration-200 resize-none
+          transition-all duration-200 resize-none shadow-sm
           ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}`,
           className
         )}

@@ -25,10 +25,10 @@ export function Card({
   };
 
   const variantStyles = {
-    default: 'bg-card border-card-border',
-    primary: 'bg-card border-primary/30',
-    secondary: 'bg-card border-secondary/30',
-    accent: 'bg-card border-accent/30'
+    default: 'bg-card/95 border-card-border',
+    primary: 'bg-card/95 border-primary/30',
+    secondary: 'bg-card/95 border-secondary/30',
+    accent: 'bg-card/95 border-accent/30'
   };
 
   const elevationStyles = {
@@ -37,16 +37,16 @@ export function Card({
     elevated: 'shadow-lg'
   };
 
-  const baseStyles = `${variantStyles[variant]} rounded-xl ${elevationStyles[elevation]} backdrop-blur-sm transition-all duration-300 ${paddingStyles[padding]}`;
+  const baseStyles = `${variantStyles[variant]} rounded-xl ${elevationStyles[elevation]} backdrop-blur-md transition-all duration-300 ${paddingStyles[padding]}`;
   
   if (hover) {
     return (
       <motion.div
         whileHover={{ 
           y: -4, 
-          boxShadow: 'var(--shadow-hover)'
+          boxShadow: 'var(--shadow-lg)'
         }}
-        className={`${baseStyles} hover:border-primary/30 cursor-pointer ${className}`}
+        className={`${baseStyles} hover:border-primary/40 cursor-pointer ${className}`}
       >
         {children}
       </motion.div>

@@ -74,7 +74,7 @@ export function Layout() {
       <Toaster 
         position="top-right" 
         toastOptions={{
-          duration: 3000,
+          duration: 4000,
           style: {
             background: 'var(--toast-background)',
             color: 'var(--toast-foreground)',
@@ -82,7 +82,7 @@ export function Layout() {
             padding: '16px',
             border: '1px solid var(--toast-border)',
             backdropFilter: 'blur(10px)',
-            boxShadow: 'var(--toast-shadow)',
+            boxShadow: 'var(--shadow-md)',
             fontSize: '14px',
             maxWidth: '90vw',
           },
@@ -91,6 +91,7 @@ export function Layout() {
               border: '1px solid var(--success-border)',
               background: 'var(--success-background)',
               color: 'var(--success)',
+              fontWeight: '500',
             },
             icon: <CheckCircle className="w-5 h-5 text-success" />,
           },
@@ -99,6 +100,7 @@ export function Layout() {
               border: '1px solid var(--error-border)',
               background: 'var(--error-background)',
               color: 'var(--error)',
+              fontWeight: '500',
             },
             icon: <AlertCircle className="w-5 h-5 text-error" />,
           },
