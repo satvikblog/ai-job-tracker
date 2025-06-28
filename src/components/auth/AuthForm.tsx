@@ -281,30 +281,8 @@ export function AuthForm() {
                   repeatType: "loop"
                 }}
               />
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow relative">
-              <Sparkles className="w-10 h-10 text-white" />
-              <motion.div
-                className="absolute inset-0 rounded-2xl border-2 border-white/20"
-                animate={{ 
-                  boxShadow: ['0 0 0 0 rgba(255,255,255,0)', '0 0 0 10px rgba(255,255,255,0)'],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "loop"
-                }}
-              />
             </div>
             <motion.h1 
-              className="text-3xl font-bold text-foreground mb-1"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
               className="text-3xl font-bold text-foreground mb-1"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -318,21 +296,11 @@ export function AuthForm() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
-              className="text-muted mt-2"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
               {isSignUp ? 'Create your account' : 'Welcome back'}
             </motion.p>
             
             {/* Connection Status */}
             <motion.div 
-              className="mt-4"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
               className="mt-4"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -370,19 +338,9 @@ export function AuthForm() {
               <AlertCircle className="w-4 h-4 text-error" />
               <span className="text-error text-sm">{error}</span>
             </motion.div>
-            >
-              <AlertCircle className="w-4 h-4 text-error" />
-              <span className="text-error text-sm">{error}</span>
-            </motion.div>
           )}
 
           <motion.form 
-            onSubmit={handleSubmit} 
-            className="space-y-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
             onSubmit={handleSubmit} 
             className="space-y-4"
             initial={{ opacity: 0 }}
@@ -399,12 +357,6 @@ export function AuthForm() {
                   label="Full Name"
                   type="text"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  leftIcon={<User className="w-4 h-4" />}
-                  required
-                  placeholder="Enter your full name"
-                />
-              </motion.div>
                   onChange={(e) => setFullName(e.target.value)}
                   leftIcon={<User className="w-4 h-4" />}
                   required
@@ -428,12 +380,6 @@ export function AuthForm() {
                 placeholder="Enter your email"
               />
             </motion.div>
-                onChange={(e) => setEmail(e.target.value)}
-                leftIcon={<Mail className="w-4 h-4" />}
-                required
-                placeholder="Enter your email"
-              />
-            </motion.div>
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -445,12 +391,6 @@ export function AuthForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                leftIcon={<Lock className="w-4 h-4" />}
-                required
-                placeholder="Enter your password"
-                minLength={6}
-              />
-            </motion.div>
                 leftIcon={<Lock className="w-4 h-4" />}
                 required
                 placeholder="Enter your password"
@@ -470,23 +410,11 @@ export function AuthForm() {
                 disabled={connectionStatus !== 'connected'}
                 glow
               >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.5 }}
-            >
-              <Button
-                type="submit"
-                className="w-full"
-                isLoading={loading}
-                disabled={connectionStatus !== 'connected'}
-                glow
-              >
                 {isSignUp ? 'Create Account' : 'Sign In'}
               </Button>
             </motion.div>
           </motion.form>
-            transition={{ delay: 1, duration: 0.5 }}
+
           <motion.div 
             className="mt-6 text-center"
             initial={{ opacity: 0 }}
@@ -510,11 +438,6 @@ export function AuthForm() {
 
           {isSignUp && (
             <motion.div 
-              className="mt-4 text-xs text-muted text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.5 }}
-            >
               className="mt-4 text-xs text-muted text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
