@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { N8N_RAILWAY_CONFIG } from '../lib/n8nConfig';
+import { formatAIContent, formatResumeContent, formatCoverLetterParagraph } from '../utils/formatAIContent';
 import toast from 'react-hot-toast';
 
 interface N8NRequest {
@@ -217,6 +218,13 @@ Ensure the letter includes:
           content = await callGeminiAPI(prompt, settings.gemini_api_key);
           
           // Update progress to 100%
+          // Format the content for better readability
+          if (type === 'resume') {
+            content = formatResumeContent(content);
+          } else {
+            content = formatAIContent(content);
+          }
+          
           setTimeout(() => {
             clearInterval(timer);
             setProgress(100);
@@ -277,6 +285,15 @@ Ensure the letter includes:
                 
                 if (response.status === 'success' && response.content) {
                   setGeneratedContent(response.content);
+                  
+                  // Format the content for better readability
+                  let formattedContent = response.content;
+                  if (type === 'resume') {
+                    formattedContent = formatResumeContent(formattedContent);
+                  } else {
+                    formattedContent = formatAIContent(formattedContent);
+                  }
+                  setGeneratedContent(formattedContent);
                   
                   // Ensure loading state is reset
                   setTimeout(() => {

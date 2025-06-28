@@ -3,12 +3,14 @@ import React from 'react';
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
+  monospace?: boolean;
   variant?: 'default' | 'glass';
 }
 
 export function Textarea({
   label,
   error,
+  monospace = false,
   variant = 'default',
   className = '',
   ...props
@@ -28,6 +30,7 @@ export function Textarea({
       <textarea
         className={`
           w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
+          ${monospace ? 'font-mono text-sm' : ''}
           focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500
           text-slate-100 placeholder-slate-400
           disabled:opacity-50 disabled:cursor-not-allowed

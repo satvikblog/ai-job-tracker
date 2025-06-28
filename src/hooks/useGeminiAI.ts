@@ -102,7 +102,9 @@ export function useGeminiAI() {
       const prompt = `
 You are an expert resume and cover letter writer. I need you to analyze my resume content and a job description, then write a personalized "Relevant Experience" paragraph for my cover letter.
 
-Focus on matching my experience with the job requirements, highlighting transferable skills, and emphasizing achievements that would be relevant to this position. The output should be in first person and ready to use in my cover letter.
+Focus on matching my experience with the job requirements, highlighting transferable skills, and emphasizing achievements that would be relevant to this position. The output should be in first person and ready to use in my cover letter. 
+
+Format your response as a clean, well-structured paragraph with no headings or bullet points. Use professional language and make it sound natural and conversational.
 
 My Resume:
 ${resumeContent}
@@ -110,7 +112,7 @@ ${resumeContent}
 Job Description:
 ${jobDescription}
 
-Write a concise, professional paragraph (150-200 words) for the "Relevant Experience" section of my cover letter. Focus only on the most relevant experience and skills that match this job.
+Write a concise, professional paragraph (150-200 words) for the "Relevant Experience" section of my cover letter. Focus only on the most relevant experience and skills that match this job. Do not include any headings, bullet points, or formatting instructions in your response - just the clean paragraph text.
 `;
 
       const generatedText = await callGeminiAPI(prompt, apiKey);
@@ -141,7 +143,9 @@ Write a concise, professional paragraph (150-200 words) for the "Relevant Experi
       const prompt = `
 You are an expert cover letter writer. I need you to analyze my resume content and a job description, then write a personalized "Why This Company" paragraph for my cover letter.
 
-Focus on explaining why I'm interested in ${companyName} specifically, connecting my background and career goals with the company's mission, values, or projects. The output should be in first person and ready to use in my cover letter.
+Focus on explaining why I'm interested in ${companyName} specifically, connecting my background and career goals with the company's mission, values, or projects. The output should be in first person and ready to use in my cover letter. 
+
+Format your response as a clean, well-structured paragraph with no headings or bullet points. Use professional language and make it sound natural and conversational.
 
 My Resume:
 ${resumeContent}
@@ -149,7 +153,7 @@ ${resumeContent}
 Job Description:
 ${jobDescription}
 
-Write a concise, professional paragraph (100-150 words) for the "Why This Company" section of my cover letter. Focus on creating a genuine connection between my background and ${companyName}.
+Write a concise, professional paragraph (100-150 words) for the "Why This Company" section of my cover letter. Focus on creating a genuine connection between my background and ${companyName}. Do not include any headings, bullet points, or formatting instructions in your response - just the clean paragraph text.
 `;
 
       const generatedText = await callGeminiAPI(prompt, apiKey);
@@ -211,9 +215,9 @@ Write a concise, professional paragraph (100-150 words) for the "Why This Compan
       const prompt = `
 You are an expert resume writer and ATS (Applicant Tracking System) optimizer. Your task is to provide tailored resume suggestions based on the provided resume content and job description.
 
-Focus on extracting key skills, keywords, and responsibilities from the job description, and suggest how the user can incorporate them into their resume's professional summary, experience section (with action verbs and quantifiable achievements), and technical skills section.
+Focus on extracting key skills, keywords, and responsibilities from the job description, and suggest how the user can incorporate them into their resume's professional summary, experience section (with action verbs and quantifiable achievements), and technical skills section. 
 
-The output should be in plain text, clearly structured with headings and bullet points.
+Format your response with clear headings (using # for main headings and ## for subheadings) and bullet points (using * for bullet points). Make sure the formatting is clean and easy to read.
 
 Resume Content:
 ${resumeContent}
@@ -221,12 +225,25 @@ ${resumeContent}
 Job Description:
 ${jobDescription}
 
-Provide suggestions for:
-1. **Keyword Optimization**: List 5-10 critical keywords from the job description.
-2. **Professional Summary**: Suggest a 2-3 sentence summary tailored to this role.
-3. **Experience Section**: Provide 3-5 examples of quantifiable achievements using strong action verbs relevant to the job.
-4. **Technical Skills**: List 5-8 technical skills directly mentioned or implied.
-5. **ATS Tips**: Give 3-5 general ATS optimization tips.
+Structure your response with these sections:
+
+# KEYWORD OPTIMIZATION
+* List 5-10 critical keywords from the job description
+
+# PROFESSIONAL SUMMARY
+* Suggest a 2-3 sentence summary tailored to this role
+
+# EXPERIENCE SECTION IMPROVEMENTS
+* Provide 3-5 examples of quantifiable achievements using strong action verbs relevant to the job
+
+# TECHNICAL SKILLS TO HIGHLIGHT
+* List 5-8 technical skills directly mentioned or implied in the job description
+
+# ATS OPTIMIZATION TIPS
+* Give 3-5 general ATS optimization tips
+
+# FORMATTING RECOMMENDATIONS
+* Provide 2-3 tips on resume formatting for this specific role
 `;
 
       const generatedText = await callGeminiAPI(prompt, apiKey);

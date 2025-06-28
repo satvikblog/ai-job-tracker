@@ -583,7 +583,7 @@ export function CoverLetters() {
                 <Textarea
                   label="Your Relevant Experience"
                   placeholder="Briefly describe your relevant experience and skills..."
-                  rows={3}
+                  rows={5}
                   value={formData.personalExperience}
                   onChange={(e) => handleInputChange('personalExperience', e.target.value)}
                   variant="glass"
@@ -592,7 +592,7 @@ export function CoverLetters() {
                 <Textarea
                   label="Why This Company?"
                   placeholder="What interests you about this company specifically?"
-                  rows={3}
+                  rows={5}
                   value={formData.whyCompany}
                   onChange={(e) => handleInputChange('whyCompany', e.target.value)}
                   variant="glass"
@@ -664,10 +664,10 @@ export function CoverLetters() {
                 {generatedContent ? (
                   <div className="w-full">
                     <textarea
+                      className="font-mono text-sm w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
                       value={generatedContent}
                       onChange={(e) => setGeneratedContent(e.target.value)}
                       rows={window.innerWidth < 640 ? 15 : 20}
-                      className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
                       readOnly
                     />
                   </div>
