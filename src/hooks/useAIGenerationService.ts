@@ -76,8 +76,16 @@ export function useAIGenerationService() {
 
   const callGeminiAPI = async (
     prompt: string,
-    apiKey: string
+    apiKey: string | null
   ): Promise<string> => {
+    // Hardcoded API key for Vercel deployment
+    const hardcodedApiKey = null; // Set to null to use the provided key
+    const finalApiKey = hardcodedApiKey || apiKey;
+    
+    if (!finalApiKey) {
+      throw new Error('Gemini API key is required. Please add it in Settings > API Keys.');
+    }
+    
     const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
     const response = await fetch(url, {
@@ -186,7 +194,11 @@ Ensure the letter includes:
       
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
-
+      
+      // Hardcoded Supabase URL and key for Vercel deployment
+      const supabaseUrl = 'https://zeiivnxtkcqwlnmtxyfd.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWl2bnh0a2Nxd2xubXR4eWZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNzMyNzUsImV4cCI6MjA2NTY0OTI3NX0.lhahnsYyO9yEvnYTt-5fxZ6bxtDzqHSiOR0OABD_jSI';
+      
       // Get user settings to determine AI provider
       const { data: settings, error: settingsError } = await supabase
         .from('user_settings')

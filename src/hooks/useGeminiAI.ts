@@ -64,6 +64,15 @@ export function useGeminiAI() {
 
   const getGeminiAPIKey = async (): Promise<string | null> => {
     try {
+      // Hardcoded API key for testing - replace with your actual key
+      // In production, this should come from user settings
+      const hardcodedKey = null; // Set to null to use database key
+      
+      // If we have a hardcoded key for testing, use it
+      if (hardcodedKey) {
+        return hardcodedKey;
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
@@ -81,6 +90,31 @@ export function useGeminiAI() {
       return settings?.gemini_api_key || null;
     } catch (error) {
       console.error('Error getting Gemini API key:', error);
+      
+      // Fallback to environment variable if available
+      if (import.meta.env.VITE_GEMINI_API_KEY) {
+        return import.meta.env.VITE_GEMINI_API_KEY as string;
+      }
+      
+      return null;
+    }
+  };
+
+  // Function to get API key with fallbacks
+  const getAPIKeyWithFallbacks = async (): Promise<string> => {
+    try {
+      // Try to get from user settings first
+      const userKey = await getGeminiAPIKey();
+      if (userKey) return userKey;
+      
+      // Try environment variable next
+      if (import.meta.env.VITE_GEMINI_API_KEY) {
+        return import.meta.env.VITE_GEMINI_API_KEY as string;
+      }
+      
+      throw new Error('No Gemini API key found. Please add it in Settings > API Keys.');
+    } catch (error) {
+      console.error('Error getting Gemini API key:', error);
       return null;
     }
   };
@@ -93,7 +127,7 @@ export function useGeminiAI() {
     setError(null);
     
     try {
-      const apiKey = await getGeminiAPIKey();
+      const apiKey = await getAPIKeyWithFallbacks();
       
       if (!apiKey) {
         throw new Error('Gemini API key not found. Please add it in Settings > API Keys.');
@@ -134,7 +168,7 @@ Write a concise, professional paragraph (150-200 words) for the "Relevant Experi
     setError(null);
     
     try {
-      const apiKey = await getGeminiAPIKey();
+      const apiKey = await getAPIKeyWithFallbacks();
       
       if (!apiKey) {
         throw new Error('Gemini API key not found. Please add it in Settings > API Keys.');
@@ -176,7 +210,7 @@ Write a concise, professional paragraph (100-150 words) for the "Why This Compan
     setError(null);
     
     try {
-      const apiKey = await getGeminiAPIKey();
+      const apiKey = await getAPIKeyWithFallbacks();
       
       if (!apiKey) {
         throw new Error('Gemini API key not found. Please add it in Settings > API Keys.');
@@ -206,7 +240,7 @@ Write a concise, professional paragraph (100-150 words) for the "Why This Compan
     setError(null);
     
     try {
-      const apiKey = await getGeminiAPIKey();
+      const apiKey = await getAPIKeyWithFallbacks();
       
       if (!apiKey) {
         throw new Error('Gemini API key not found. Please add it in Settings > API Keys.');
