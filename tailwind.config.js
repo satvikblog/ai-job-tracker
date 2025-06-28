@@ -48,42 +48,42 @@ export default {
         ring: 'var(--ring)',
         
         primary: {
-          DEFAULT: 'var(--primary)',
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
           foreground: 'var(--primary-foreground)',
           hover: 'var(--primary-hover)',
           accent: 'var(--primary-accent)',
         },
         
         secondary: {
-          DEFAULT: 'var(--secondary)',
+          DEFAULT: 'rgb(var(--secondary) / <alpha-value>)',
           foreground: 'var(--secondary-foreground)',
           hover: 'var(--secondary-hover)',
           accent: 'var(--secondary-accent)',
         },
         
         accent: {
-          DEFAULT: 'var(--accent)',
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
           foreground: 'var(--accent-foreground)',
           hover: 'var(--accent-hover)',
           accent: 'var(--accent-accent)',
         },
         
         success: {
-          DEFAULT: 'var(--success)',
+          DEFAULT: 'rgb(var(--success) / <alpha-value>)',
           foreground: 'var(--success-foreground)',
           hover: 'var(--success-hover)',
           accent: 'var(--success-accent)',
         },
         
         warning: {
-          DEFAULT: 'var(--warning)',
+          DEFAULT: 'rgb(var(--warning) / <alpha-value>)',
           foreground: 'var(--warning-foreground)',
           hover: 'var(--warning-hover)',
           accent: 'var(--warning-accent)',
         },
         
         error: {
-          DEFAULT: 'var(--error)',
+          DEFAULT: 'rgb(var(--error) / <alpha-value>)',
           foreground: 'var(--error-foreground)',
           hover: 'var(--error-hover)',
           accent: 'var(--error-accent)',

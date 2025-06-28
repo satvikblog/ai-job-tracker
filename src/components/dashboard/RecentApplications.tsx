@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { ArrowRight, Building, MapPin, Calendar, ExternalLink, Briefcase } from 'lucide-react';
@@ -25,7 +24,6 @@ const statusColors = {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   const recent = applications.slice(0, 5);
-  const navigate = useNavigate();
   const navigate = useNavigate();
 
   return (
