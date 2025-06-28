@@ -3,8 +3,12 @@ import { supabase } from '../lib/supabase';
 import { Database } from '../lib/database.types';
 import { debounce } from 'lodash-es';
 import toast from 'react-hot-toast';
+import * as pdfjsLib from 'pdfjs-dist';
 
 type Document = Database['public']['Tables']['documents']['Row'];
+
+// Set the worker source
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 export function useDocuments() {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -92,23 +96,7 @@ export function useDocuments() {
       // Extract text content from document if it's a resume or cover letter
       let resumeContent = null;
       if (fileType === 'resume' || fileType === 'cover-letter') {
-        try {
-          // For text files, read directly
-          if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-            resumeContent = await readTextFile(file);
-          } 
-          // For PDFs
-          else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-            resumeContent = await extractTextFromPDF(file);
-          }
-          // For other document types
-          else {
-            resumeContent = await extractTextFromFile(file);
-          }
-        } catch (extractError) {
-          console.warn('Could not extract text from file:', extractError);
-          // Continue even if extraction fails
-        }
+        resumeContent = await extractTextFromFile(file);
       }
 
       // Save document record
@@ -139,231 +127,87 @@ export function useDocuments() {
     }
   };
 
-  // Function to read text file directly
-  const readTextFile = (file: File): Promise<string> => {
+  // Extract text from any file type
+  const extractTextFromFile = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = (e) => {
-        try {
-          const content = e.target?.result as string;
-          resolve(content);
-        } catch (error) {
-          reject(error);
+      try {
+        // For text files
+        if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const content = e.target?.result as string;
+            resolve(content);
+          };
+          reader.onerror = () => reject(new Error('Failed to read text file'));
+          reader.readAsText(file);
+          return;
         }
-      };
-      
-      reader.onerror = (e) => {
-        reject(new Error('Failed to read text file'));
-      };
-      
-      reader.readAsText(file);
-    });
-  };
-  
-  // Function to extract text from PDF file
-  const extractTextFromPDF = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = (e) => {
-        try {
-          const arrayBuffer = e.target?.result;
-          if (!arrayBuffer) {
-            throw new Error('Failed to read file');
-          }
-          
-          // Convert ArrayBuffer to string
-          const data = new Uint8Array(arrayBuffer as ArrayBuffer);
-          let str = '';
-          for (let i = 0; i < data.length; i++) {
-            str += String.fromCharCode(data[i]);
-          }
-          
-          // Extract text from PDF content
-          const extractedText = extractPDFTextContent(str);
-          resolve(extractedText);
-        } catch (error) {
-          reject(error);
-        }
-      };
-      
-      reader.onerror = (e) => {
-        reject(new Error('Failed to read PDF file'));
-      };
-      
-      reader.readAsArrayBuffer(file);
-    });
-  };
-  
-  // Function to extract text content from PDF data
-  const extractPDFTextContent = (data: string): string => {
-    try {
-      // First attempt: Look for text content between BT and ET tags (Begin Text/End Text)
-      const textMatches = data.match(/BT[\s\S]*?ET/g);
-      let extractedText = '';
-      
-      if (textMatches && textMatches.length > 0) {
-        // Process each text block
-        for (const textBlock of textMatches) {
-          // Extract text strings (usually in parentheses)
-          const stringMatches = textBlock.match(/\((.*?)\)/g);
-          if (stringMatches) {
-            for (const match of stringMatches) {
-              // Remove parentheses and handle escapes
-              const text = match.substring(1, match.length - 1)
-                .replace(/\\n/g, '\n')
-                .replace(/\\r/g, '\r')
-                .replace(/\\t/g, '\t')
-                .replace(/\\\\/g, '\\')
-                .replace(/\\\(/g, '(')
-                .replace(/\\\)/g, ')');
+        
+        // For PDF files
+        if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const arrayBuffer = e.target?.result as ArrayBuffer;
+              const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
               
-              if (text.trim().length > 0) {
-                extractedText += text + ' ';
+              let fullText = '';
+              
+              // Get total number of pages
+              const numPages = pdf.numPages;
+              
+              // Extract text from each page
+              for (let i = 1; i <= numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items
+                  .map((item: any) => item.str)
+                  .join(' ');
+                
+                fullText += pageText + '\n\n';
               }
+              
+              // Clean up the text
+              fullText = fullText
+                .replace(/\s+/g, ' ')
+                .replace(/\s+\n/g, '\n')
+                .replace(/\n\s+/g, '\n')
+                .replace(/\n+/g, '\n\n')
+                .trim();
+              
+              resolve(fullText);
+            } catch (error) {
+              console.error('Error parsing PDF:', error);
+              reject(new Error('Failed to parse PDF content'));
             }
-          }
+          };
+          reader.onerror = () => reject(new Error('Failed to read PDF file'));
+          reader.readAsArrayBuffer(file);
+          return;
         }
-      }
-      
-      // Second attempt: If first method didn't yield good results, try extracting text objects
-      if (extractedText.trim().length < 100) {
-        const textObjectMatches = data.match(/\/(T[a-zA-Z0-9*]+)\s+(\d+)\s+Tf[\s\S]*?\[(.*?)\]/g);
-        if (textObjectMatches && textObjectMatches.length > 0) {
-          extractedText = '';
-          for (const match of textObjectMatches) {
-            const contentMatches = match.match(/\[(.*?)\]/);
-            if (contentMatches && contentMatches[1]) {
-              extractedText += contentMatches[1]
-                .replace(/\\n/g, '\n')
-                .replace(/\\r/g, '\r')
-                .replace(/\\t/g, '\t')
-                .replace(/\\\\/g, '\\')
-                .replace(/\\\(/g, '(')
-                .replace(/\\\)/g, ')')
-                .replace(/\\(\d{3})/g, (match, octal) => String.fromCharCode(parseInt(octal, 8)))
-                .replace(/[()\\]/g, '') + ' ';
-            }
-          }
-        }
-      }
-      
-      // Third attempt: Extract text from streams
-      if (extractedText.trim().length < 100) {
-        const streamMatches = data.match(/stream([\s\S]*?)endstream/g);
-        if (streamMatches && streamMatches.length > 0) {
-          extractedText = '';
-          for (const stream of streamMatches) {
-            // Extract content between stream and endstream
-            const content = stream.replace(/stream|endstream/g, '');
-            
-            // Clean up the content - keep only printable ASCII and basic whitespace
-            const cleanedContent = content
+        
+        // For Word documents and other formats (basic text extraction)
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target?.result as string;
+            // Simple text extraction - not ideal for Word docs
+            const extractedText = content
               .replace(/[^\x20-\x7E\n\r\t]/g, ' ')
               .replace(/\s+/g, ' ')
               .trim();
             
-            if (cleanedContent.length > 50) {
-              extractedText += cleanedContent + '\n\n';
-            }
-          }
-        }
-      }
-      
-      // Fourth attempt: Extract text from parentheses
-      if (extractedText.trim().length < 100) {
-        const parenthesesMatches = data.match(/\(([^)]+)\)/g);
-        if (parenthesesMatches && parenthesesMatches.length > 0) {
-          extractedText = '';
-          for (const match of parenthesesMatches) {
-            const text = match.substring(1, match.length - 1)
-              .replace(/\\n/g, '\n')
-              .replace(/\\r/g, '\r')
-              .replace(/\\t/g, '\t')
-              .replace(/\\\\/g, '\\')
-              .replace(/\\\(/g, '(')
-              .replace(/\\\)/g, ')');
-            
-            if (text.trim().length > 1) {
-              extractedText += text + ' ';
-            }
-          }
-        }
-      }
-      
-      // Final cleanup
-      extractedText = extractedText
-        .replace(/\s+/g, ' ')
-        .replace(/\s+\n/g, '\n')
-        .replace(/\n\s+/g, '\n')
-        .replace(/\n+/g, '\n\n')
-        .trim();
-      
-      // If we still don't have meaningful content, provide a fallback message
-      if (extractedText.trim().length < 50) {
-        return "Could not extract meaningful text content from this PDF. The file may be scanned, contain only images, or use a format that requires specialized parsing.";
-      }
-      
-      return extractedText;
-    } catch (error) {
-      console.error('Error extracting text from PDF:', error);
-      return "Error extracting text from PDF. Please download the file to view its contents.";
-    }
-  };
-
-  // Function to extract text from file
-  const extractTextFromFile = async (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = (e) => {
-        try {
-          const content = e.target?.result as string;
-          
-          // Process the content based on file type
-          if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-            // For text files, use the content directly
-            resolve(content);
-          } else {
-            // For Word docs and other formats
-            // In a real app, you'd use specific libraries for each format
-            const extractedText = extractTextFromBinaryData(content);
             resolve(extractedText);
+          } catch (error) {
+            reject(new Error('Failed to parse document content'));
           }
-        } catch (error) {
-          reject(error);
-        }
-      };
-      
-      reader.onerror = (e) => {
-        reject(new Error('Failed to read file'));
-      };
-      
-      // Read the file
-      if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+        };
+        reader.onerror = () => reject(new Error('Failed to read document file'));
         reader.readAsText(file);
-      } else {
-        // For binary files like PDFs and Word docs
-        reader.readAsBinaryString(file);
+      } catch (error) {
+        reject(error);
       }
     });
-  };
-  
-  // Function to extract text from binary data
-  const extractTextFromBinaryData = (data: string): string => {
-    try {
-      // For binary data, just return the raw text content with minimal processing
-      // This works better for most document formats than trying to be too clever
-      return data
-        .replace(/[^\x20-\x7E\n\r\t]/g, ' ')  // Keep only printable ASCII
-        .replace(/\s+/g, ' ')                 // Normalize whitespace
-        .trim()
-        .substring(0, 10000);  // Limit to first 10,000 characters
-    } catch (error) {
-      console.error('Error extracting text from binary data:', error);
-      return "Error extracting text from document. Please try a different file format.";
-    }
   };
 
   const deleteDocument = async (id: string, fileUrl?: string) => {
