@@ -67,9 +67,9 @@ export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
   };
   
   return (
-    <Card className="bg-card border-card-border">
+    <Card className="bg-card border-card-border" elevation="raised">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-accent rounded-xl flex items-center justify-center shadow-md">
+        <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-accent rounded-xl flex items-center justify-center shadow-lg">
           <BarChart className="w-5 h-5 text-accent-foreground" />
         </div>
         <h2 className="text-lg font-semibold text-foreground">
@@ -120,9 +120,9 @@ export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
           </div>
           
           {/* Flow Metrics */}
-          <div className="pt-4 border-t border-border">
+          <div className="pt-4 border-t border-border/80">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
+              <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center space-x-2 mb-2">
                   <CheckCircle className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">Response Rate</span>
@@ -132,7 +132,7 @@ export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
                 </div>
               </div>
               
-              <div className="bg-success/10 border border-success/30 rounded-lg p-4">
+              <div className="bg-success/10 border border-success/30 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center space-x-2 mb-2">
                   <TrendingUp className="w-4 h-4 text-success" />
                   <span className="text-sm font-medium text-success">Success Rate</span>

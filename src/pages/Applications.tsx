@@ -99,19 +99,49 @@ export function Applications() {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0"
       >
-        <div>
-          <h1 className="text-3xl font-bold gradient-text flex items-center space-x-3">
-            <Briefcase className="w-8 h-8 text-primary-500" />
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-lg">
+            <Briefcase className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <h1 className="text-3xl font-bold text-gradient">
             <span>Job Applications</span>
           </h1>
-          <p className="text-slate-400 mt-2 flex items-center space-x-2">
-            <Target className="w-4 h-4" />
-            <span>Manage and track your job applications</span>
-          </p>
         </div>
+        
+        <Button
+          onClick={() => setIsFormOpen(true)}
+          leftIcon={<Plus className="w-4 h-4" />}
+          glow
+        >
+          Add Application
+        </Button>
+      </motion.div>
 
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center bg-dark-800/70 border border-slate-600 rounded-xl p-1 backdrop-blur-sm">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mt-2 mb-6"
+      >
+        <p className="text-muted flex items-center space-x-2">
+          <Target className="w-4 h-4" />
+          <span>Manage and track your job applications</span>
+        </p>
+      </motion.div>
+
+      {/* View Switcher */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-6"
+      >
+        <Card className="p-4 border-card-border/60">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted font-medium">
+              View Mode:
+            </div>
+            <div className="flex items-center bg-card-hover border border-card-border rounded-xl p-1 shadow-sm">
             <Button
               variant={view === 'table' ? 'primary' : 'ghost'}
               size="sm"
@@ -131,15 +161,8 @@ export function Applications() {
               Kanban
             </Button>
           </div>
-
-          <Button
-            onClick={() => setIsFormOpen(true)}
-            leftIcon={<Plus className="w-4 h-4" />}
-            glow
-          >
-            Add Application
-          </Button>
-        </div>
+          </div>
+        </Card>
       </motion.div>
 
       {/* Stats Summary */}
@@ -147,29 +170,29 @@ export function Applications() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+        className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6"
       >
-        <div className="bg-dark-800/50 border border-slate-700/50 rounded-xl p-4 text-center backdrop-blur-sm">
-          <div className="text-2xl font-bold text-slate-100">{applications.length}</div>
-          <div className="text-sm text-slate-400">Total Applications</div>
+        <div className="bg-card/80 border border-card-border rounded-xl p-4 text-center backdrop-blur-sm shadow-sm">
+          <div className="text-2xl font-bold text-foreground">{applications.length}</div>
+          <div className="text-sm text-muted">Total Applications</div>
         </div>
-        <div className="bg-dark-800/50 border border-slate-700/50 rounded-xl p-4 text-center backdrop-blur-sm">
-          <div className="text-2xl font-bold text-primary-400">
+        <div className="bg-card/80 border border-card-border rounded-xl p-4 text-center backdrop-blur-sm shadow-sm">
+          <div className="text-2xl font-bold text-primary">
             {applications.filter(app => app.status === 'interview').length}
           </div>
-          <div className="text-sm text-slate-400">Interviews</div>
+          <div className="text-sm text-muted">Interviews</div>
         </div>
-        <div className="bg-dark-800/50 border border-slate-700/50 rounded-xl p-4 text-center backdrop-blur-sm">
-          <div className="text-2xl font-bold text-success-400">
+        <div className="bg-card/80 border border-card-border rounded-xl p-4 text-center backdrop-blur-sm shadow-sm">
+          <div className="text-2xl font-bold text-success">
             {applications.filter(app => app.status === 'offer').length}
           </div>
-          <div className="text-sm text-slate-400">Offers</div>
+          <div className="text-sm text-muted">Offers</div>
         </div>
-        <div className="bg-dark-800/50 border border-slate-700/50 rounded-xl p-4 text-center backdrop-blur-sm">
-          <div className="text-2xl font-bold text-warning-400">
+        <div className="bg-card/80 border border-card-border rounded-xl p-4 text-center backdrop-blur-sm shadow-sm">
+          <div className="text-2xl font-bold text-warning">
             {applications.filter(app => app.status === 'followed-up').length}
           </div>
-          <div className="text-sm text-slate-400">Follow-ups</div>
+          <div className="text-sm text-muted">Follow-ups</div>
         </div>
       </motion.div>
 

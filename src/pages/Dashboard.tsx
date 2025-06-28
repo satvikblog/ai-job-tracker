@@ -97,10 +97,10 @@ export function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex items-center justify-between mb-2"
       >
         <div>
-          <h1 className="text-3xl font-bold gradient-text">
+          <h1 className="text-3xl font-bold text-gradient">
             Dashboard
           </h1>
           <p className="text-slate-400 mt-2 flex items-center space-x-2">
@@ -109,7 +109,7 @@ export function Dashboard() {
           </p>
         </div>
         <div className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-success-900/20 border border-success-600/30 rounded-lg">
-          <div className="w-2 h-2 bg-success-400 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
           <span className="text-success-300 text-sm font-medium">System Online</span>
         </div>
       </motion.div>
@@ -204,36 +204,36 @@ export function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.7 }}
-        className="bg-gradient-to-r from-primary-900/20 to-secondary-900/20 border border-primary-600/30 rounded-xl p-6"
+        className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/30 rounded-xl p-6 shadow-md"
       >
-        <h3 className="text-lg font-semibold text-slate-100 mb-4 flex items-center space-x-2">
-          <Target className="w-5 h-5 text-primary-400" />
+        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center space-x-2">
+          <Target className="w-5 h-5 text-primary" />
           <span>Quick Actions</span>
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <button
             onClick={() => handleQuickAction('add-application')}
-            className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-primary-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
+            className="text-center p-4 bg-card/80 rounded-lg border border-card-border hover:border-primary/50 hover:bg-card-hover transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-md"
           >
-            <Briefcase className="w-8 h-8 text-primary-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
-            <p className="text-sm font-medium text-slate-200">Add Application</p>
-            <p className="text-xs text-slate-400">Track a new job application</p>
+            <Briefcase className="w-8 h-8 text-primary mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
+            <p className="text-sm font-medium text-foreground">Add Application</p>
+            <p className="text-xs text-muted">Track a new job application</p>
           </button>
           <button
             onClick={() => handleQuickAction('schedule-followup')}
-            className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-secondary-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
+            className="text-center p-4 bg-card/80 rounded-lg border border-card-border hover:border-secondary/50 hover:bg-card-hover transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-md"
           >
-            <Clock className="w-8 h-8 text-secondary-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
-            <p className="text-sm font-medium text-slate-200">Schedule Follow-up</p>
-            <p className="text-xs text-slate-400">Set reminder for follow-up</p>
+            <Clock className="w-8 h-8 text-secondary mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
+            <p className="text-sm font-medium text-foreground">Schedule Follow-up</p>
+            <p className="text-xs text-muted">Set reminder for follow-up</p>
           </button>
           <button
             onClick={() => handleQuickAction('view-analytics')}
-            className="text-center p-4 bg-dark-800/50 rounded-lg border border-slate-700/50 hover:border-accent-500/50 hover:bg-dark-700/70 transition-all duration-300 cursor-pointer group"
+            className="text-center p-4 bg-card/80 rounded-lg border border-card-border hover:border-accent/50 hover:bg-card-hover transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-md"
           >
-            <TrendingUp className="w-8 h-8 text-accent-400 mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
-            <p className="text-sm font-medium text-slate-200">View Analytics </p>
-            <p className="text-xs text-slate-400">Analyze your progress</p>
+            <TrendingUp className="w-8 h-8 text-accent mx-auto mb-2 group-hover:scale-110 transition-transform duration-200" />
+            <p className="text-sm font-medium text-foreground">View Analytics </p>
+            <p className="text-xs text-muted">Analyze your progress</p>
           </button>
         </div>
       </motion.div>

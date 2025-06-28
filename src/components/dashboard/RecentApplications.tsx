@@ -9,6 +9,7 @@ import { ArrowRight, Building, MapPin, Calendar, ExternalLink } from 'lucide-rea
 import { Database } from '../../lib/database.types';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
+import { useNavigate } from 'react-router-dom';
 
 interface RecentApplicationsProps {
   applications: JobApplication[];
@@ -24,6 +25,7 @@ const statusColors = {
 } as const;
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
+  const navigate = useNavigate();
   const recent = applications.slice(0, 5);
 
   return (
@@ -40,7 +42,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
         <Button 
           variant="ghost" 
           size="sm"
-          onClick={() => window.location.href = '/#/applications'}
+          onClick={() => navigate('/applications')}
           rightIcon={<ArrowRight className="w-4 h-4" />}
           className="text-muted hover:text-foreground"
         >

@@ -13,7 +13,7 @@ export function Layout() {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-background to-background-secondary transition-colors duration-300">
+    <div className="flex h-screen bg-gradient-to-br from-background to-background-secondary transition-colors duration-300 overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar />
@@ -25,7 +25,7 @@ export function Layout() {
           variant="ghost"
           size="sm"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 bg-card/90 backdrop-blur-sm"
+          className="p-2 bg-card/90 backdrop-blur-sm shadow-md border border-card-border/50"
         >
           {isMobileMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
         </Button>
@@ -35,7 +35,7 @@ export function Layout() {
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-colors duration-300"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-colors duration-300"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div className="relative w-64 h-full">
@@ -45,7 +45,7 @@ export function Layout() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto transition-colors duration-300">
+      <main className="flex-1 overflow-y-auto transition-colors duration-300 scrollbar-thin">
         <div className="p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -63,7 +63,7 @@ export function Layout() {
       
       {/* Theme Toggle (Mobile) */}
       <div className="fixed bottom-20 right-4 lg:hidden z-30">
-        <ThemeToggle />
+        <ThemeToggle variant="icon" />
       </div>
 
       {/* Mobile Bottom Navigation */}
@@ -78,11 +78,11 @@ export function Layout() {
           style: {
             background: 'var(--toast-background)',
             color: 'var(--toast-foreground)',
-            borderRadius: '12px',
+            borderRadius: '0.75rem',
             padding: '16px',
             border: '1px solid var(--toast-border)',
             backdropFilter: 'blur(10px)',
-            boxShadow: 'var(--shadow-md)',
+            boxShadow: 'var(--shadow-lg)',
             fontSize: '14px',
             maxWidth: '90vw',
           },

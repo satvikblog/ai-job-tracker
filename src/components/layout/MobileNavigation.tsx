@@ -25,7 +25,7 @@ export function MobileNavigation() {
   const { theme } = useTheme();
   
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-card-border p-2 flex justify-around items-center z-40 transition-colors duration-300">
+    <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-card-border/80 p-2 flex justify-around items-center z-40 transition-colors duration-300 shadow-lg">
       {navigation.map((item) => (
         <NavLink
           key={item.name}
@@ -33,13 +33,13 @@ export function MobileNavigation() {
           className={({ isActive }) => `
             flex flex-col items-center space-y-1 p-2 rounded-lg text-xs font-medium transition-all duration-200
             min-w-[60px] text-center
-            ${isActive 
-              ? 'text-primary' 
-              : 'text-muted hover:text-foreground'
+            ${isActive
+              ? 'text-primary bg-primary/10 border border-primary/30'
+              : 'text-muted hover:text-foreground border border-transparent'
             }
           `}
         >
-          <item.icon className={`w-5 h-5 ${theme === 'dark' ? 'drop-shadow-glow' : ''}`} />
+          <item.icon className={`w-5 h-5 ${theme === 'dark' ? 'drop-shadow-glow' : ''} ${isActive ? 'text-primary' : ''}`} />
           <span>{item.name}</span>
         </NavLink>
       ))}

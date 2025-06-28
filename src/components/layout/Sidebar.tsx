@@ -43,9 +43,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   };
 
   return (
-    <div className="flex flex-col h-screen w-64 bg-sidebar backdrop-blur-xl border-r border-sidebar-border transition-colors duration-300">
+    <div className="flex flex-col h-screen w-64 bg-sidebar/95 backdrop-blur-xl border-r border-sidebar-border transition-colors duration-300 shadow-lg">
       {/* Logo */}
-      <div className="flex items-center px-4 lg:px-6 py-4 lg:py-6 border-b border-sidebar-border">
+      <div className="flex items-center px-4 lg:px-6 py-4 lg:py-6 border-b border-sidebar-border/80 bg-sidebar/80 backdrop-blur-md">
         <motion.div 
           className="flex items-center space-x-2 lg:space-x-3"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -53,7 +53,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           transition={{ duration: 0.5 }}
         >
           <div className="relative">
-            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary via-primary-accent to-secondary rounded-xl flex items-center justify-center shadow-glow">
+            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary via-primary-accent to-secondary rounded-xl flex items-center justify-center shadow-glow-lg">
               <Zap className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
             </div>
             <div className="absolute -top-1 -right-1 w-3 h-3 lg:w-4 lg:h-4 bg-gradient-to-r from-success to-success-accent rounded-full animate-pulse"></div>
@@ -118,9 +118,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
       </nav>
 
       {/* AI Status Footer */}
-      <div className="px-3 lg:px-4 py-3 lg:py-4 border-t border-sidebar-border">
+      <div className="px-3 lg:px-4 py-3 lg:py-4 border-t border-sidebar-border/80 bg-sidebar/80 backdrop-blur-md">
         <motion.div 
-          className="flex items-center space-x-2 lg:space-x-3 px-3 lg:px-4 py-2 lg:py-3 bg-gradient-to-r from-success/20 to-primary/20 rounded-xl border border-success/20"
+          className="flex items-center space-x-2 lg:space-x-3 px-3 lg:px-4 py-2 lg:py-3 bg-gradient-to-r from-success/20 to-primary/20 rounded-xl border border-success/30 shadow-md"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}

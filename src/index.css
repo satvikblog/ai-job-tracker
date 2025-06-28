@@ -6,31 +6,31 @@
   /* Blue Theme (Default) */
   :root {
     /* Base colors - Improved contrast */
-    --background: 250, 250, 250;
-    --background-secondary: 245, 247, 250;
+    --background: 252, 252, 255;
+    --background-secondary: 248, 250, 252;
     --foreground: #111827;
     --muted: #4b5563;
     --muted-foreground: #1f2937;
     
     /* Card colors - Subtle shadows and borders */
-    --card: 252, 252, 252;
+    --card: 255, 255, 255;
     --card-foreground: #111827;
-    --card-hover: #f9fafb;
-    --card-border: #e5e7eb;
+    --card-hover: #f8fafc;
+    --card-border: #e2e8f0;
     
     /* Sidebar colors - Apple-inspired */
-    --sidebar: #f5f5f7;
-    --sidebar-hover: #ebebed;
-    --sidebar-active: #e8f2ff;
+    --sidebar: #f8fafc;
+    --sidebar-hover: #f1f5f9;
+    --sidebar-active: #eff6ff;
     --sidebar-text: #1d1d1f;
     --sidebar-text-hover: #000000;
     --sidebar-text-active: #0066cc;
-    --sidebar-border: #d2d2d7;
+    --sidebar-border: #e2e8f0;
     --sidebar-border-active: #0066cc;
     
     /* Border and input colors - Refined */
-    --border: #d1d5db;
-    --input: #f9fafb;
+    --border: #e2e8f0;
+    --input: #f8fafc;
     --ring: #60a5fa;
     
     /* Primary colors - Apple blue */
@@ -76,7 +76,7 @@
     --shadow-glow-color: rgba(0, 102, 204, 0.25);
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     
     /* Toast colors - Improved visibility */
     --toast-background: #fcfcfc;
@@ -93,9 +93,9 @@
   
   .dark {
     /* Base colors - GitHub dark inspired */
-    --background: 13, 17, 23;
-    --background-secondary: 22, 27, 34;
-    --foreground: #e6edf3;
+    --background: 10, 15, 25;
+    --background-secondary: 17, 24, 39;
+    --foreground: #f1f5f9;
     --muted: #8b949e;
     --muted-foreground: #c9d1d9;
     
@@ -106,7 +106,7 @@
     --card-border: #30363d;
     
     /* Sidebar colors - GitHub dark */
-    --sidebar: #0d1117;
+    --sidebar: #111827;
     --sidebar-hover: #161b22;
     --sidebar-active: #1f6feb;
     --sidebar-text: #c9d1d9;
@@ -115,7 +115,7 @@
     --sidebar-border: #30363d;
     --sidebar-border-active: #58a6ff;
     
-    /* Border and input colors - GitHub dark */
+    /* Border and input colors - Enhanced GitHub dark */
     --border: #30363d;
     --input: #0d1117;
     --ring: #58a6ff;
@@ -123,7 +123,7 @@
     /* Primary colors - GitHub blue */
     --primary: 88 166 255;
     --primary-foreground: #ffffff;
-    --primary-hover: #1f6feb;
+    --primary-hover: #1a5fbf;
     --primary-accent: #79c0ff;
     
     /* Secondary colors - Rich purple */
@@ -135,7 +135,7 @@
     /* Accent colors - GitHub teal */
     --accent: 56 227 180;
     --accent-foreground: #0d1117;
-    --accent-hover: #39d0ac;
+    --accent-hover: #2ec4a0;
     --accent-accent: #7ee787;
     
     /* Success colors - GitHub green */
@@ -147,7 +147,7 @@
     /* Warning colors - GitHub yellow */
     --warning: 210 153 34;
     --warning-foreground: #0d1117;
-    --warning-hover: #bb8009;
+    --warning-hover: #b27c00;
     --warning-accent: #e3b341;
     
     /* Error colors - GitHub red */
@@ -162,7 +162,7 @@
     /* Shadow colors - GitHub-inspired */
     --shadow-glow-color: rgba(88, 166, 255, 0.4);
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
     
     /* Toast colors - GitHub-inspired */
@@ -181,7 +181,7 @@
   /* Purple Theme */
   .purple {
     --primary: 147 51 234;
-    --primary-foreground: #ffffff;
+    --primary-foreground: #f8fafc;
     --primary-hover: #9333ea;
     --primary-accent: #a855f7;
     
@@ -201,7 +201,7 @@
   .purple.dark {
     --primary: 168 85 247;
     --primary-foreground: #ffffff;
-    --primary-hover: #9333ea;
+    --primary-hover: #8b31d8;
     --primary-accent: #c084fc;
     
     --secondary: 236 72 153;
@@ -220,7 +220,7 @@
   /* Green Theme */
   .green {
     --primary: 20 184 166;
-    --primary-foreground: #ffffff;
+    --primary-foreground: #f8fafc;
     --primary-hover: #0f766e;
     --primary-accent: #2dd4bf;
     
@@ -240,7 +240,7 @@
   .green.dark {
     --primary: 45 212 191;
     --primary-foreground: #0d1117;
-    --primary-hover: #14b8a6;
+    --primary-hover: #0d9488;
     --primary-accent: #5eead4;
     
     --secondary: 34 211 238;
@@ -259,7 +259,7 @@
   /* Red Theme */
   .red {
     --primary: 220 38 38;
-    --primary-foreground: #ffffff;
+    --primary-foreground: #f8fafc;
     --primary-hover: #b91c1c;
     --primary-accent: #ef4444;
     
@@ -279,7 +279,7 @@
   .red.dark {
     --primary: 239 68 68;
     --primary-foreground: #0d1117;
-    --primary-hover: #dc2626;
+    --primary-hover: #b91c1c;
     --primary-accent: #f87171;
     
     --secondary: 139 92 246;
@@ -298,7 +298,7 @@
   /* Gray Theme */
   .gray {
     --primary: 75 85 99;
-    --primary-foreground: #ffffff;
+    --primary-foreground: #f8fafc;
     --primary-hover: #374151;
     --primary-accent: #6b7280;
     
@@ -318,7 +318,7 @@
   .gray.dark {
     --primary: 156 163 175;
     --primary-foreground: #0d1117;
-    --primary-hover: #9ca3af;
+    --primary-hover: #6b7280;
     --primary-accent: #d1d5db;
     
     --secondary: 139 92 246;
@@ -339,7 +339,7 @@
 @layer base {
   body {
     @apply bg-background text-foreground antialiased;
-    min-height: 100vh;
+    min-height: 100dvh;
     background-color: rgb(var(--background));
   }
   
@@ -367,7 +367,7 @@
   /* Text gradient */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary-accent to-secondary;
-    background-size: 200% 200%;
+    background-size: 300% 100%;
     animation: gradient 8s ease infinite;
   }
   
@@ -377,7 +377,7 @@
   }
   
   .card-hover {
-    @apply hover:bg-card-hover hover:border-primary/30 hover:-translate-y-1 hover:shadow-md transition-all duration-300;
+    @apply hover:bg-card-hover hover:border-primary/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300;
   }
   
   /* Input styles */
@@ -386,7 +386,7 @@
   }
   
   /* Status indicators */
-  .status-applied { @apply bg-muted/20 text-muted border-muted/50 font-medium; }
+  .status-applied { @apply bg-muted/20 text-muted-foreground border-muted/50 font-medium; }
   .status-followed-up { @apply bg-primary/20 text-primary border-primary/50 font-medium; }
   .status-interview { @apply bg-accent/20 text-accent border-accent/50 font-medium; }
   .status-offer { @apply bg-success/20 text-success border-success/50 font-medium; }
@@ -395,7 +395,7 @@
   
   /* Loading skeleton */
   .loading-skeleton {
-    @apply bg-gradient-to-r from-card via-card-hover to-card animate-pulse rounded-md;
+    @apply bg-gradient-to-r from-card/80 via-card-hover to-card/80 animate-pulse rounded-md;
     background-size: 200% 100%;
   }
   
@@ -426,7 +426,7 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-track {
-    background-color: rgba(var(--background-secondary), 0.5);
+    background-color: rgba(var(--background-secondary), 0.3);
     border-radius: 4px;
   }
   
@@ -434,7 +434,7 @@
     background: linear-gradient(to bottom, rgb(var(--primary)), rgb(var(--secondary)));
     border-radius: 4px;
     border: 1px solid rgba(var(--primary), 0.3);
-  }
+  } 
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(to bottom, rgb(var(--primary-hover)), rgb(var(--secondary-hover)));
@@ -442,7 +442,7 @@
   
   /* Drop shadow for icons */
   .drop-shadow-glow {
-    filter: drop-shadow(0 0 4px var(--shadow-glow-color));
+    filter: drop-shadow(0 0 5px var(--shadow-glow-color));
   }
 }
 
@@ -450,7 +450,7 @@
 @layer components {
   @media (max-width: 768px) {
     .mobile-nav {
-      @apply fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl;
+      @apply fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl;
       @apply border-t border-card-border p-2 shadow-lg;
       @apply flex justify-around items-center;
       z-index: 1000;
@@ -462,11 +462,11 @@
       @apply min-w-[60px] text-center;
     }
     
-    .mobile-nav-item.active {
-      @apply bg-primary/20 text-primary font-semibold;
+    .mobile-nav-item.active { 
+      @apply bg-primary/20 text-primary font-semibold border border-primary/30;
     }
     
-    .mobile-nav-item:not(.active) {
+    .mobile-nav-item:not(.active) { 
       @apply text-muted hover:text-foreground;
     }
   }
@@ -474,7 +474,7 @@
 
 /* Loading spinner improvements */
 .loading-spinner {
-  @apply animate-spin rounded-full border-2 border-transparent;
+  @apply animate-spin rounded-full border-2 border-transparent shadow-md;
   border-top-color: rgb(var(--primary));
   border-right-color: rgb(var(--primary));
 }
@@ -498,7 +498,7 @@
 @media (max-width: 640px) {
   .mobile-form input,
   .mobile-form select,
-  .mobile-form textarea {
+  .mobile-form textarea { 
     @apply text-base; /* Prevents zoom on iOS */
   }
 }
@@ -506,6 +506,6 @@
 /* Animation for text gradient */
 @keyframes gradient {
   0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  50% { background-position: 100% 50%; } 
   100% { background-position: 0% 50%; }
 }

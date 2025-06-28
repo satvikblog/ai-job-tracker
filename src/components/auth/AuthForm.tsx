@@ -257,18 +257,18 @@ export function AuthForm() {
       </div>
       
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
         className="w-full max-w-md relative z-10"
       >
-        <Card className="p-8 border-card-border bg-card/80 backdrop-blur-md shadow-lg">
+        <Card className="p-8 border-card-border/80 bg-card/80 backdrop-blur-xl shadow-lg">
           <motion.div 
             className="text-center mb-8"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow relative">
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-lg relative">
               <Sparkles className="w-10 h-10 text-white" />
               <motion.div
                 className="absolute inset-0 rounded-2xl border-2 border-white/20"
@@ -286,7 +286,7 @@ export function AuthForm() {
             <motion.h1 
               className="text-3xl font-bold text-foreground mb-1"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30 } }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               JobTracker AI
@@ -294,7 +294,7 @@ export function AuthForm() {
             <motion.p 
               className="text-muted mt-2"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30 } }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               {isSignUp ? 'Create your account' : 'Welcome back'}
@@ -304,7 +304,7 @@ export function AuthForm() {
             <motion.div 
               className="mt-4"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30 } }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
@@ -344,8 +344,8 @@ export function AuthForm() {
           <motion.form 
             onSubmit={handleSubmit} 
             className="space-y-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
             {isSignUp && (
@@ -409,7 +409,7 @@ export function AuthForm() {
                 className="w-full"
                 isLoading={loading}
                 disabled={connectionStatus !== 'connected'}
-                glow
+                glow={true}
               >
                 {isSignUp ? 'Create Account' : 'Sign In'}
               </Button>

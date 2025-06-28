@@ -41,9 +41,9 @@ export function ApplicationChart({ data }: ApplicationChartProps) {
   };
   
   return (
-    <Card className="bg-card border-card-border">
+    <Card className="bg-card border-card-border" elevation="raised">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-md">
+        <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-lg">
           <AreaChart className="w-5 h-5 text-primary-foreground" />
         </div>
         <h2 className="text-lg font-semibold text-foreground">
@@ -98,10 +98,10 @@ export function ApplicationChart({ data }: ApplicationChartProps) {
       
       {/* Flow Legend */}
       {data.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-border">
+        <div className="mt-6 pt-4 border-t border-border/80">
           <div className="flex items-center justify-between text-xs text-muted">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-r from-primary to-primary-accent rounded-full"></div>
+              <div className="w-3 h-3 bg-gradient-to-r from-primary to-primary-accent rounded-full shadow-sm"></div>
               <span>Application Flow</span>
             </div>
             <div className="flex items-center space-x-4">

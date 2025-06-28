@@ -121,65 +121,50 @@ export function FollowUps() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6"
       >
-        <div>
-          <h1 className="text-2xl font-bold text-white">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-lg">
+            <Clock className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold text-gradient">
             Follow-Ups & Reminders
           </h1>
-          <p className="text-gray-400 mt-1">
-            Stay on top of your application follow-ups and track responses
-          </p>
         </div>
 
         <Button 
           leftIcon={<Plus className="w-4 h-4" />}
           onClick={() => setIsFormOpen(true)}
+          glow
         >
           Log Follow-Up
         </Button>
       </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="text-muted mb-6">Stay on top of your application follow-ups and track responses</motion.div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card hover>
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-error-100 dark:bg-error-900 rounded-lg flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-error-600 dark:text-error-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-white">
-                  {overdueFollowUps.length}
-                </p>
-                <p className="text-sm text-gray-400">
-                  Overdue Follow-ups
-                </p>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card hover>
+          <Card hover variant="error">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-warning-100 dark:bg-warning-900 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-warning-600 dark:text-warning-400" />
+              <div className="w-12 h-12 bg-error/20 rounded-lg flex items-center justify-center shadow-sm">
+                <AlertCircle className="w-6 h-6 text-error" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">
-                  {todayFollowUps.length}
+                <p className="text-2xl font-bold text-foreground">
+                  {overdueFollowUps.length}
                 </p>
-                <p className="text-sm text-gray-400">
-                  Due Today
+                <p className="text-sm text-muted">
+                  Overdue Follow-ups
                 </p>
               </div>
             </div>
@@ -191,16 +176,38 @@ export function FollowUps() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card hover>
+          <Card hover variant="warning">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
-                <Clock className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              <div className="w-12 h-12 bg-warning/20 rounded-lg flex items-center justify-center shadow-sm">
+                <Calendar className="w-6 h-6 text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-2xl font-bold text-foreground">
+                  {todayFollowUps.length}
+                </p>
+                <p className="text-sm text-muted">
+                  Due Today
+                </p>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <Card hover variant="primary">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center shadow-sm">
+                <Clock className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">
                   {pendingFollowUps.length}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-muted">
                   Upcoming
                 </p>
               </div>
@@ -214,11 +221,14 @@ export function FollowUps() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-      >
-        <Card>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-white">
+      > 
+        <Card elevation="raised">
+          <div className="flex items-center justify-between mb-6"> 
+            <h2 className="text-lg font-semibold text-foreground flex items-center space-x-2">
+              <Mail className="w-5 h-5 text-primary" />
+              <span>
               Follow-up History
+              </span>
             </h2>
             <div className="relative">
               <Input
@@ -301,7 +311,7 @@ export function FollowUps() {
               Job Application
             </label>
             <select
-              {...register('jobApplicationId', { required: 'Please select a job application' })}
+              transition={{ delay: 0.1 * index, duration: 0.4 }}
               className="w-full px-4 py-3 bg-dark-800/70 border-slate-600 border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               <option value="">Select a job application...</option>

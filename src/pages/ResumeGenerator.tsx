@@ -340,54 +340,56 @@ export function ResumeGenerator() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col space-y-4"
+          className="flex flex-col space-y-4 mb-6"
         >
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold gradient-text flex items-center space-x-2 lg:space-x-3">
-              <Zap className="w-6 h-6 lg:w-8 lg:h-8 text-primary-500" />
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+              <Zap className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gradient">
               <span>AI Resume Generator</span>
             </h1>
-            <p className="text-slate-400 mt-2 flex items-center space-x-2 text-sm lg:text-base">
-              <Target className="w-4 h-4" />
-              <span>Generate ATS-optimized resume suggestions from LinkedIn job opportunities</span>
-            </p>
           </div>
+          <p className="text-muted flex items-center space-x-2 text-sm lg:text-base">
+            <Target className="w-4 h-4" />
+            <span>Generate ATS-optimized resume suggestions from LinkedIn job opportunities</span>
+          </p>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-            <div className="bg-gradient-to-br from-primary-900/20 to-primary-800/20 border border-primary-600/30 rounded-lg p-3 lg:p-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-2">
+            <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <Brain className="w-4 h-4 lg:w-5 lg:h-5 text-primary-400" />
+                <Brain className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
                 <div>
-                  <p className="text-xs lg:text-sm text-primary-300 font-medium">AI Powered</p>
-                  <p className="text-xs text-slate-400">Smart Processing</p>
+                  <p className="text-xs lg:text-sm text-primary font-medium">AI Powered</p>
+                  <p className="text-xs text-muted">Smart Processing</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-success-900/20 to-success-800/20 border border-success-600/30 rounded-lg p-3 lg:p-4">
+            <div className="bg-success/10 border border-success/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-success-400" />
+                <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-success" />
                 <div>
-                  <p className="text-xs lg:text-sm text-success-300 font-medium">ATS Ready</p>
-                  <p className="text-xs text-slate-400">Optimized</p>
+                  <p className="text-xs lg:text-sm text-success font-medium">ATS Ready</p>
+                  <p className="text-xs text-muted">Optimized</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-secondary-900/20 to-secondary-800/20 border border-secondary-600/30 rounded-lg p-3 lg:p-4">
+            <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 lg:w-5 lg:h-5 text-secondary-400" />
+                <FileText className="w-4 h-4 lg:w-5 lg:h-5 text-secondary" />
                 <div>
-                  <p className="text-xs lg:text-sm text-secondary-300 font-medium">{aiResumeJobs.length}</p>
-                  <p className="text-xs text-slate-400">Opportunities</p>
+                  <p className="text-xs lg:text-sm text-secondary font-medium">{aiResumeJobs.length}</p>
+                  <p className="text-xs text-muted">Opportunities</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-accent-900/20 to-accent-800/20 border border-accent-600/30 rounded-lg p-3 lg:p-4">
+            <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 text-accent-400" />
+                <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 text-accent" />
                 <div>
-                  <p className="text-xs lg:text-sm text-accent-300 font-medium">60-70s</p>
-                  <p className="text-xs text-slate-400">Processing</p>
+                  <p className="text-xs lg:text-sm text-accent font-medium">60-70s</p>
+                  <p className="text-xs text-muted">Processing</p>
                 </div>
               </div>
             </div>
@@ -653,57 +655,57 @@ export function ResumeGenerator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <Card className="bg-gradient-to-r from-primary-900/20 to-secondary-900/20 border border-primary-600/30">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4 flex items-center space-x-2">
-              <Zap className="w-5 h-5 text-primary-400" />
-              <span>🔗 AI Resume Table Integration</span>
+        > 
+          <Card variant="primary" elevation="raised">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center space-x-2">
+              <Zap className="w-5 h-5 text-primary" />
+              <span>AI Resume Table Integration</span>
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-300">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-foreground">
               <div>
-                <h4 className="font-medium text-slate-200 mb-3 flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-primary-400 rounded-full"></span>
+                <h4 className="font-medium text-foreground mb-3 flex items-center space-x-2">
+                  <span className="w-2 h-2 bg-primary rounded-full"></span>
                   <span>Data Source:</span>
                 </h4>
-                <ul className="space-y-2 text-slate-400 text-xs">
+                <ul className="space-y-2 text-muted text-xs">
                   <li className="flex items-start space-x-2">
-                    <span className="text-primary-400 mt-1">•</span>
+                    <span className="text-primary mt-1">•</span>
                     <span>All data sourced from AI Resume table</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-primary-400 mt-1">•</span>
+                    <span className="text-primary mt-1">•</span>
                     <span>Auto-populated from LinkedIn jobs</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-primary-400 mt-1">•</span>
+                    <span className="text-primary mt-1">•</span>
                     <span>Keywords and skills extracted automatically</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-primary-400 mt-1">•</span>
+                    <span className="text-primary mt-1">•</span>
                     <span>ATS scores and processing status tracked</span>
                   </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-slate-200 mb-3 flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-secondary-400 rounded-full"></span>
+                <h4 className="font-medium text-foreground mb-3 flex items-center space-x-2">
+                  <span className="w-2 h-2 bg-secondary rounded-full"></span>
                   <span>Features:</span>
                 </h4>
-                <ul className="space-y-2 text-slate-400 text-xs">
+                <ul className="space-y-2 text-muted text-xs">
                   <li className="flex items-start space-x-2">
-                    <span className="text-secondary-400 mt-1">•</span>
+                    <span className="text-secondary mt-1">•</span>
                     <span>Google Gemini or N8N integration</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-secondary-400 mt-1">•</span>
+                    <span className="text-secondary mt-1">•</span>
                     <span>ATS optimization suggestions</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-secondary-400 mt-1">•</span>
+                    <span className="text-secondary mt-1">•</span>
                     <span>Keyword extraction and matching</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-secondary-400 mt-1">•</span>
+                    <span className="text-secondary mt-1">•</span>
                     <span>Professional formatting tips</span>
                   </li>
                 </ul>

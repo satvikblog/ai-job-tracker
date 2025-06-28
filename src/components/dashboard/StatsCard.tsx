@@ -40,7 +40,8 @@ export function StatsCard({
       <Card 
         hover 
         variant={color as any} 
-        className="h-full"
+        className="h-full border-opacity-40"
+        elevation="raised"
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -55,7 +56,7 @@ export function StatsCard({
               </p>
             )}
           </div>
-          <div className={`p-4 bg-gradient-to-br from-${color} to-${color}-accent rounded-xl shadow-md`}>
+          <div className={`p-4 bg-gradient-to-br from-${color} to-${color}-accent rounded-xl shadow-lg`}>
             <div className={`text-${color}-foreground`}>
               {icon}
             </div>

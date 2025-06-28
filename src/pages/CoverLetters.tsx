@@ -437,54 +437,56 @@ export function CoverLetters() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col space-y-4"
+          className="flex flex-col space-y-4 mb-6"
         >
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold gradient-text flex items-center space-x-2 lg:space-x-3">
-              <Zap className="w-6 h-6 lg:w-8 lg:h-8 text-primary-500" />
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+              <Mail className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gradient">
               <span>AI Cover Letter Generator</span>
             </h1>
-            <p className="text-slate-400 mt-2 flex items-center space-x-2 text-sm lg:text-base">
-              <Target className="w-4 h-4" />
-              <span>Create personalized, compelling cover letters powered by AI</span>
-            </p>
           </div>
+          <p className="text-muted flex items-center space-x-2 text-sm lg:text-base">
+            <Target className="w-4 h-4" />
+            <span>Create personalized, compelling cover letters powered by AI</span>
+          </p>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-            <div className="bg-gradient-to-br from-primary-900/20 to-primary-800/20 border border-primary-600/30 rounded-lg p-3 lg:p-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-2">
+            <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <Brain className="w-4 h-4 lg:w-5 lg:h-5 text-primary-400" />
+                <Brain className="w-4 h-4 lg:w-5 lg:h-5 text-primary" />
                 <div>
-                  <p className="text-xs lg:text-sm text-primary-300 font-medium">AI Powered</p>
-                  <p className="text-xs text-slate-400">Smart Writing</p>
+                  <p className="text-xs lg:text-sm text-primary font-medium">AI Powered</p>
+                  <p className="text-xs text-muted">Smart Writing</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-success-900/20 to-success-800/20 border border-success-600/30 rounded-lg p-3 lg:p-4">
+            <div className="bg-success/10 border border-success/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5 text-success-400" />
+                <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5 text-success" />
                 <div>
-                  <p className="text-xs lg:text-sm text-success-300 font-medium">5 Tones</p>
-                  <p className="text-xs text-slate-400">Available</p>
+                  <p className="text-xs lg:text-sm text-success font-medium">5 Tones</p>
+                  <p className="text-xs text-muted">Available</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-secondary-900/20 to-secondary-800/20 border border-secondary-600/30 rounded-lg p-3 lg:p-4">
+            <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 lg:w-5 lg:h-5 text-secondary-400" />
+                <Mail className="w-4 h-4 lg:w-5 lg:h-5 text-secondary" />
                 <div>
-                  <p className="text-xs lg:text-sm text-secondary-300 font-medium">Personalized</p>
-                  <p className="text-xs text-slate-400">Content</p>
+                  <p className="text-xs lg:text-sm text-secondary font-medium">Personalized</p>
+                  <p className="text-xs text-muted">Content</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-accent-900/20 to-accent-800/20 border border-accent-600/30 rounded-lg p-3 lg:p-4">
+            <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 lg:p-4 shadow-sm">
               <div className="flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 text-accent-400" />
+                <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 text-accent" />
                 <div>
-                  <p className="text-xs lg:text-sm text-accent-300 font-medium">Fast</p>
-                  <p className="text-xs text-slate-400">Generation</p>
+                  <p className="text-xs lg:text-sm text-accent font-medium">Fast</p>
+                  <p className="text-xs text-muted">Generation</p>
                 </div>
               </div>
             </div>
@@ -753,16 +755,16 @@ export function CoverLetters() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <Card className="bg-gradient-to-r from-primary-900/20 to-secondary-900/20 border border-primary-600/30">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4 flex items-center space-x-2">
-              <Zap className="w-5 h-5 text-primary-400" />
-              <span>🔗 AI Integration</span>
+        > 
+          <Card variant="primary" elevation="raised">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center space-x-2">
+              <Zap className="w-5 h-5 text-primary" />
+              <span>AI Integration</span>
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-300">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-foreground">
               <div>
-                <h4 className="font-medium text-slate-200 mb-2">How it works:</h4>
-                <ul className="space-y-1 text-slate-400 text-xs">
+                <h4 className="font-medium text-foreground mb-2">How it works:</h4>
+                <ul className="space-y-1 text-muted text-xs">
                   <li>• Uses Google Gemini or N8N workflow</li>
                   <li>• Analyzes job requirements</li>
                   <li>• Generates personalized content</li>
@@ -770,8 +772,8 @@ export function CoverLetters() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-slate-200 mb-2">Features:</h4>
-                <ul className="space-y-1 text-slate-400 text-xs">
+                <h4 className="font-medium text-foreground mb-2">Features:</h4>
+                <ul className="space-y-1 text-muted text-xs">
                   <li>• 5 different tone options</li>
                   <li>• Company-specific customization</li>
                   <li>• Experience integration</li>
@@ -779,8 +781,8 @@ export function CoverLetters() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-slate-200 mb-2">Processing:</h4>
-                <ul className="space-y-1 text-slate-400 text-xs">
+                <h4 className="font-medium text-foreground mb-2">Processing:</h4>
+                <ul className="space-y-1 text-muted text-xs">
                   <li>• Fast generation with Gemini</li>
                   <li>• Real-time progress tracking</li>
                   <li>• Instant copy & export</li>

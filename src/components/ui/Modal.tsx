@@ -41,16 +41,16 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', footer, c
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className={`
-                relative inline-block w-full bg-card/95 backdrop-blur-xl rounded-xl text-left 
-                overflow-hidden shadow-lg transform transition-all 
-                my-4 sm:my-8 mx-auto border border-card-border
+                relative inline-block w-full bg-card/95 backdrop-blur-xl rounded-xl text-left
+                overflow-hidden shadow-lg transform transition-all
+                my-4 sm:my-8 mx-auto border border-card-border/80
                 ${sizeStyles[size]}
                 max-h-[90vh] flex flex-col
                 ${className}
               `}
             >
               {/* Header - Fixed */}
-              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-card-border flex-shrink-0 bg-card/80">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-card-border/80 flex-shrink-0 bg-card/80 backdrop-blur-md">
                 <h3 className="text-lg font-semibold text-foreground truncate pr-4">
                   {title}
                 </h3>
@@ -71,7 +71,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', footer, c
 
               {/* Footer - Fixed */}
               {footer && (
-                <div className="flex-shrink-0 p-4 sm:p-6 border-t border-card-border bg-card/50">
+                <div className="flex-shrink-0 p-4 sm:p-6 border-t border-card-border/80 bg-card/50 backdrop-blur-sm">
                   {footer}
                 </div>
               )}

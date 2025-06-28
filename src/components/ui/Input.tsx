@@ -22,8 +22,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   ...props
 }, ref) => {
   const variantStyles = {
-    default: 'bg-input border-border',
-    glass: 'bg-input/70 border-border/60 backdrop-blur-xl'
+    default: 'bg-input border-border shadow-sm',
+    glass: 'bg-input/70 border-border/60 backdrop-blur-xl shadow-sm'
   };
   
   const sizeStyles = {
@@ -51,13 +51,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           ref={ref}
           className={`
             w-full ${sizeStyles[size]} ${variantStyles[variant]} border rounded-lg
-            focus:ring-2 focus:ring-primary/30 focus:border-primary
+            focus:ring-2 focus:ring-primary/40 focus:border-primary
             text-foreground placeholder:text-muted/80
             disabled:opacity-50 disabled:cursor-not-allowed
-            transition-all duration-200 shadow-sm
+            transition-all duration-200
             ${leftIcon ? 'pl-10' : ''}
             ${rightIcon ? 'pr-10' : ''}
-            ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}
+            ${error ? 'border-error focus:ring-error/40 focus:border-error' : ''}
           `}
           className={cn(className)}
           {...props}

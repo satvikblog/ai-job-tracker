@@ -16,7 +16,7 @@ export function Card({
   variant = 'default',
   hover = false, 
   padding = 'md',
-  elevation = 'flat'
+  elevation = 'raised'
 }: CardProps) {
   const paddingStyles = {
     sm: 'p-4',
@@ -25,28 +25,29 @@ export function Card({
   };
 
   const variantStyles = {
-    default: 'bg-card/95 border-card-border',
-    primary: 'bg-card/95 border-primary/30',
-    secondary: 'bg-card/95 border-secondary/30',
-    accent: 'bg-card/95 border-accent/30'
+    default: 'bg-card/95 border-card-border backdrop-blur-md',
+    primary: 'bg-card/95 border-primary/30 backdrop-blur-md',
+    secondary: 'bg-card/95 border-secondary/30 backdrop-blur-md',
+    accent: 'bg-card/95 border-accent/30 backdrop-blur-md'
   };
 
   const elevationStyles = {
     flat: 'shadow-sm',
-    raised: 'shadow-md',
-    elevated: 'shadow-lg'
+    raised: 'shadow-md hover:shadow-lg transition-shadow duration-300',
+    elevated: 'shadow-lg hover:shadow-xl transition-shadow duration-300'
   };
 
-  const baseStyles = `${variantStyles[variant]} rounded-xl ${elevationStyles[elevation]} backdrop-blur-md transition-all duration-300 ${paddingStyles[padding]}`;
+  const baseStyles = `${variantStyles[variant]} rounded-xl ${elevationStyles[elevation]} transition-all duration-300 ${paddingStyles[padding]}`;
   
   if (hover) {
     return (
       <motion.div
         whileHover={{ 
           y: -4, 
-          boxShadow: 'var(--shadow-lg)'
+          boxShadow: 'var(--shadow-lg)',
+          borderColor: 'var(--primary)'
         }}
-        className={`${baseStyles} hover:border-primary/40 cursor-pointer ${className}`}
+        className={`${baseStyles} hover:border-primary/50 cursor-pointer ${className}`}
       >
         {children}
       </motion.div>

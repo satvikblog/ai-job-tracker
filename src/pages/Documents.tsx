@@ -161,15 +161,15 @@ export function Documents() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6"
       >
-        <div>
-          <h1 className="text-2xl font-bold text-white">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-accent rounded-xl flex items-center justify-center shadow-lg">
+            <FolderOpen className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold text-gradient">
             Document Vault
           </h1>
-          <p className="text-gray-400 mt-1">
-            Store and manage your resumes, certificates, and other documents
-          </p>
         </div>
 
         <div className="flex items-center space-x-3">
@@ -184,11 +184,18 @@ export function Documents() {
           <Button
             onClick={() => document.getElementById('file-upload')?.click()}
             leftIcon={<Upload className="w-4 h-4" />}
+            glow
           >
             Upload Documents
           </Button>
         </div>
       </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="text-muted mb-6">Store and manage your resumes, certificates, and other documents</motion.div>
 
       {/* Upload Configuration */}
       <motion.div
@@ -196,13 +203,16 @@ export function Documents() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card>
-          <h3 className="text-lg font-semibold text-white mb-4">
+        <Card variant="primary" elevation="raised">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center space-x-2">
+            <Upload className="w-5 h-5 text-primary" />
+            <span>
             Upload Settings
+            </span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="w-full">
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Document Type
               </label>
               <select
@@ -218,7 +228,7 @@ export function Documents() {
               </select>
             </div>
             <div className="w-full">
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Link to Job Application (Optional)
               </label>
               <select
@@ -243,7 +253,7 @@ export function Documents() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <Card>
+        <Card elevation="raised">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-4">
               <div className="relative">
@@ -271,7 +281,7 @@ export function Documents() {
               </div>
             </div>
 
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-muted">
               {filteredDocuments.length} document{filteredDocuments.length !== 1 ? 's' : ''}
             </div>
           </div>
@@ -293,15 +303,15 @@ export function Documents() {
             >
               <Card hover>
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
-                      <IconComponent className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center shadow-sm">
+                      <IconComponent className="w-6 h-6 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-medium text-white text-sm">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-foreground text-sm truncate">
                         {document.file_name}
                       </h3>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-muted">
                         {formatFileSize(document.file_size)}
                       </p>
                     </div>
@@ -312,7 +322,7 @@ export function Documents() {
                 </div>
 
                 {linkedJob && (
-                  <div className="text-xs text-blue-400 mb-2">
+                  <div className="text-xs text-primary mb-2">
                     Linked to: {linkedJob.company_name} - {linkedJob.job_title}
                   </div>
                 )}
@@ -320,7 +330,7 @@ export function Documents() {
                 <div className="text-xs text-gray-400 mb-4">
                   Uploaded {format(new Date(document.uploaded_on), 'MMM dd, yyyy')}
                 </div>
-
+                
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Button
@@ -329,7 +339,7 @@ export function Documents() {
                       onClick={() => handleDownload(document)}
                       leftIcon={<FileText className="w-4 h-4" />}
                     >
-                      View
+                      Open
                     </Button>
                     <Button
                       variant="outline"
@@ -350,16 +360,16 @@ export function Documents() {
       {filteredDocuments.length === 0 && (
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 1, transition: { duration: 0.6, ease: "easeOut" } }}
           className="flex flex-col items-center justify-center py-12"
         >
-          <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
-            <FolderOpen className="w-8 h-8 text-gray-500" />
+          <div className="w-20 h-20 bg-card-hover rounded-full flex items-center justify-center mb-4 shadow-md">
+            <FolderOpen className="w-10 h-10 text-muted" />
           </div>
-          <h3 className="text-lg font-medium text-white mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             {searchTerm || selectedType ? 'No documents found' : 'No documents yet'}
           </h3>
-          <p className="text-gray-400 text-center mb-4">
+          <p className="text-muted text-center mb-4">
             {searchTerm || selectedType 
               ? 'Try adjusting your search or filter criteria'
               : 'Upload your first document to get started'
@@ -368,7 +378,7 @@ export function Documents() {
           {!searchTerm && !selectedType && (
             <Button
               onClick={() => document.getElementById('file-upload')?.click()}
-              leftIcon={<Plus className="w-4 h-4" />}
+              leftIcon={<Plus className="w-4 h-4" />} glow
             >
               Upload Document
             </Button>

@@ -464,19 +464,22 @@ export function JobOpportunities() {
     <div className="space-y-6 lg:space-y-8">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
+        className="text-center mb-8"
       >
-        <h1 className="text-3xl lg:text-4xl font-bold gradient-text mb-4">
-          💼 LinkedIn Job Opportunities
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <Linkedin className="w-8 h-8 text-white" />
+        </div>
+        <h1 className="text-3xl lg:text-4xl font-bold text-gradient mb-4">
+          LinkedIn Job Opportunities
         </h1>
-        <p className="text-slate-400 text-lg">
+        <p className="text-muted text-lg">
           Discover the latest job opportunities sourced directly from LinkedIn
         </p>
-        <div className="mt-4 flex items-center justify-center space-x-6 text-sm text-slate-500">
+        <div className="mt-4 flex items-center justify-center space-x-6 text-sm text-muted">
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
             <span>{filteredJobs.length} LinkedIn opportunities</span>
           </div>
           <div className="flex items-center space-x-2">
@@ -490,9 +493,9 @@ export function JobOpportunities() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.2 }}
       >
-        <Card className="bg-gradient-to-r from-dark-800/80 to-dark-900/80 border border-slate-700/50">
+        <Card variant="primary" elevation="raised">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="flex-1">
               <div className="relative">
@@ -510,6 +513,7 @@ export function JobOpportunities() {
             <div className="flex items-center space-x-3">
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => setShowFilters(!showFilters)}
                 leftIcon={<Filter className="w-4 h-4" />}
                 className="whitespace-nowrap"
@@ -519,6 +523,7 @@ export function JobOpportunities() {
               {(searchTerm || locationFilter || employmentTypeFilter || seniorityFilter) && (
                 <Button
                   variant="ghost"
+                  size="sm"
                   onClick={clearFilters}
                   className="text-slate-400 hover:text-white"
                 >
@@ -531,10 +536,11 @@ export function JobOpportunities() {
           {/* Filter Panel */}
           {showFilters && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-6 pt-6 border-t border-slate-700/50"
+              initial={{ opacity: 0, height: 0, y: -10 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="mt-6 pt-6 border-t border-card-border/80"
             >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -630,32 +636,32 @@ export function JobOpportunities() {
       {/* Enhanced Stats Footer */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-gradient-to-r from-blue-900/20 to-blue-800/20 border border-blue-600/30 rounded-xl p-6"
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
+        transition={{ delay: 0.4 }}
+        className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/30 rounded-xl p-6 shadow-md"
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-blue-400">{linkedInJobs.length}</div>
-            <div className="text-sm text-slate-400">Total Jobs</div>
+            <div className="text-2xl font-bold text-primary">{linkedInJobs.length}</div>
+            <div className="text-sm text-muted">Total Jobs</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-secondary-400">
+            <div className="text-2xl font-bold text-secondary">
               {filterOptions.locations.length}
             </div>
-            <div className="text-sm text-slate-400">Locations</div>
+            <div className="text-sm text-muted">Locations</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-accent-400">
+            <div className="text-2xl font-bold text-accent">
               {linkedInJobs.filter(job => job.recruiter_name).length}
             </div>
-            <div className="text-sm text-slate-400">With Recruiters</div>
+            <div className="text-sm text-muted">With Recruiters</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-success-400">
+            <div className="text-2xl font-bold text-success">
               {linkedInJobs.filter(job => job.description && job.description.length > 100).length}
             </div>
-            <div className="text-sm text-slate-400">Detailed Posts</div>
+            <div className="text-sm text-muted">Detailed Posts</div>
           </div>
         </div>
       </motion.div>
