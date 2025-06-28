@@ -7,7 +7,6 @@ import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/Button';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
