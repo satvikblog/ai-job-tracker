@@ -422,6 +422,7 @@ export function ResumeGenerator() {
                     value={formData.selectedJobId}
                     onChange={(e) => handleInputChange('selectedJobId', e.target.value)}
                     className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                   style={{ color: 'var(--foreground)' }}
                   >
                     {jobOptions.map((option) => (
                       <option key={option.value} value={option.value} className="bg-background text-foreground">
@@ -515,7 +516,8 @@ export function ResumeGenerator() {
                     rows={window.innerWidth < 640 ? 8 : 12}
                     value={formData.jobDescription}
                     onChange={(e) => handleInputChange('jobDescription', e.target.value)}
-                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none font-mono text-sm"
+                   className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none font-mono text-sm"
+                   style={{ color: 'var(--foreground)' }}
                     placeholder="Job description will be auto-filled when you select a job opportunity..."
                     disabled={!!formData.selectedJobId}
                   />
@@ -625,7 +627,8 @@ export function ResumeGenerator() {
                 {generatedContent ? (
                   <div className="w-full">
                     <textarea
-                      className="font-mono text-sm w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                     className="font-mono text-sm w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                     style={{ color: 'var(--foreground)' }}
                       value={generatedContent}
                       onChange={(e) => setGeneratedContent(e.target.value)}
                       rows={window.innerWidth < 640 ? 15 : 20}

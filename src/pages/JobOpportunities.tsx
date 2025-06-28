@@ -504,7 +504,7 @@ export function JobOpportunities() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   leftIcon={<Search className="w-5 h-5" />}
-                  className="w-full"
+                  className="w-full text-foreground"
                   variant="default"
                 />
               </div>
@@ -549,6 +549,7 @@ export function JobOpportunities() {
                     value={locationFilter}
                     onChange={(e) => setLocationFilter(e.target.value)}
                     className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground"
+                    style={{ color: 'var(--foreground)' }}
                   >
                     <option value="">All Locations</option>
                     {filterOptions.locations.map(location => (
@@ -565,6 +566,7 @@ export function JobOpportunities() {
                     value={employmentTypeFilter}
                     onChange={(e) => setEmploymentTypeFilter(e.target.value)}
                     className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground"
+                    style={{ color: 'var(--foreground)' }}
                   >
                     <option value="">All Types</option>
                     {filterOptions.employmentTypes.map(type => (
@@ -581,6 +583,7 @@ export function JobOpportunities() {
                     value={seniorityFilter}
                     onChange={(e) => setSeniorityFilter(e.target.value)}
                     className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground"
+                    style={{ color: 'var(--foreground)' }}
                   >
                     <option value="">All Levels</option>
                     {filterOptions.seniorities.map(seniority => (
