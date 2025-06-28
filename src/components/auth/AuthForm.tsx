@@ -91,9 +91,9 @@ export function AuthForm() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
+          className="w-full max-w-md relative z-10"
         >
-          <Card className="p-8 border-card-border bg-card">
+          <Card className="p-8 border-card-border bg-card/80 backdrop-blur-md shadow-lg">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-warning to-error rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
                 <Settings className="w-8 h-8 text-white animate-pulse" />
@@ -107,9 +107,9 @@ export function AuthForm() {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-orange-900/20 border border-orange-500 rounded-lg p-4">
-                <h3 className="text-orange-300 font-medium mb-2">Setup Instructions:</h3>
-                <ol className="text-sm text-orange-200 space-y-1">
+              <div className="bg-orange-900/30 border border-orange-500/70 rounded-lg p-4 shadow-inner">
+                <h3 className="text-orange-300 font-medium mb-2 tracking-wide">Setup Instructions:</h3>
+                <ol className="text-sm text-orange-200 space-y-2">
                   <li>1. Create a Supabase project at supabase.com</li>
                   <li>2. Copy your project URL and anon key</li>
                   <li>3. Update the .env file with your credentials</li>
@@ -117,8 +117,8 @@ export function AuthForm() {
                 </ol>
               </div>
 
-              <div className="bg-gray-800 rounded-lg p-4">
-                <h4 className="text-gray-300 font-medium mb-2">Environment Variables:</h4>
+              <div className="bg-gray-800/80 rounded-lg p-4 shadow-inner">
+                <h4 className="text-gray-300 font-medium mb-3 tracking-wide">Environment Variables:</h4>
                 <div className="space-y-2 text-sm font-mono">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-400">VITE_SUPABASE_URL</span>
@@ -126,8 +126,8 @@ export function AuthForm() {
                       supabaseUrl && 
                       !supabaseUrl.includes('placeholder') &&
                       !supabaseUrl.includes('your_supabase_project_url')
-                        ? 'bg-green-900 text-green-300' 
-                        : 'bg-red-900 text-red-300'
+                        ? 'bg-green-900/80 text-green-300 font-medium' 
+                        : 'bg-red-900/80 text-red-300 font-medium'
                     }`}>
                       {supabaseUrl && 
                        !supabaseUrl.includes('placeholder') &&
@@ -140,8 +140,8 @@ export function AuthForm() {
                       supabaseAnonKey && 
                       !supabaseAnonKey.includes('placeholder') &&
                       !supabaseAnonKey.includes('your_supabase_anon_key')
-                        ? 'bg-green-900 text-green-300' 
-                        : 'bg-red-900 text-red-300'
+                        ? 'bg-green-900/80 text-green-300 font-medium' 
+                        : 'bg-red-900/80 text-red-300 font-medium'
                     }`}>
                       {supabaseAnonKey && 
                        !supabaseAnonKey.includes('placeholder') &&
@@ -155,6 +155,7 @@ export function AuthForm() {
                 onClick={checkConnection}
                 className="w-full"
                 leftIcon={<Settings className="w-4 h-4" />}
+                glow
               >
                 Test Connection
               </Button>

@@ -7,6 +7,7 @@ import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../ui/Button';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
@@ -40,7 +41,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
         </div>
         <Button 
           variant="ghost" 
-          size="sm" 
+          size="sm"
           onClick={() => navigate('/applications')}
           rightIcon={<ArrowRight className="w-4 h-4" />}
           className="text-muted hover:text-foreground"
