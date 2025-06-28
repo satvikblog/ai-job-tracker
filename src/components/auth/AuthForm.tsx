@@ -30,17 +30,8 @@ export function AuthForm() {
   const checkConnection = async () => {
     setConnectionStatus('checking');
     
-    // Hardcoded credentials for Vercel deployment
-    const supabaseUrl = 'https://zeiivnxtkcqwlnmtxyfd.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWl2bnh0a2Nxd2xubXR4eWZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNzMyNzUsImV4cCI6MjA2NTY0OTI3NX0.lhahnsYyO9yEvnYTt-5fxZ6bxtDzqHSiOR0OABD_jSI';
-    
-    // Log connection details for debugging
-    console.log('Using Supabase URL:', supabaseUrl);
-    console.log('Using Supabase Anon Key:', supabaseAnonKey ? 'Set (not shown for security)' : 'Not set');
-    
     try {
       const isConnected = await testConnection();
-      
       setConnectionStatus(isConnected ? 'connected' : 'disconnected');
     } catch (error: any) {
       console.error('Connection check failed:', error);
@@ -139,30 +130,14 @@ export function AuthForm() {
                 <div className="space-y-2 text-sm font-mono">
                   <div className="flex items-center justify-between">
                     <span className="text-muted">VITE_SUPABASE_URL</span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      supabaseUrl && 
-                      !supabaseUrl.includes('placeholder') &&
-                      !supabaseUrl.includes('your_supabase_project_url')
-                        ? 'bg-green-500/20 text-green-500 font-medium' 
-                        : 'bg-red-500/20 text-red-500 font-medium'
-                    }`}>
-                      {supabaseUrl && 
-                       !supabaseUrl.includes('placeholder') &&
-                       !supabaseUrl.includes('your_supabase_project_url') ? 'SET' : 'MISSING'}
+                    <span className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-500 font-medium">
+                      MISSING
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted">VITE_SUPABASE_ANON_KEY</span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      supabaseAnonKey && 
-                      !supabaseAnonKey.includes('placeholder') &&
-                      !supabaseAnonKey.includes('your_supabase_anon_key')
-                        ? 'bg-green-500/20 text-green-500 font-medium' 
-                        : 'bg-red-500/20 text-red-500 font-medium'
-                    }`}>
-                      {supabaseAnonKey && 
-                       !supabaseAnonKey.includes('placeholder') &&
-                       !supabaseAnonKey.includes('your_supabase_anon_key') ? 'SET' : 'MISSING'}
+                    <span className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-500 font-medium">
+                      MISSING
                     </span>
                   </div>
                 </div>
@@ -184,82 +159,7 @@ export function AuthForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Floating Particles */}
-        {Array.from({ length: 30 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-primary/10"
-            style={{
-              width: `${Math.random() * 6 + 2}px`,
-              height: `${Math.random() * 6 + 2}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50
-              ],
-              y: [
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50
-              ],
-              opacity: [0.2, 0.5, 0.2, 0.5],
-              scale: [1, 1.5, 1, 1.5]
-            }}
-            transition={{
-              duration: Math.random() * 20 + 15,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: Math.random() * 5,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-      </div>
-      
-      {/* Animated Gradient Blobs */}
-      <motion.div
-        className={`absolute w-[500px] h-[500px] rounded-full bg-gradient-to-r ${getGradientColors()} blur-[100px] opacity-20`}
-        animate={{
-          x: [50, -50, 50],
-          y: [20, -20, 20],
-          scale: [1, 1.1, 1],
-          rotate: [0, 10, 0]
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut"
-        }}
-        style={{ top: '20%', left: '30%', zIndex: -1 }}
-      />
-      
-      <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-r from-purple-500/20 to-yellow-400/20 blur-[80px] opacity-20"
-        animate={{
-          x: [-30, 30, -30],
-          y: [-40, 40, -40],
-          scale: [1, 1.2, 1],
-          rotate: [0, -10, 0]
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut"
-        }}
-        style={{ bottom: '20%', right: '30%', zIndex: -1 }}
-      />
-      
+    <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300">
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
@@ -278,25 +178,13 @@ export function AuthForm() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className={`w-20 h-20 bg-gradient-to-br ${getGradientColors()} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-lg relative`}>
+            <div className={`w-20 h-20 bg-gradient-to-br ${getGradientColors()} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-lg`}>
               <Sparkles className="w-10 h-10 text-white" />
-              <motion.div
-                className="absolute inset-0 rounded-2xl border-2 border-white/20"
-                animate={{ 
-                  boxShadow: ['0 0 0 0 rgba(255,255,255,0)', '0 0 0 10px rgba(255,255,255,0)'],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "loop"
-                }}
-              />
             </div>
             <motion.h1 
               className="text-3xl font-bold text-foreground mb-1"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30 } }}
+              animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               JobTracker AI
@@ -304,7 +192,7 @@ export function AuthForm() {
             <motion.p 
               className="text-muted mt-2"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30 } }}
+              animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
               {isSignUp ? 'Create your account' : 'Welcome back'}
@@ -314,7 +202,7 @@ export function AuthForm() {
             <motion.div 
               className="mt-4"
               initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30 } }}
+              animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
