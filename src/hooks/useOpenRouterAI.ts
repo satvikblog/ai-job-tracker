@@ -77,14 +77,6 @@ export function useOpenRouterAI() {
 
   const getOpenRouterAPIKey = async (): Promise<string | null> => {
     try {
-      // Hardcoded API key for testing - replace with your actual key
-      const hardcodedKey = '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';
-      
-      // If we have a hardcoded key for testing, use it
-      if (hardcodedKey) {
-        return hardcodedKey;
-      }
-      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
@@ -102,12 +94,6 @@ export function useOpenRouterAI() {
       return settings?.openrouter_api_key || null;
     } catch (error) {
       console.error('Error getting OpenRouter API key:', error);
-      
-      // Fallback to environment variable if available
-      if (import.meta.env.VITE_OPENROUTER_API_KEY) {
-        return import.meta.env.VITE_OPENROUTER_API_KEY as string;
-      }
-      
       return null;
     }
   };
@@ -124,12 +110,11 @@ export function useOpenRouterAI() {
         return import.meta.env.VITE_OPENROUTER_API_KEY as string;
       }
       
-      // Fallback to hardcoded key
-      return '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';
+      // No API key found
+      throw new Error('OpenRouter API key not found. Please add it in Settings > API Keys or set VITE_OPENROUTER_API_KEY environment variable.');
     } catch (error) {
       console.error('Error getting OpenRouter API key:', error);
-      // Last resort fallback
-      return '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';
+      throw error;
     }
   };
 
