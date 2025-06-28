@@ -18,8 +18,8 @@ export default {
       colors: {
         // Semantic color tokens
         background: {
-          DEFAULT: 'rgb(var(--background) / <alpha-value>)',
-          secondary: 'rgb(var(--background-secondary) / <alpha-value>)',
+          DEFAULT: 'var(--background)',
+          secondary: 'var(--background-secondary)',
         },
         foreground: 'var(--foreground)',
         muted: 'var(--muted)',
@@ -48,14 +48,14 @@ export default {
         ring: 'var(--ring)',
         
         primary: {
-          DEFAULT: 'rgb(var(--primary-rgb) / <alpha-value>)',
+          DEFAULT: 'var(--primary)',
           foreground: 'var(--primary-foreground)',
           hover: 'var(--primary-hover)',
           accent: 'var(--primary-accent)',
         },
         
         secondary: {
-          DEFAULT: 'rgb(var(--secondary-rgb) / <alpha-value>)',
+          DEFAULT: 'var(--secondary)',
           foreground: 'var(--secondary-foreground)',
           hover: 'var(--secondary-hover)',
           accent: 'var(--secondary-accent)',

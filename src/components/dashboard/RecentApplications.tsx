@@ -2,11 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
-import { Button } from '../ui/Button';
 import { ArrowRight, Building, MapPin, Calendar, ExternalLink, Briefcase } from 'lucide-react';
 import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
@@ -26,6 +26,7 @@ const statusColors = {
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   const recent = applications.slice(0, 5);
   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <Card className="bg-card border-card-border">
@@ -41,6 +42,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
         <Button 
           variant="ghost" 
           size="sm" 
+          onClick={() => navigate('/applications')}
           onClick={() => navigate('/applications')}
           rightIcon={<ArrowRight className="w-4 h-4" />}
           className="text-muted hover:text-foreground"
@@ -61,7 +63,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
               <div className="flex-1">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
-                    <Briefcase className="w-6 h-6 text-white" />
+                    <Building className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
