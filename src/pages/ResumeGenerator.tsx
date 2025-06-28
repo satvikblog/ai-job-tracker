@@ -7,6 +7,7 @@ import { Input } from '../components/ui/Input';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
 import { FileText, Sparkles, Copy, Download, Save, Zap, Target, Brain, TrendingUp, Upload, Loader } from 'lucide-react';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
+import { useOpenRouterAI } from '../hooks/useOpenRouterAI';
 import { useGeminiAI } from '../hooks/useGeminiAI';
 import { PDFParser } from '../components/documents/PDFParser';
 import { ResumeSelector } from '../components/documents/ResumeSelector';
@@ -49,6 +50,7 @@ export function ResumeGenerator() {
   const [isPDFParserOpen, setIsPDFParserOpen] = useState(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   const [isGeneratingWithGemini, setIsGeneratingWithGemini] = useState(false);
+  const [isGeneratingWithOpenRouter, setIsGeneratingWithOpenRouter] = useState(false);
   
   const { 
     loading, 
@@ -65,6 +67,12 @@ export function ResumeGenerator() {
     error: geminiError,
     generateRelevantExperience
   } = useGeminiAI();
+  
+  const {
+    loading: openRouterLoading,
+    error: openRouterError,
+    generateResumeContent: generateOpenRouterResume
+  } = useOpenRouterAI();
 
   // Fetch AI Resume jobs on component mount
   useEffect(() => {
@@ -246,6 +254,41 @@ export function ResumeGenerator() {
       toast.error(error.message || 'Failed to generate content with Gemini');
     } finally {
       setIsGeneratingWithGemini(false);
+    }
+  };
+
+  const handleGenerateWithOpenRouter = async () => {
+    if (!formData.resumeContent) {
+      toast.error('Please select or parse a resume first');
+      return;
+    }
+
+    if (!formData.companyName || !formData.jobTitle) {
+      toast.error('Please fill in company name and job title');
+      return;
+    }
+
+    if (!formData.jobDescription.trim()) {
+      toast.error('Please enter a job description');
+      return;
+    }
+
+    try {
+      setIsGeneratingWithOpenRouter(true);
+      
+      const result = await generateOpenRouterResume(
+        formData.resumeContent,
+        formData.jobDescription
+      );
+      
+      setGeneratedContent(result);
+      
+      toast.success('Resume suggestions generated successfully with OpenRouter AI!');
+    } catch (error: any) {
+      console.error('Error generating with OpenRouter:', error);
+      toast.error(error.message || 'Failed to generate content with OpenRouter');
+    } finally {
+      setIsGeneratingWithOpenRouter(false);
     }
   };
 
@@ -446,6 +489,17 @@ export function ResumeGenerator() {
                         className="w-full"
                       >
                         Generate with Gemini AI
+                      </Button>
+                    )}
+                    {formData.resumeContent && (
+                      <Button
+                        onClick={handleGenerateWithOpenRouter}
+                        disabled={isGeneratingWithOpenRouter || !formData.resumeContent || !formData.jobDescription}
+                        leftIcon={isGeneratingWithOpenRouter ? <Loader className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        Generate with OpenRouter AI
                       </Button>
                     )}
                   </div>

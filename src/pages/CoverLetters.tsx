@@ -7,6 +7,7 @@ import { ResumeSelector } from '../components/documents/ResumeSelector';
 import { Textarea } from '../components/ui/Textarea';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
 import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare, FileText, Loader, Upload } from 'lucide-react';
+import { useOpenRouterAI } from '../hooks/useOpenRouterAI';
 import { useJobApplications } from '../hooks/useJobApplications';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
 import { useGeminiAI } from '../hooks/useGeminiAI';
@@ -59,6 +60,7 @@ export function CoverLetters() {
   const [isPDFParserOpen, setIsPDFParserOpen] = useState(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   const [isGeneratingWithGemini, setIsGeneratingWithGemini] = useState(false);
+  const [isGeneratingWithOpenRouter, setIsGeneratingWithOpenRouter] = useState(false);
   
   const { applications } = useJobApplications();
   const { 
@@ -76,6 +78,12 @@ export function CoverLetters() {
     error: geminiError,
     generateCoverLetterContent
   } = useGeminiAI();
+  
+  const {
+    loading: openRouterLoading,
+    error: openRouterError,
+    generateCoverLetterContent: generateOpenRouterCoverLetter
+  } = useOpenRouterAI();
 
   // Fetch LinkedIn jobs and AI Resume data on component mount
   useEffect(() => {
@@ -236,6 +244,47 @@ export function CoverLetters() {
       toast.error(error.message || 'Failed to generate content with Gemini');
     } finally {
       setIsGeneratingWithGemini(false);
+    }
+  };
+
+  const handleGenerateWithOpenRouter = async () => {
+    if (!formData.resumeContent) {
+      toast.error('Please select or parse a resume first');
+      return;
+    }
+
+    if (!formData.companyName || !formData.jobTitle) {
+      toast.error('Please fill in company name and job title');
+      return;
+    }
+
+    if (!formData.jobDescription.trim()) {
+      toast.error('Please enter a job description');
+      return;
+    }
+
+    try {
+      setIsGeneratingWithOpenRouter(true);
+      
+      const result = await generateOpenRouterCoverLetter(
+        formData.resumeContent,
+        formData.companyName,
+        formData.jobTitle,
+        formData.jobDescription
+      );
+      
+      setFormData(prev => ({
+        ...prev,
+        personalExperience: result.relevantExperience,
+        whyCompany: result.whyCompany
+      }));
+      
+      toast.success('Content generated successfully with OpenRouter AI!');
+    } catch (error: any) {
+      console.error('Error generating with OpenRouter:', error);
+      toast.error(error.message || 'Failed to generate content with OpenRouter');
+    } finally {
+      setIsGeneratingWithOpenRouter(false);
     }
   };
 
@@ -566,6 +615,16 @@ export function CoverLetters() {
                       className="w-full"
                     >
                       Generate with Gemini AI
+                    </Button>
+                    
+                    <Button
+                      onClick={handleGenerateWithOpenRouter}
+                      disabled={isGeneratingWithOpenRouter || !formData.resumeContent || !formData.jobDescription}
+                      leftIcon={isGeneratingWithOpenRouter ? <Loader className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      Generate with OpenRouter AI
                     </Button>
                   </div>
                 </div>

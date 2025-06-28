@@ -22,7 +22,7 @@ export function Settings() {
     full_name: '',
     email: ''
   });
-  const [aiProvider, setAiProvider] = useState<string>('n8n');
+  const [aiProvider, setAiProvider] = useState<string>('openrouter');
   const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
   const [editingWebhook, setEditingWebhook] = useState<DatabaseType['public']['Tables']['webhooks']['Row'] | null>(null);
   
@@ -67,9 +67,9 @@ export function Settings() {
       if (error && error.code !== 'PGRST116') {
         throw error;
       }
-
+      
       setSettings(data);
-      setAiProvider(data?.ai_provider || 'n8n');
+      setAiProvider(data?.ai_provider || 'openrouter');
     } catch (error) {
       console.error('Error fetching settings:', error);
     }
@@ -394,8 +394,9 @@ export function Settings() {
                       onChange={(e) => setAiProvider(e.target.value)}
                       className="w-full px-4 py-3 bg-dark-800/70 border-slate-600 border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
-                      <option value="n8n" className="bg-dark-800 text-slate-100">N8N Workflow</option>
+                      <option value="openrouter" className="bg-dark-800 text-slate-100">OpenRouter AI</option>
                       <option value="gemini" className="bg-dark-800 text-slate-100">Google Gemini</option>
+                      <option value="n8n" className="bg-dark-800 text-slate-100">N8N Workflow</option>
                       <option value="openai" className="bg-dark-800 text-slate-100">OpenAI</option>
                     </select>
                     <p className="text-sm text-gray-400 mt-1">
@@ -416,6 +417,23 @@ export function Settings() {
                       />
                       <p className="text-sm text-gray-400 mt-1">
                         Required for direct Google Gemini integration
+                      </p>
+                    </div>
+                  )}
+
+                  {/* OpenRouter API Key (only shown when OpenRouter is selected) */}
+                  {aiProvider === 'openrouter' && (
+                    <div>
+                      <Input
+                        label="OpenRouter API Key"
+                        type="password"
+                        placeholder="sk-or-v1-..."
+                        value={settings?.openrouter_api_key || ''}
+                        onChange={(e) => setSettings(prev => ({ ...prev, openrouter_api_key: e.target.value } as any))}
+                        variant="glass"
+                      />
+                      <p className="text-sm text-gray-400 mt-1">
+                        Required for OpenRouter AI integration with deepseek/deepseek-r1-0528:free model
                       </p>
                     </div>
                   )}

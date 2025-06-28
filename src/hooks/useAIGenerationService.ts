@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { N8N_RAILWAY_CONFIG } from '../lib/n8nConfig';
 import { formatAIContent, formatResumeContent, formatCoverLetterParagraph } from '../utils/formatAIContent';
+import { useOpenRouterAI } from './useOpenRouterAI';
 import toast from 'react-hot-toast';
 
 interface N8NRequest {
@@ -29,6 +30,9 @@ export function useAIGenerationService() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [generatedContent, setGeneratedContent] = useState('');
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
+  
+  // Initialize OpenRouter hook
+  const openRouterAI = useOpenRouterAI();
 
   const generateRequestId = () => {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -202,7 +206,7 @@ Ensure the letter includes:
       // Get user settings to determine AI provider
       const { data: settings, error: settingsError } = await supabase
         .from('user_settings')
-        .select('ai_provider, openai_api_key, gemini_api_key')
+        .select('ai_provider, openai_api_key, gemini_api_key, openrouter_api_key')
         .eq('user_id', user.id)
         .single();
 
@@ -255,6 +259,60 @@ Ensure the letter includes:
           clearInterval(timer);
           console.error('Gemini API error:', error);
           toast.error(`Gemini API error: ${error.message}`);
+          throw error;
+        }
+      } else if (aiProvider === 'openrouter') {
+        try {
+          // Use OpenRouter for generation
+          if (type === 'resume') {
+            content = await openRouterAI.generateResumeContent(
+              formData.resumeContent || '',
+              formData.job_description
+            );
+          } else {
+            // For cover letter
+            const result = await openRouterAI.generateCoverLetterContent(
+              formData.resumeContent || '',
+              formData.company_name,
+              formData.job_title,
+              formData.job_description
+            );
+            
+            // Combine the relevant experience and why company sections
+            content = `Dear ${formData.hiring_manager || 'Hiring Manager'},\n\n`;
+            content += `I am writing to express my interest in the ${formData.job_title} position at ${formData.company_name}.\n\n`;
+            content += result.relevantExperience + '\n\n';
+            content += result.whyCompany + '\n\n';
+            content += 'I would welcome the opportunity to discuss how my background and skills would be a good match for this position. Thank you for your consideration.\n\n';
+            content += 'Sincerely,\n[Your Name]';
+          }
+          
+          // Format the content
+          if (type === 'resume') {
+            content = formatResumeContent(content);
+          } else {
+            content = formatAIContent(content);
+          }
+          
+          // Update progress to 100%
+          setTimeout(() => {
+            clearInterval(timer);
+            setProgress(100);
+            setTimeRemaining(0);
+            setGeneratedContent(content);
+            setLoading(false);
+          }, 1000);
+          
+          // Update AI Resume table if it's a resume generation
+          if (type === 'resume' && formData.selected_job_id) {
+            await updateAiResumeTable(formData.selected_job_id, content, user.id);
+          }
+          
+          toast.success(`${type === 'resume' ? 'Resume suggestions' : 'Cover letter'} generated successfully!`);
+        } catch (error: any) {
+          clearInterval(timer);
+          console.error('OpenRouter API error:', error);
+          toast.error(`OpenRouter API error: ${error.message}`);
           throw error;
         }
       } else if (aiProvider === 'openai' && settings?.openai_api_key) {
