@@ -60,12 +60,12 @@ export function useGoogleOAuth() {
         // Use default development credentials if still not found
         if (!clientId) {
           console.warn('No Google Client ID found. Please configure VITE_GOOGLE_CLIENT_ID in your environment variables.');
-          toast.error('Google integration not configured. Please check your environment variables.');
+          console.log('Google integration not configured - this is normal if you haven\'t set up Google OAuth yet.');
           return;
         }
         if (!apiKey) {
           console.warn('No Google API Key found. Please configure VITE_GOOGLE_API_KEY in your environment variables.');
-          toast.error('Google integration not configured. Please check your environment variables.');
+          console.log('Google integration not configured - this is normal if you haven\'t set up Google OAuth yet.');
           return;
         }
       }
@@ -123,18 +123,13 @@ export function useGoogleOAuth() {
         .single();
 
       if (error) {
+        // Handle the case where no token exists (PGRST116 error)
+        if (error.code === 'PGRST116' && error.details === 'The result contains 0 rows') {
+          setIsAuthenticated(false);
+          return;
+        }
+        // For other errors, log and return
         console.error('Error loading OAuth status:', error);
-        return;
-      }
-
-      // Handle the case where no token exists (tokens will be null)
-      if (!tokens) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      // Handle the case where no token exists (tokens will be null)
-      if (!tokens) {
         setIsAuthenticated(false);
         return;
       }
@@ -143,9 +138,12 @@ export function useGoogleOAuth() {
         // Check if token is still valid
         const isExpired = tokens.expires_at ? new Date(tokens.expires_at) < new Date() : false;
         setIsAuthenticated(!isExpired);
+      } else {
+        setIsAuthenticated(false);
       }
     } catch (error) {
       console.error('Error loading OAuth status:', error);
+      setIsAuthenticated(false);
     }
   };
 

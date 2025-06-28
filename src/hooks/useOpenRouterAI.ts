@@ -111,7 +111,7 @@ export function useOpenRouterAI() {
       }
       
       // No API key found
-      throw new Error('OpenRouter API key not found. Please add it in Settings > API Keys or set VITE_OPENROUTER_API_KEY environment variable.');
+      throw new Error('OpenRouter API key not found. Please add it in Settings > API Keys (select "OpenRouter AI" as provider) or set VITE_OPENROUTER_API_KEY environment variable.');
     } catch (error) {
       console.error('Error getting OpenRouter API key:', error);
       throw error;

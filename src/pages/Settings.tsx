@@ -433,7 +433,7 @@ export function Settings() {
                         variant="glass"
                       />
                       <p className="text-sm text-gray-400 mt-1">
-                        Required for OpenRouter AI integration with deepseek/deepseek-r1-0528:free model
+                        Required for OpenRouter AI integration with deepseek/deepseek-r1-0528:free model. Get your API key from <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 underline">OpenRouter.ai</a>
                       </p>
                     </div>
                   )}
@@ -486,8 +486,9 @@ export function Settings() {
                     <Button
                       onClick={() => saveSettings({ 
                         ai_provider: aiProvider,
-                        openai_api_key: aiProvider === 'openai' ? settings?.openai_api_key : null,
-                        gemini_api_key: aiProvider === 'gemini' ? settings?.gemini_api_key : null
+                        openai_api_key: aiProvider === 'openai' ? settings?.openai_api_key : settings?.openai_api_key,
+                        gemini_api_key: aiProvider === 'gemini' ? settings?.gemini_api_key : settings?.gemini_api_key,
+                        openrouter_api_key: aiProvider === 'openrouter' ? settings?.openrouter_api_key : settings?.openrouter_api_key
                       })}
                       isLoading={loading}
                       leftIcon={<Save className="w-4 h-4" />}
