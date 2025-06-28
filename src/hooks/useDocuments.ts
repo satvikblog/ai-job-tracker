@@ -4,6 +4,7 @@ import { Database } from '../lib/database.types';
 import { debounce } from 'lodash-es';
 import toast from 'react-hot-toast';
 import * as pdfjsLib from 'pdfjs-dist';
+import { parseResumeFile } from '../utils/resumeParser';
 
 type Document = Database['public']['Tables']['documents']['Row'];
 
@@ -93,7 +94,13 @@ export function useDocuments() {
       // Extract text content from document if it's a resume or cover letter
       let resumeContent = null;
       if (fileType === 'resume' || fileType === 'cover-letter') {
-        resumeContent = await extractTextFromFile(file);
+        try {
+          const parsedResume = await parseResumeFile(file);
+          resumeContent = parsedResume.rawText;
+        } catch (error) {
+          console.error('Error parsing resume:', error);
+          resumeContent = await extractTextFromFile(file);
+        }
       }
 
       // Save document record

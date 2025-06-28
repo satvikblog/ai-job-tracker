@@ -6,6 +6,8 @@ import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';
 import { PDFViewer } from '../components/documents/PDFViewer';
+import { PDFParser } from '../components/documents/PDFParser';
+import { ResumeAnalyzer } from '../components/documents/ResumeAnalyzer';
 import { Upload, File, Download, Trash2, Search, Plus, FileText, Award, FolderOpen } from 'lucide-react';
 import { useDocuments } from '../hooks/useDocuments';
 import { useJobApplications } from '../hooks/useJobApplications';
@@ -42,6 +44,8 @@ export function Documents() {
   const [selectedType, setSelectedType] = useState<string>('');
   const [uploadType, setUploadType] = useState<Database['public']['Tables']['documents']['Row']['file_type']>('resume');
   const [viewingDocument, setViewingDocument] = useState<Database['public']['Tables']['documents']['Row'] | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showAnalyzer, setShowAnalyzer] = useState(false);
   const [linkedJobId, setLinkedJobId] = useState<string>('');
 
   const jobOptions = [
@@ -77,6 +81,12 @@ export function Documents() {
     const files = event.target.files;
     if (!files) return;
 
+    // Store the first file for analysis if it's a resume
+    if (files[0] && uploadType === 'resume') {
+      setSelectedFile(files[0]);
+      setShowAnalyzer(true);
+    }
+
     try {
       for (const file of Array.from(files)) {
         await uploadDocument(file, uploadType, linkedJobId || undefined);
@@ -110,6 +120,11 @@ export function Documents() {
       // For other file types, download directly
       window.open(document.file_url, '_blank');
     }
+  };
+
+  const handleParsedContent = (content: string) => {
+    console.log('Parsed content:', content);
+    // You can use this content for further processing or display
   };
 
   if (loading) {
@@ -361,6 +376,18 @@ export function Documents() {
         </motion.div>
       )}
       </div>
+
+      {/* Resume Analyzer Modal */}
+      {showAnalyzer && selectedFile && (
+        <Modal
+          isOpen={showAnalyzer}
+          onClose={() => setShowAnalyzer(false)}
+          title="Resume Analysis"
+          size="xl"
+        >
+          <ResumeAnalyzer file={selectedFile} onClose={() => setShowAnalyzer(false)} />
+        </Modal>
+      )}
 
       {/* Document Viewer Modal */}
       {viewingDocument && (
