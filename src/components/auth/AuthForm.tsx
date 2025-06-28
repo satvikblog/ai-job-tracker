@@ -25,18 +25,19 @@ export function AuthForm() {
 
   const checkConnection = async () => {
     setConnectionStatus('checking');
-    const isConnected = await testConnection();
     
-    // Log connection details for debugging
-    console.log('Supabase connection test result:', isConnected);
-    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-    console.log('Supabase Anon Key exists:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
-    
-    // Always set to connected in production to avoid configuration screen
-    if (import.meta.env.PROD) {
-      setConnectionStatus('connected');
-    } else {
+    try {
+      const isConnected = await testConnection();
+      
+      // Log connection details for debugging
+      console.log('Supabase connection test result:', isConnected);
+      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+      console.log('Supabase Anon Key exists:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+      
       setConnectionStatus(isConnected ? 'connected' : 'disconnected');
+    } catch (error: any) {
+      console.error('Connection check failed:', error);
+      setConnectionStatus('disconnected');
     }
   };
 
