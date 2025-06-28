@@ -18,7 +18,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   ...props
 }, ref) => {
   const variantStyles = {
-    default: 'bg-input border-border shadow-sm',
+    default: 'bg-input border-border shadow-sm text-foreground',
     glass: 'bg-input/50 border-border/50 backdrop-blur-xl shadow-sm'
   };
 
@@ -34,7 +34,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
         className={`
           w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
           focus:ring-2 focus:ring-primary/40 focus:border-primary
-          text-foreground
+          text-foreground placeholder:text-muted/80
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-all duration-200
           ${error ? 'border-error focus:ring-error/40 focus:border-error' : ''}

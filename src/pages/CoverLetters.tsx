@@ -518,12 +518,12 @@ export function CoverLetters() {
                   <select
                     value={formData.selectedJobId}
                     onChange={(e) => handleInputChange('selectedJobId', e.target.value)}
-                    className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   >
                     {Object.entries(groupedOptions).map(([group, options]) => (
                       <optgroup key={group} label={group}>
                         {options.map(option => (
-                          <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+                          <option key={option.value} value={option.value} className="bg-background text-foreground">
                             {option.label}
                           </option>
                         ))}
@@ -566,10 +566,10 @@ export function CoverLetters() {
                     <select
                       value={formData.tone}
                       onChange={(e) => handleInputChange('tone', e.target.value)}
-                      className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
                       {toneOptions.map((option) => (
-                        <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+                        <option key={option.value} value={option.value} className="bg-background text-foreground">
                           {option.label}
                         </option>
                       ))}
@@ -637,7 +637,7 @@ export function CoverLetters() {
                   rows={window.innerWidth < 640 ? 4 : 6}
                   value={formData.jobDescription}
                   onChange={(e) => handleInputChange('jobDescription', e.target.value)}
-                  variant="glass"
+                  variant="default"
                   disabled={!!formData.selectedJobId}
                 />
 
@@ -647,7 +647,7 @@ export function CoverLetters() {
                   rows={5}
                   value={formData.personalExperience}
                   onChange={(e) => handleInputChange('personalExperience', e.target.value)}
-                  variant="glass"
+                  variant="default"
                 />
 
                 <Textarea
@@ -656,7 +656,7 @@ export function CoverLetters() {
                   rows={5}
                   value={formData.whyCompany}
                   onChange={(e) => handleInputChange('whyCompany', e.target.value)}
-                  variant="glass"
+                  variant="default"
                 />
 
                 <Button
@@ -725,7 +725,7 @@ export function CoverLetters() {
                 {generatedContent ? (
                   <div className="w-full">
                     <textarea
-                      className="font-mono text-sm w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                      className="font-mono text-sm w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
                       value={generatedContent}
                       onChange={(e) => setGeneratedContent(e.target.value)}
                       rows={window.innerWidth < 640 ? 15 : 20}

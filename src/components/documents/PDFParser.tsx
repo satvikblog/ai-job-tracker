@@ -198,20 +198,20 @@ export function PDFParser({ onParsedContent, onClose }: PDFParserProps) {
                 className="hidden"
                 accept=".pdf,.doc,.docx,.txt"
               />
-              <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-8 h-8 text-slate-500" />
+              <div className="w-16 h-16 bg-card-hover rounded-full flex items-center justify-center mx-auto mb-4">
+                <Upload className="w-8 h-8 text-muted" />
               </div>
-              <h3 className="text-lg font-medium text-slate-300 mb-2">
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 {file ? file.name : 'Upload a Document'}
               </h3>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className="text-sm text-muted mb-4">
                 {file 
                   ? `${(file.size / 1024 / 1024).toFixed(2)} MB - ${file.type || 'Unknown type'}`
                   : 'Supported formats: PDF, Word documents (.doc, .docx), and text files'
                 }
               </p>
               {error && (
-                <div className="text-error-400 text-sm mb-4 bg-error-900/20 border border-error-600/30 rounded-lg p-3">
+                <div className="text-error text-sm mb-4 bg-error/10 border border-error/30 rounded-lg p-3">
                   {error}
                 </div>
               )}

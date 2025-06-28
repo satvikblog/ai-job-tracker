@@ -500,12 +500,12 @@ export function JobOpportunities() {
             <div className="flex-1">
               <div className="relative">
                 <Input
-                  placeholder="Search jobs, companies, locations, or descriptions..."
+                  placeholder="Search job opportunities..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   leftIcon={<Search className="w-5 h-5" />}
                   className="w-full"
-                  variant="glass"
+                  variant="default"
                 />
               </div>
             </div>
@@ -548,11 +548,11 @@ export function JobOpportunities() {
                   <select
                     value={locationFilter}
                     onChange={(e) => setLocationFilter(e.target.value)}
-                    className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100"
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground"
                   >
                     <option value="">All Locations</option>
                     {filterOptions.locations.map(location => (
-                      <option key={location} value={location} className="bg-dark-800">
+                      <option key={location} value={location} className="bg-background text-foreground">
                         {location}
                       </option>
                     ))}
@@ -564,11 +564,11 @@ export function JobOpportunities() {
                   <select
                     value={employmentTypeFilter}
                     onChange={(e) => setEmploymentTypeFilter(e.target.value)}
-                    className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100"
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground"
                   >
                     <option value="">All Types</option>
                     {filterOptions.employmentTypes.map(type => (
-                      <option key={type} value={type} className="bg-dark-800">
+                      <option key={type} value={type} className="bg-background text-foreground">
                         {type}
                       </option>
                     ))}
@@ -580,11 +580,11 @@ export function JobOpportunities() {
                   <select
                     value={seniorityFilter}
                     onChange={(e) => setSeniorityFilter(e.target.value)}
-                    className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100"
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground"
                   >
                     <option value="">All Levels</option>
                     {filterOptions.seniorities.map(seniority => (
-                      <option key={seniority} value={seniority} className="bg-dark-800">
+                      <option key={seniority} value={seniority} className="bg-background text-foreground">
                         {seniority}
                       </option>
                     ))}

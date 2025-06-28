@@ -22,7 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   ...props
 }, ref) => {
   const variantStyles = {
-    default: 'bg-input border-border shadow-sm',
+    default: 'bg-input border-border shadow-sm text-foreground',
     glass: 'bg-input/70 border-border/60 backdrop-blur-xl shadow-sm'
   };
   
@@ -42,7 +42,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       <div className="relative">
         {leftIcon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-            <span className="text-muted transition-colors duration-200">
+            <span className="text-muted/80 transition-colors duration-200">
               {leftIcon}
             </span>
           </div>
@@ -64,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         />
         {rightIcon && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none z-10">
-            <span className="text-muted transition-colors duration-200">
+            <span className="text-muted/80 transition-colors duration-200">
               {rightIcon}
             </span>
           </div>

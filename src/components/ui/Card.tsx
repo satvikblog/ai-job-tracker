@@ -25,7 +25,7 @@ export function Card({
   };
 
   const variantStyles = {
-    default: 'bg-card/95 border-card-border backdrop-blur-md',
+    default: 'bg-card/95 border-card-border backdrop-blur-md text-foreground',
     primary: 'bg-card/95 border-primary/30 backdrop-blur-md',
     secondary: 'bg-card/95 border-secondary/30 backdrop-blur-md',
     accent: 'bg-card/95 border-accent/30 backdrop-blur-md'
