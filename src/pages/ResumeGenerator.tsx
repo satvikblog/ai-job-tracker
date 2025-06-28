@@ -279,36 +279,6 @@ export function ResumeGenerator() {
           <p className="text-slate-400">Loading job opportunities...</p>
         </div>
       </div>
-      
-      {/* PDF Parser Modal */}
-      {isPDFParserOpen && (
-        <Modal
-          isOpen={isPDFParserOpen}
-          onClose={() => setIsPDFParserOpen(false)}
-          title="Parse Resume"
-          size="lg"
-        >
-          <PDFParser 
-            onParsedContent={handleParsedContent} 
-            onClose={() => setIsPDFParserOpen(false)}
-          />
-        </Modal>
-      )}
-      
-      {/* Resume Selector Modal */}
-      {isResumeModalOpen && (
-        <Modal
-          isOpen={isResumeModalOpen}
-          onClose={() => setIsResumeModalOpen(false)}
-          title="Select Resume"
-          size="lg"
-        >
-          <ResumeSelector 
-            onResumeSelected={handleResumeSelected} 
-            onClose={() => setIsResumeModalOpen(false)}
-          />
-        </Modal>
-      )}
     );
   }
 
@@ -688,6 +658,36 @@ export function ResumeGenerator() {
           </Card>
         </motion.div>
       </div>
+
+      {/* PDF Parser Modal */}
+      {isPDFParserOpen && (
+        <Modal
+          isOpen={isPDFParserOpen}
+          onClose={() => setIsPDFParserOpen(false)}
+          title="Parse Resume"
+          size="lg"
+        >
+          <PDFParser 
+            onParsedContent={handleParsedContent} 
+            onClose={() => setIsPDFParserOpen(false)}
+          />
+        </Modal>
+      )}
+      
+      {/* Resume Selector Modal */}
+      {isResumeModalOpen && (
+        <Modal
+          isOpen={isResumeModalOpen}
+          onClose={() => setIsResumeModalOpen(false)}
+          title="Select Resume"
+          size="lg"
+        >
+          <ResumeSelector 
+            onResumeSelected={handleResumeSelected} 
+            onClose={() => setIsResumeModalOpen(false)}
+          />
+        </Modal>
+      )}
     </>
   );
 }
