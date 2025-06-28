@@ -165,31 +165,147 @@ export function AuthForm() {
     );
   }
 
+  // Floating particles animation
+  const particles = Array.from({ length: 20 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 1,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 20 + 10,
+    delay: Math.random() * 5
+  }));
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300">
-      <div className="absolute top-4 right-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300 relative overflow-hidden">
+      {/* Web 3.0 Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute rounded-full bg-primary/20"
+            style={{
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+            }}
+            animate={{
+              x: [
+                Math.random() * 100 - 50,
+                Math.random() * 100 - 50,
+                Math.random() * 100 - 50,
+                Math.random() * 100 - 50
+              ],
+              y: [
+                Math.random() * 100 - 50,
+                Math.random() * 100 - 50,
+                Math.random() * 100 - 50,
+                Math.random() * 100 - 50
+              ],
+              opacity: [0.2, 0.5, 0.2, 0.5],
+              scale: [1, 1.5, 1, 1.5]
+            }}
+            transition={{
+              duration: particle.duration,
+              repeat: Infinity,
+              repeatType: "reverse",
+              delay: particle.delay,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Animated Gradient Blob */}
+      <motion.div
+        className="absolute w-96 h-96 rounded-full bg-gradient-to-r from-primary/30 to-secondary/30 blur-3xl"
+        animate={{
+          x: [50, -50, 50],
+          y: [20, -20, 20],
+          scale: [1, 1.1, 1],
+          rotate: [0, 10, 0]
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut"
+        }}
+        style={{ top: '20%', left: '30%', zIndex: -1 }}
+      />
+      
+      <motion.div
+        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-secondary/30 to-accent/30 blur-3xl"
+        animate={{
+          x: [-30, 30, -30],
+          y: [-40, 40, -40],
+          scale: [1, 1.2, 1],
+          rotate: [0, -10, 0]
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut"
+        }}
+        style={{ bottom: '20%', right: '30%', zIndex: -1 }}
+      />
+      
+      <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
-        <Card className="p-8 border-card-border bg-card">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
-              <Sparkles className="w-8 h-8 text-white" />
+        <Card className="p-8 border-card-border bg-card/80 backdrop-blur-md shadow-lg">
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow relative">
+              <Sparkles className="w-10 h-10 text-white" />
+              <motion.div
+                className="absolute inset-0 rounded-2xl border-2 border-white/20"
+                animate={{ 
+                  boxShadow: ['0 0 0 0 rgba(255,255,255,0)', '0 0 0 10px rgba(255,255,255,0)'],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "loop"
+                }}
+              />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <motion.h1 
+              className="text-3xl font-bold text-foreground mb-1"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
               JobTracker AI
-            </h1>
-            <p className="text-muted mt-2">
+            </motion.h1>
+            <motion.p 
+              className="text-muted mt-2"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
               {isSignUp ? 'Create your account' : 'Welcome back'}
-            </p>
+            </motion.p>
             
             {/* Connection Status */}
-            <div className="mt-4">
+            <motion.div 
+              className="mt-4"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
               <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
                 connectionStatus === 'connected' 
                   ? 'bg-success/20 text-success border border-success/30'
@@ -210,80 +326,125 @@ export function AuthForm() {
                   {connectionStatus === 'disconnected' && 'Connection failed'}
                 </span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {error && (
-            <div className="mb-4 p-3 bg-error/20 border border-error/50 rounded-lg flex items-center space-x-2">
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 p-3 bg-error/20 border border-error/50 rounded-lg flex items-center space-x-2"
+            >
               <AlertCircle className="w-4 h-4 text-error" />
               <span className="text-error text-sm">{error}</span>
-            </div>
+            </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <motion.form 
+            onSubmit={handleSubmit} 
+            className="space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             {isSignUp && (
-              <Input
-                label="Full Name"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                leftIcon={<User className="w-4 h-4" />}
-                required
-                placeholder="Enter your full name"
-              />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <Input
+                  label="Full Name"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  leftIcon={<User className="w-4 h-4" />}
+                  required
+                  placeholder="Enter your full name"
+                />
+              </motion.div>
             )}
             
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              leftIcon={<Mail className="w-4 h-4" />}
-              required
-              placeholder="Enter your email"
-            />
-            
-            <Input
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              leftIcon={<Lock className="w-4 h-4" />}
-              required
-              placeholder="Enter your password"
-              minLength={6}
-            />
-
-            <Button
-              type="submit"
-              className="w-full"
-              isLoading={loading}
-              disabled={connectionStatus !== 'connected'}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
             >
-              {isSignUp ? 'Create Account' : 'Sign In'}
-            </Button>
-          </form>
+              <Input
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                leftIcon={<Mail className="w-4 h-4" />}
+                required
+                placeholder="Enter your email"
+              />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              <Input
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                leftIcon={<Lock className="w-4 h-4" />}
+                required
+                placeholder="Enter your password"
+                minLength={6}
+              />
+            </motion.div>
 
-          <div className="mt-6 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
+              <Button
+                type="submit"
+                className="w-full"
+                isLoading={loading}
+                disabled={connectionStatus !== 'connected'}
+                glow
+              >
+                {isSignUp ? 'Create Account' : 'Sign In'}
+              </Button>
+            </motion.div>
+          </motion.form>
+
+          <motion.div 
+            className="mt-6 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.5 }}
+          >
             <button
               type="button"
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError('');
               }}
-              className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+              className="text-primary hover:text-primary-hover text-sm transition-colors"
             >
               {isSignUp 
                 ? 'Already have an account? Sign in' 
                 : "Don't have an account? Sign up"
               }
             </button> 
-          </div>
+          </motion.div>
 
           {isSignUp && (
-            <div className="mt-4 text-xs text-muted text-center">
+            <motion.div 
+              className="mt-4 text-xs text-muted text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+            >
               By creating an account, you agree to our Terms of Service and Privacy Policy.
-            </div>
+            </motion.div>
           )}
         </Card>
       </motion.div>

@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { MobileNavigation } from './MobileNavigation';
 import { ThemeToggle } from './ThemeToggle';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, ToastPosition } from 'react-hot-toast';
 import { Menu, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -72,7 +72,7 @@ export function Layout() {
       </div>
 
       <Toaster 
-        position="top-right"
+        position="top-right" 
         toastOptions={{
           duration: 3000,
           style: {
@@ -90,7 +90,7 @@ export function Layout() {
             style: {
               border: '1px solid var(--success-border)',
               background: 'var(--success-background)',
-              color: 'var(--success-foreground)',
+              color: 'var(--success)',
             },
             icon: <CheckCircle className="w-5 h-5 text-success" />,
           },
@@ -98,7 +98,7 @@ export function Layout() {
             style: {
               border: '1px solid var(--error-border)',
               background: 'var(--error-background)',
-              color: 'var(--error-foreground)',
+              color: 'var(--error)',
             },
             icon: <AlertCircle className="w-5 h-5 text-error" />,
           },

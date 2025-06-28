@@ -8,13 +8,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm",
-        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm",
+        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm font-semibold",
+        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm font-semibold",
         outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary backdrop-blur-sm",
         ghost: "hover:bg-card-hover text-foreground hover:text-primary",
-        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm",
-        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm",
-        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm",
+        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm font-semibold",
+        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm font-semibold",
+        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm font-semibold",
       },
       size: {
         sm: "px-3 py-2 text-sm",

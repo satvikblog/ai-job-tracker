@@ -31,16 +31,16 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
       )}
       <textarea
         ref={ref}
-        className={`
-          w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
+        className={cn(
+          `w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
           ${monospace ? 'font-mono text-sm' : ''}
           focus:ring-2 focus:ring-primary/30 focus:border-primary
           text-foreground placeholder:text-muted
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-all duration-200 resize-none
-          ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}
-        `}
-        className={cn(className)}
+          ${error ? 'border-error focus:ring-error/30 focus:border-error' : ''}`,
+          className
+        )}
         {...props}
       />
       {error && (

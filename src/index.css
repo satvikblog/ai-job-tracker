@@ -6,13 +6,13 @@
   /* Blue Theme (Default) */
   .blue {
     --background: 248 250 252;
-    --background-secondary: 241 245 249;
-    --foreground: #0f172a;
-    --muted: #64748b;
-    --muted-foreground: #334155;
+    --background-secondary: 236 242 248;
+    --foreground: #020617;
+    --muted: #475569;
+    --muted-foreground: #1e293b;
     
     --card: #ffffff;
-    --card-foreground: #0f172a;
+    --card-foreground: #020617;
     --card-hover: #f8fafc;
     --card-border: #e2e8f0;
     
@@ -25,8 +25,8 @@
     --sidebar-border: #e2e8f0;
     --sidebar-border-active: #93c5fd;
     
-    --border: #e2e8f0;
-    --input: #f1f5f9;
+    --border: #cbd5e1;
+    --input: #f8fafc;
     --ring: #93c5fd;
     
     --primary: #2563eb;
@@ -39,9 +39,9 @@
     --secondary-hover: #7c3aed;
     --secondary-accent: #a78bfa;
     
-    --accent: #06b6d4;
+    --accent: #0891b2;
     --accent-foreground: #ffffff;
-    --accent-hover: #0891b2;
+    --accent-hover: #0e7490;
     --accent-accent: #22d3ee;
     
     --success: #10b981;
@@ -52,7 +52,7 @@
     --success-border: rgba(16, 185, 129, 0.3);
     
     --warning: #f59e0b;
-    --warning-foreground: #ffffff;
+    --warning-foreground: #0f172a;
     --warning-hover: #d97706;
     --warning-accent: #fbbf24;
     --warning-background: rgba(245, 158, 11, 0.1);
@@ -65,7 +65,7 @@
     --error-background: rgba(239, 68, 68, 0.1);
     --error-border: rgba(239, 68, 68, 0.3);
     
-    --icon: #64748b;
+    --icon: #475569;
     
     --shadow-glow-color: rgba(37, 99, 235, 0.3);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -399,11 +399,11 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-slate-200/30 rounded;
+    @apply bg-background/30 rounded;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-primary to-secondary rounded border border-primary border-opacity-20;
+    @apply bg-gradient-to-b from-primary to-secondary rounded border border-primary/20;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {

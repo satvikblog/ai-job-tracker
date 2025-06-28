@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Building, MapPin, Calendar, ExternalLink, Briefcase } from 'lucide-react';
 import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
@@ -25,6 +26,7 @@ const statusColors = {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   const recent = applications.slice(0, 5);
+  const navigate = useNavigate();
   const navigate = useNavigate();
 
   return (
