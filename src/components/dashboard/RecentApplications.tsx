@@ -9,7 +9,6 @@ import { ArrowRight, Building, MapPin, Calendar, ExternalLink } from 'lucide-rea
 import { Database } from '../../lib/database.types';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
-import { useNavigate } from 'react-router-dom';
 
 interface RecentApplicationsProps {
   applications: JobApplication[];
