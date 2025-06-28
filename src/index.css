@@ -431,28 +431,6 @@
 }
 
 /* Mobile navigation improvements */
-@media (max-width: 768px) {
-  .mobile-nav {
-    @apply fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl;
-    @apply border-t border-card-border p-2;
-    @apply flex justify-around items-center;
-    z-index: 1000;
-  }
-  
-  .mobile-nav-item {
-    @apply flex flex-col items-center space-y-1 p-2 rounded-lg;
-    @apply text-xs font-medium transition-all duration-200;
-    @apply min-w-[60px] text-center;
-  }
-  
-  .mobile-nav-item.active {
-    @apply bg-primary/20 text-primary;
-  }
-  
-  .mobile-nav-item:not(.active) {
-    @apply text-muted hover:text-foreground;
-  }
-}
 
 /* Loading spinner improvements */
 .loading-spinner {
