@@ -243,7 +243,6 @@ export function AuthForm() {
           >
             <AnimatePresence mode="wait">
               {isSignUp && (
-                <ល
                 <motion.div
                   key="fullname"
                   initial={{ opacity: 0, height: 0, y: -10 }}
