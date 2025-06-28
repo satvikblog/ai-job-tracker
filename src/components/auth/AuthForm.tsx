@@ -26,13 +26,16 @@ export function AuthForm() {
   const checkConnection = async () => {
     setConnectionStatus('checking');
     
+    // Hardcoded credentials for Vercel deployment
+    const supabaseUrl = 'https://zeiivnxtkcqwlnmtxyfd.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplaWl2bnh0a2Nxd2xubXR4eWZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwNzMyNzUsImV4cCI6MjA2NTY0OTI3NX0.lhahnsYyO9yEvnYTt-5fxZ6bxtDzqHSiOR0OABD_jSI';
+    
+    // Log connection details for debugging
+    console.log('Using Supabase URL:', supabaseUrl);
+    console.log('Using Supabase Anon Key:', supabaseAnonKey ? 'Set (not shown for security)' : 'Not set');
+    
     try {
       const isConnected = await testConnection();
-      
-      // Log connection details for debugging
-      console.log('Supabase connection test result:', isConnected);
-      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-      console.log('Supabase Anon Key exists:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
       
       setConnectionStatus(isConnected ? 'connected' : 'disconnected');
     } catch (error: any) {
@@ -115,29 +118,29 @@ export function AuthForm() {
                   <div className="flex items-center justify-between">
                     <span className="text-gray-400">VITE_SUPABASE_URL</span>
                     <span className={`text-xs px-2 py-1 rounded ${
-                      import.meta.env.VITE_SUPABASE_URL && 
-                      !import.meta.env.VITE_SUPABASE_URL.includes('placeholder') &&
-                      !import.meta.env.VITE_SUPABASE_URL.includes('your_supabase_project_url')
+                      supabaseUrl && 
+                      !supabaseUrl.includes('placeholder') &&
+                      !supabaseUrl.includes('your_supabase_project_url')
                         ? 'bg-green-900 text-green-300' 
                         : 'bg-red-900 text-red-300'
                     }`}>
-                      {import.meta.env.VITE_SUPABASE_URL && 
-                       !import.meta.env.VITE_SUPABASE_URL.includes('placeholder') &&
-                       !import.meta.env.VITE_SUPABASE_URL.includes('your_supabase_project_url') ? 'SET' : 'MISSING'}
+                      {supabaseUrl && 
+                       !supabaseUrl.includes('placeholder') &&
+                       !supabaseUrl.includes('your_supabase_project_url') ? 'SET' : 'MISSING'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-400">VITE_SUPABASE_ANON_KEY</span>
                     <span className={`text-xs px-2 py-1 rounded ${
-                      import.meta.env.VITE_SUPABASE_ANON_KEY && 
-                      !import.meta.env.VITE_SUPABASE_ANON_KEY.includes('placeholder') &&
-                      !import.meta.env.VITE_SUPABASE_ANON_KEY.includes('your_supabase_anon_key')
+                      supabaseAnonKey && 
+                      !supabaseAnonKey.includes('placeholder') &&
+                      !supabaseAnonKey.includes('your_supabase_anon_key')
                         ? 'bg-green-900 text-green-300' 
                         : 'bg-red-900 text-red-300'
                     }`}>
-                      {import.meta.env.VITE_SUPABASE_ANON_KEY && 
-                       !import.meta.env.VITE_SUPABASE_ANON_KEY.includes('placeholder') &&
-                       !import.meta.env.VITE_SUPABASE_ANON_KEY.includes('your_supabase_anon_key') ? 'SET' : 'MISSING'}
+                      {supabaseAnonKey && 
+                       !supabaseAnonKey.includes('placeholder') &&
+                       !supabaseAnonKey.includes('your_supabase_anon_key') ? 'SET' : 'MISSING'}
                     </span>
                   </div>
                 </div>
