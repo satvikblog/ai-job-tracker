@@ -4,6 +4,7 @@ import { Button } from '../ui/Button';
 import { X, Download, Copy, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import * as pdfjsLib from 'pdfjs-dist';
+import { supabase } from '../../lib/supabase';
 
 // Set the worker source
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -35,22 +36,55 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
         setIsTextFile(fileName.toLowerCase().endsWith('.txt'));
 
         try {
-          // Test if the URL is accessible
-          const response = await fetch(url);
-          
-          if (!response.ok) {
-            if (response.status === 404) {
-              throw new Error('Document not found. The file may have been deleted or moved.');
-            } else if (response.status === 403) {
-              throw new Error('Access denied. Please check your Supabase storage permissions.');
-            } else {
-              throw new Error(`Failed to access document: ${response.status} ${response.statusText}`);
+          // Extract the file path from the Supabase storage URL
+          let filePath = '';
+          if (url.includes('/storage/v1/object/public/')) {
+            // Public bucket URL format
+            const urlParts = url.split('/storage/v1/object/public/');
+            if (urlParts.length > 1) {
+              const pathParts = urlParts[1].split('/');
+              if (pathParts.length > 1) {
+                filePath = pathParts.slice(1).join('/'); // Remove bucket name, keep file path
+              }
+            }
+          } else if (url.includes('/storage/v1/object/sign/')) {
+            // Signed URL format
+            const urlParts = url.split('/storage/v1/object/sign/');
+            if (urlParts.length > 1) {
+              const pathParts = urlParts[1].split('?')[0].split('/');
+              if (pathParts.length > 1) {
+                filePath = pathParts.slice(1).join('/'); // Remove bucket name, keep file path
+              }
             }
           }
-          
-          // For text files, we can directly get the content
+
+          if (!filePath) {
+            throw new Error('Unable to extract file path from URL');
+          }
+
+          // Download the file using Supabase client with proper authentication
+          const { data, error: downloadError } = await supabase.storage
+            .from('documents')
+            .download(filePath);
+
+          if (downloadError) {
+            console.error('Supabase storage error:', downloadError);
+            if (downloadError.message.includes('not found')) {
+              throw new Error('Document not found. The file may have been deleted or moved.');
+            } else if (downloadError.message.includes('access')) {
+              throw new Error('Access denied. Please check your permissions.');
+            } else {
+              throw new Error(`Storage error: ${downloadError.message}`);
+            }
+          }
+
+          if (!data) {
+            throw new Error('No data received from storage');
+          }
+
+          // For text files, read as text
           if (isTextFile) {
-            const text = await response.text();
+            const text = await data.text();
             setPdfContent(text);
             setLoading(false);
             return;
@@ -58,7 +92,7 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
           
           // For PDFs, use PDF.js
           if (fileName.toLowerCase().endsWith('.pdf')) {
-            const arrayBuffer = await response.arrayBuffer();
+            const arrayBuffer = await data.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
             
             let fullText = '';
@@ -91,7 +125,7 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
           }
           
           // For other document types, try to read as text
-          const text = await response.text();
+          const text = await data.text();
           
           // Simple cleaning for non-PDF documents
           const cleanedText = text
@@ -102,10 +136,19 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
           setPdfContent(cleanedText);
           
         } catch (fetchError: any) {
-          if (fetchError.message.includes('Failed to fetch')) {
-            throw new Error('Unable to connect to storage. Please check your internet connection and Supabase configuration.');
+          console.error('Error in fetchPdfContent:', fetchError);
+          
+          if (fetchError.message.includes('Unable to extract file path')) {
+            throw new Error('Invalid storage URL format. Please contact support.');
+          } else if (fetchError.message.includes('Storage error')) {
+            throw fetchError;
+          } else if (fetchError.message.includes('not found')) {
+            throw new Error('Document not found. The file may have been deleted or moved.');
+          } else if (fetchError.message.includes('access')) {
+            throw new Error('Access denied. Please check your permissions.');
+          } else {
+            throw new Error('Unable to load document. Please try again or contact support.');
           }
-          throw fetchError;
         }
         
       } catch (error: any) {
@@ -126,8 +169,53 @@ export function PDFViewer({ url, fileName, onClose }: PDFViewerProps) {
     }
   };
 
-  const handleDownload = () => {
-    window.open(url, '_blank');
+  const handleDownload = async () => {
+    try {
+      // Extract file path from URL for download
+      let filePath = '';
+      if (url.includes('/storage/v1/object/public/')) {
+        const urlParts = url.split('/storage/v1/object/public/');
+        if (urlParts.length > 1) {
+          const pathParts = urlParts[1].split('/');
+          if (pathParts.length > 1) {
+            filePath = pathParts.slice(1).join('/');
+          }
+        }
+      } else if (url.includes('/storage/v1/object/sign/')) {
+        const urlParts = url.split('/storage/v1/object/sign/');
+        if (urlParts.length > 1) {
+          const pathParts = urlParts[1].split('?')[0].split('/');
+          if (pathParts.length > 1) {
+            filePath = pathParts.slice(1).join('/');
+          }
+        }
+      }
+
+      if (filePath) {
+        // Create a signed URL for download
+        const { data, error } = await supabase.storage
+          .from('documents')
+          .createSignedUrl(filePath, 60); // 60 seconds expiry
+
+        if (error) {
+          console.error('Error creating signed URL:', error);
+          toast.error('Failed to create download link');
+          return;
+        }
+
+        if (data?.signedUrl) {
+          window.open(data.signedUrl, '_blank');
+        } else {
+          toast.error('Failed to create download link');
+        }
+      } else {
+        // Fallback to original URL
+        window.open(url, '_blank');
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download file');
+    }
   };
 
   return (
