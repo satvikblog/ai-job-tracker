@@ -8,13 +8,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm font-semibold tracking-wide",
-        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm font-semibold tracking-wide",
-        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors",
-        ghost: "hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors",
-        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm font-semibold tracking-wide",
-        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm font-semibold tracking-wide",
-        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm font-semibold tracking-wide",
+        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-sm font-semibold tracking-wide !text-primary-foreground",
+        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-sm font-semibold tracking-wide !text-secondary-foreground",
+        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors !text-foreground hover:!text-primary",
+        ghost: "hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors !text-foreground hover:!text-primary",
+        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-sm font-semibold tracking-wide !text-error-foreground",
+        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-sm font-semibold tracking-wide !text-success-foreground",
+        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-sm font-semibold tracking-wide !text-accent-foreground",
       },
       size: {
         sm: "px-3 py-2 text-xs",

@@ -35,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }}>
           {label}
         </label>
       )}
@@ -52,13 +52,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           className={`
             w-full ${sizeStyles[size]} ${variantStyles[variant]} border rounded-lg
             focus:ring-2 focus:ring-primary/40 focus:border-primary
-            text-foreground placeholder:text-muted/80
+            placeholder:text-muted/80
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-all duration-200
             ${leftIcon ? 'pl-10' : ''}
             ${rightIcon ? 'pr-10' : ''}
             ${error ? 'border-error focus:ring-error/40 focus:border-error' : ''}
           `}
+          style={{ color: 'var(--foreground)' }}
           className={cn(className)}
           {...props}
         />

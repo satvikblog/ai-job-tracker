@@ -25,7 +25,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }}>
           {label}
         </label>
       )}
@@ -35,12 +35,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
           `w-full px-4 py-3 ${variantStyles[variant]} border rounded-lg
           ${monospace ? 'font-mono text-sm leading-relaxed' : ''}
           focus:ring-2 focus:ring-primary/30 focus:border-primary
-          text-foreground placeholder:text-muted/80
+          placeholder:text-muted/80
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-all duration-200 resize-none
           ${error ? 'border-error focus:ring-error/40 focus:border-error' : ''}`,
           className
         )}
+        style={{ color: 'var(--foreground)' }}
         {...props}
       />
       {error && (

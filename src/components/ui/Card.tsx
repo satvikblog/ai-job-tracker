@@ -25,7 +25,7 @@ export function Card({
   };
 
   const variantStyles = {
-    default: 'bg-card/95 border-card-border backdrop-blur-md text-foreground',
+    default: 'bg-card/95 border-card-border backdrop-blur-md',
     primary: 'bg-card/95 border-primary/30 backdrop-blur-md',
     secondary: 'bg-card/95 border-secondary/30 backdrop-blur-md',
     accent: 'bg-card/95 border-accent/30 backdrop-blur-md'
@@ -47,7 +47,8 @@ export function Card({
           boxShadow: 'var(--shadow-lg)',
           borderColor: 'var(--primary)'
         }}
-        className={`${baseStyles} hover:border-primary/50 cursor-pointer ${className}`}
+        className={`${baseStyles} hover:border-primary/50 cursor-pointer text-foreground ${className}`}
+        style={{ color: 'var(--foreground)' }}
       >
         {children}
       </motion.div>
@@ -55,7 +56,7 @@ export function Card({
   }
 
   return (
-    <div className={`${baseStyles} ${className}`}>
+    <div className={`${baseStyles} text-foreground ${className}`} style={{ color: 'var(--foreground)' }}>
       {children}
     </div>
   );

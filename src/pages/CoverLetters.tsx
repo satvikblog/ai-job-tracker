@@ -519,6 +519,7 @@ export function CoverLetters() {
                     value={formData.selectedJobId}
                     onChange={(e) => handleInputChange('selectedJobId', e.target.value)}
                     className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    style={{ color: 'var(--foreground)' }}
                   >
                     {Object.entries(groupedOptions).map(([group, options]) => (
                       <optgroup key={group} label={group}>
@@ -567,6 +568,7 @@ export function CoverLetters() {
                       value={formData.tone}
                       onChange={(e) => handleInputChange('tone', e.target.value)}
                       className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      style={{ color: 'var(--foreground)' }}
                     >
                       {toneOptions.map((option) => (
                         <option key={option.value} value={option.value} className="bg-background text-foreground">
@@ -631,33 +633,48 @@ export function CoverLetters() {
                   </div>
                 </div>
 
-                <Textarea
-                  label="Job Description *"
-                  placeholder="Paste the job description here for AI analysis..."
-                  rows={window.innerWidth < 640 ? 4 : 6}
-                  value={formData.jobDescription}
-                  onChange={(e) => handleInputChange('jobDescription', e.target.value)}
-                  variant="default"
-                  disabled={!!formData.selectedJobId}
-                />
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Job Description *
+                  </label>
+                  <textarea
+                    placeholder="Paste the job description here for AI analysis..." 
+                    rows={window.innerWidth < 640 ? 4 : 6}
+                    value={formData.jobDescription}
+                    onChange={(e) => handleInputChange('jobDescription', e.target.value)}
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                    style={{ color: 'var(--foreground)' }}
+                    disabled={!!formData.selectedJobId}
+                  />
+                </div>
 
-                <Textarea
-                  label="Your Relevant Experience"
-                  placeholder="Briefly describe your relevant experience and skills..."
-                  rows={5}
-                  value={formData.personalExperience}
-                  onChange={(e) => handleInputChange('personalExperience', e.target.value)}
-                  variant="default"
-                />
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Your Relevant Experience
+                  </label>
+                  <textarea
+                    placeholder="Briefly describe your relevant experience and skills..."
+                    rows={5}
+                    value={formData.personalExperience}
+                    onChange={(e) => handleInputChange('personalExperience', e.target.value)}
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                    style={{ color: 'var(--foreground)' }}
+                  />
+                </div>
 
-                <Textarea
-                  label="Why This Company?"
-                  placeholder="What interests you about this company specifically?"
-                  rows={5}
-                  value={formData.whyCompany}
-                  onChange={(e) => handleInputChange('whyCompany', e.target.value)}
-                  variant="default"
-                />
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Why This Company?
+                  </label>
+                  <textarea
+                    placeholder="What interests you about this company specifically?"
+                    rows={5}
+                    value={formData.whyCompany}
+                    onChange={(e) => handleInputChange('whyCompany', e.target.value)}
+                    className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                    style={{ color: 'var(--foreground)' }}
+                  />
+                </div>
 
                 <Button
                   onClick={handleGenerate}
@@ -726,6 +743,7 @@ export function CoverLetters() {
                   <div className="w-full">
                     <textarea
                       className="font-mono text-sm w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+                      style={{ color: 'var(--foreground)' }}
                       value={generatedContent}
                       onChange={(e) => setGeneratedContent(e.target.value)}
                       rows={window.innerWidth < 640 ? 15 : 20}
