@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { testConnection } from '../../lib/supabase';
 import toast from 'react-hot-toast';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -17,6 +18,7 @@ export function AuthForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+  const { colorScheme } = useTheme();
 
   const { signIn, signUp } = useAuth();
 
@@ -80,6 +82,20 @@ export function AuthForm() {
     }
   };
 
+  // Get gradient colors based on color scheme
+  const getGradientColors = () => {
+    switch (colorScheme) {
+      case 'yellow':
+        return 'from-yellow-400 via-purple-500 to-green-500';
+      case 'purple':
+        return 'from-purple-500 via-yellow-400 to-green-500';
+      case 'green':
+        return 'from-green-500 via-blue-500 to-purple-500';
+      default: // blue
+        return 'from-blue-500 via-purple-500 to-green-500';
+    }
+  };
+
   // Show configuration screen if not connected
   if (connectionStatus === 'disconnected') {
     return (
@@ -95,7 +111,7 @@ export function AuthForm() {
         >
           <Card className="p-8 border-card-border bg-card/80 backdrop-blur-md shadow-lg">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-warning to-error rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
                 <Settings className="w-8 h-8 text-white animate-pulse" />
               </div>
               <h1 className="text-2xl font-bold text-foreground">
@@ -107,9 +123,9 @@ export function AuthForm() {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-orange-900/30 border border-orange-500/70 rounded-lg p-4 shadow-inner">
-                <h3 className="text-orange-300 font-medium mb-2 tracking-wide">Setup Instructions:</h3>
-                <ol className="text-sm text-orange-200 space-y-2">
+              <div className="bg-yellow-500/20 border border-yellow-500/70 rounded-lg p-4 shadow-inner">
+                <h3 className="text-yellow-500 font-medium mb-2 tracking-wide">Setup Instructions:</h3>
+                <ol className="text-sm text-yellow-400 space-y-2">
                   <li>1. Create a Supabase project at supabase.com</li>
                   <li>2. Copy your project URL and anon key</li>
                   <li>3. Update the .env file with your credentials</li>
@@ -183,7 +199,7 @@ export function AuthForm() {
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
-            className="absolute rounded-full bg-primary/20"
+            className="absolute rounded-full bg-yellow-400/20"
             style={{
               width: `${particle.size}px`,
               height: `${particle.size}px`,
@@ -219,7 +235,7 @@ export function AuthForm() {
       
       {/* Animated Gradient Blob */}
       <motion.div
-        className="absolute w-96 h-96 rounded-full bg-gradient-to-r from-primary/30 to-secondary/30 blur-3xl"
+        className={`absolute w-96 h-96 rounded-full bg-gradient-to-r ${getGradientColors()} blur-3xl`}
         animate={{
           x: [50, -50, 50],
           y: [20, -20, 20],
@@ -236,7 +252,7 @@ export function AuthForm() {
       />
       
       <motion.div
-        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-secondary/30 to-accent/30 blur-3xl"
+        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-purple-500/30 to-yellow-400/30 blur-3xl"
         animate={{
           x: [-30, 30, -30],
           y: [-40, 40, -40],
@@ -268,7 +284,7 @@ export function AuthForm() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-lg relative">
+            <div className={`w-20 h-20 bg-gradient-to-br ${getGradientColors()} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-lg relative`}>
               <Sparkles className="w-10 h-10 text-white" />
               <motion.div
                 className="absolute inset-0 rounded-2xl border-2 border-white/20"
@@ -309,17 +325,17 @@ export function AuthForm() {
             >
               <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
                 connectionStatus === 'connected' 
-                  ? 'bg-success/20 text-success border border-success/30'
+                  ? 'bg-green-500/20 text-green-500 border border-green-500/30'
                   : connectionStatus === 'checking' 
-                  ? 'bg-warning/20 text-warning border border-warning/30'
-                  : 'bg-error/20 text-error border border-error/30'
+                  ? 'bg-yellow-500/20 text-yellow-500 border border-yellow-500/30'
+                  : 'bg-red-500/20 text-red-500 border border-red-500/30'
               }`}>
                 <div className={`w-2 h-2 rounded-full ${
                   connectionStatus === 'connected' 
-                    ? 'bg-success animate-pulse'
+                    ? 'bg-green-500 animate-pulse'
                     : connectionStatus === 'checking'
-                    ? 'bg-warning animate-pulse'
-                    : 'bg-error'
+                    ? 'bg-yellow-500 animate-pulse'
+                    : 'bg-red-500'
                 }`}></div>
                 <span>
                   {connectionStatus === 'connected' && 'Connected to Supabase'}
@@ -334,10 +350,10 @@ export function AuthForm() {
             <motion.div 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-3 bg-error/20 border border-error/50 rounded-lg flex items-center space-x-2"
+              className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center space-x-2"
             >
-              <AlertCircle className="w-4 h-4 text-error" />
-              <span className="text-error text-sm">{error}</span>
+              <AlertCircle className="w-4 h-4 text-red-500" />
+              <span className="text-red-500 text-sm">{error}</span>
             </motion.div>
           )}
 
@@ -428,7 +444,7 @@ export function AuthForm() {
                 setIsSignUp(!isSignUp);
                 setError('');
               }}
-              className="text-primary hover:text-primary-hover text-sm transition-colors"
+              className="text-blue-500 hover:text-blue-400 text-sm transition-colors"
             >
               {isSignUp 
                 ? 'Already have an account? Sign in' 

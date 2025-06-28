@@ -8,6 +8,7 @@ import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
 import { Search, Filter, MoreHorizontal, Edit, Trash2, ExternalLink, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
@@ -17,29 +18,69 @@ interface ApplicationTableProps {
   onDelete: (id: string) => void;
 }
 
-const statusColors = {
-  'applied': 'default',
-  'followed-up': 'primary',
-  'rejected': 'error',
-  'no-response': 'warning',
-  'offer': 'success',
-  'interview': 'secondary'
-} as const;
-
-const statusOptions = [
-  { value: '', label: 'All Status' },
-  { value: 'applied', label: 'Applied' },
-  { value: 'followed-up', label: 'Followed Up' },
-  { value: 'interview', label: 'Interview' },
-  { value: 'offer', label: 'Offer' },
-  { value: 'rejected', label: 'Rejected' },
-  { value: 'no-response', label: 'No Response' }
-];
-
 export function ApplicationTable({ applications, onEdit, onDelete }: ApplicationTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const { colorScheme } = useTheme();
+
+  // Get status colors based on color scheme
+  const getStatusColors = () => {
+    if (colorScheme === 'yellow') {
+      return {
+        'applied': 'default',
+        'followed-up': 'primary', // yellow
+        'rejected': 'error',
+        'no-response': 'warning',
+        'offer': 'success',
+        'interview': 'secondary' // purple
+      };
+    }
+    
+    if (colorScheme === 'purple') {
+      return {
+        'applied': 'default',
+        'followed-up': 'primary', // purple
+        'rejected': 'error',
+        'no-response': 'warning',
+        'offer': 'success',
+        'interview': 'secondary' // yellow
+      };
+    }
+    
+    if (colorScheme === 'green') {
+      return {
+        'applied': 'default',
+        'followed-up': 'primary', // green
+        'rejected': 'error',
+        'no-response': 'warning',
+        'offer': 'success',
+        'interview': 'secondary' // purple
+      };
+    }
+    
+    // Default blue theme
+    return {
+      'applied': 'default',
+      'followed-up': 'primary', // blue
+      'rejected': 'error',
+      'no-response': 'warning',
+      'offer': 'success',
+      'interview': 'secondary' // purple
+    };
+  };
+
+  const statusColors = getStatusColors();
+
+  const statusOptions = [
+    { value: '', label: 'All Status' },
+    { value: 'applied', label: 'Applied' },
+    { value: 'followed-up', label: 'Followed Up' },
+    { value: 'interview', label: 'Interview' },
+    { value: 'offer', label: 'Offer' },
+    { value: 'rejected', label: 'Rejected' },
+    { value: 'no-response', label: 'No Response' }
+  ];
 
   const filteredApplications = applications.filter(app => {
     const matchesSearch = app.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -49,9 +90,9 @@ export function ApplicationTable({ applications, onEdit, onDelete }: Application
   });
 
   return (
-    <Card>
+    <Card elevation="raised">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
-        <h2 className="text-lg font-semibold text-white">
+        <h2 className="text-lg font-semibold text-foreground">
           Applications ({filteredApplications.length})
         </h2>
         
@@ -80,7 +121,7 @@ export function ApplicationTable({ applications, onEdit, onDelete }: Application
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-700"
+          className="mb-6 p-4 bg-card-hover rounded-lg border border-card-border"
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Select
@@ -95,47 +136,47 @@ export function ApplicationTable({ applications, onEdit, onDelete }: Application
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-800 border-b border-gray-700">
+          <thead className="bg-card-hover border-b border-card-border">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                 Company & Role
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                 Applied On
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                 Source
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider">
                 Salary
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-muted uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-gray-900 divide-y divide-gray-700">
+          <tbody className="bg-card divide-y divide-card-border">
             {filteredApplications.map((application, index) => (
               <motion.tr
                 key={application.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="hover:bg-gray-800 transition-colors"
+                className="hover:bg-card-hover transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-white">
+                    <div className="text-sm font-medium text-foreground">
                       {application.job_title}
                     </div>
-                    <div className="text-sm text-gray-400">
+                    <div className="text-sm text-muted">
                       {application.company_name}
                     </div>
                     {application.location && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-muted-foreground">
                         📍 {application.location}
                       </div>
                     )}
@@ -146,13 +187,13 @@ export function ApplicationTable({ applications, onEdit, onDelete }: Application
                     {application.status.replace('-', ' ')}
                   </Badge>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   {format(new Date(application.applied_on), 'MMM dd, yyyy')}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                   {application.source_site}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
                   {application.salary || 'N/A'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -193,11 +234,11 @@ export function ApplicationTable({ applications, onEdit, onDelete }: Application
 
       {filteredApplications.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-gray-500">
+          <div className="text-muted">
             {searchTerm || statusFilter ? 'No applications match your filters.' : 'No applications found.'}
           </div>
           {!searchTerm && !statusFilter && (
-            <p className="text-gray-600 mt-2">
+            <p className="text-muted-foreground mt-2">
               Click "Add Application" to get started with tracking your job applications.
             </p>
           )}

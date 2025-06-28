@@ -17,11 +17,10 @@ export function ApplicationChart({ data }: ApplicationChartProps) {
   // Get colors based on theme and color scheme
   const getBarColor = (index: number) => {
     const colors = {
+      yellow: ['#eab308', '#facc15', '#fde047'],
       blue: ['#3b82f6', '#60a5fa', '#93c5fd'],
       purple: ['#8b5cf6', '#a78bfa', '#c4b5fd'],
-      green: ['#10b981', '#34d399', '#6ee7b7'],
-      red: ['#ef4444', '#f87171', '#fca5a5'],
-      gray: ['#6b7280', '#9ca3af', '#d1d5db']
+      green: ['#22c55e', '#4ade80', '#86efac']
     };
     
     const colorSet = colors[colorScheme as keyof typeof colors] || colors.blue;

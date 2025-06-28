@@ -3,51 +3,182 @@ import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { BarChart3, ArrowRight, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface StatusFlowChartProps {
   statusData: Record<string, number>;
 }
 
-const statusConfig = {
-  applied: { 
-    label: 'Applied', 
-    color: 'from-slate-600 to-slate-700', 
-    textColor: 'text-slate-300',
-    bgColor: 'bg-slate-600/20'
-  },
-  'followed-up': { 
-    label: 'Followed Up', 
-    color: 'from-primary-600 to-primary-700', 
-    textColor: 'text-primary-300',
-    bgColor: 'bg-primary-600/20'
-  },
-  interview: { 
-    label: 'Interview', 
-    color: 'from-secondary-600 to-secondary-700', 
-    textColor: 'text-secondary-300',
-    bgColor: 'bg-secondary-600/20'
-  },
-  offer: { 
-    label: 'Offer', 
-    color: 'from-success-600 to-success-700', 
-    textColor: 'text-success-300',
-    bgColor: 'bg-success-600/20'
-  },
-  rejected: { 
-    label: 'Rejected', 
-    color: 'from-error-600 to-error-700', 
-    textColor: 'text-error-300',
-    bgColor: 'bg-error-600/20'
-  },
-  'no-response': { 
-    label: 'No Response', 
-    color: 'from-warning-600 to-warning-700', 
-    textColor: 'text-warning-300',
-    bgColor: 'bg-warning-600/20'
-  }
-};
-
 export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
+  const { colorScheme } = useTheme();
+  
+  // Get status config based on color scheme
+  const getStatusConfig = () => {
+    if (colorScheme === 'yellow') {
+      return {
+        applied: { 
+          label: 'Applied', 
+          color: 'from-gray-600 to-gray-700', 
+          textColor: 'text-gray-300',
+          bgColor: 'bg-gray-600/20'
+        },
+        'followed-up': { 
+          label: 'Followed Up', 
+          color: 'from-yellow-500 to-yellow-600', 
+          textColor: 'text-yellow-400',
+          bgColor: 'bg-yellow-600/20'
+        },
+        interview: { 
+          label: 'Interview', 
+          color: 'from-purple-500 to-purple-600', 
+          textColor: 'text-purple-400',
+          bgColor: 'bg-purple-600/20'
+        },
+        offer: { 
+          label: 'Offer', 
+          color: 'from-green-500 to-green-600', 
+          textColor: 'text-green-400',
+          bgColor: 'bg-green-600/20'
+        },
+        rejected: { 
+          label: 'Rejected', 
+          color: 'from-red-500 to-red-600', 
+          textColor: 'text-red-400',
+          bgColor: 'bg-red-600/20'
+        },
+        'no-response': { 
+          label: 'No Response', 
+          color: 'from-yellow-600 to-yellow-700', 
+          textColor: 'text-yellow-500',
+          bgColor: 'bg-yellow-600/20'
+        }
+      };
+    }
+    
+    if (colorScheme === 'purple') {
+      return {
+        applied: { 
+          label: 'Applied', 
+          color: 'from-gray-600 to-gray-700', 
+          textColor: 'text-gray-300',
+          bgColor: 'bg-gray-600/20'
+        },
+        'followed-up': { 
+          label: 'Followed Up', 
+          color: 'from-purple-500 to-purple-600', 
+          textColor: 'text-purple-400',
+          bgColor: 'bg-purple-600/20'
+        },
+        interview: { 
+          label: 'Interview', 
+          color: 'from-yellow-500 to-yellow-600', 
+          textColor: 'text-yellow-400',
+          bgColor: 'bg-yellow-600/20'
+        },
+        offer: { 
+          label: 'Offer', 
+          color: 'from-green-500 to-green-600', 
+          textColor: 'text-green-400',
+          bgColor: 'bg-green-600/20'
+        },
+        rejected: { 
+          label: 'Rejected', 
+          color: 'from-red-500 to-red-600', 
+          textColor: 'text-red-400',
+          bgColor: 'bg-red-600/20'
+        },
+        'no-response': { 
+          label: 'No Response', 
+          color: 'from-yellow-600 to-yellow-700', 
+          textColor: 'text-yellow-500',
+          bgColor: 'bg-yellow-600/20'
+        }
+      };
+    }
+    
+    if (colorScheme === 'green') {
+      return {
+        applied: { 
+          label: 'Applied', 
+          color: 'from-gray-600 to-gray-700', 
+          textColor: 'text-gray-300',
+          bgColor: 'bg-gray-600/20'
+        },
+        'followed-up': { 
+          label: 'Followed Up', 
+          color: 'from-green-500 to-green-600', 
+          textColor: 'text-green-400',
+          bgColor: 'bg-green-600/20'
+        },
+        interview: { 
+          label: 'Interview', 
+          color: 'from-purple-500 to-purple-600', 
+          textColor: 'text-purple-400',
+          bgColor: 'bg-purple-600/20'
+        },
+        offer: { 
+          label: 'Offer', 
+          color: 'from-green-600 to-green-700', 
+          textColor: 'text-green-500',
+          bgColor: 'bg-green-600/20'
+        },
+        rejected: { 
+          label: 'Rejected', 
+          color: 'from-red-500 to-red-600', 
+          textColor: 'text-red-400',
+          bgColor: 'bg-red-600/20'
+        },
+        'no-response': { 
+          label: 'No Response', 
+          color: 'from-yellow-500 to-yellow-600', 
+          textColor: 'text-yellow-400',
+          bgColor: 'bg-yellow-600/20'
+        }
+      };
+    }
+    
+    // Default blue theme
+    return {
+      applied: { 
+        label: 'Applied', 
+        color: 'from-gray-600 to-gray-700', 
+        textColor: 'text-gray-300',
+        bgColor: 'bg-gray-600/20'
+      },
+      'followed-up': { 
+        label: 'Followed Up', 
+        color: 'from-blue-500 to-blue-600', 
+        textColor: 'text-blue-400',
+        bgColor: 'bg-blue-600/20'
+      },
+      interview: { 
+        label: 'Interview', 
+        color: 'from-purple-500 to-purple-600', 
+        textColor: 'text-purple-400',
+        bgColor: 'bg-purple-600/20'
+      },
+      offer: { 
+        label: 'Offer', 
+        color: 'from-green-500 to-green-600', 
+        textColor: 'text-green-400',
+        bgColor: 'bg-green-600/20'
+      },
+      rejected: { 
+        label: 'Rejected', 
+        color: 'from-red-500 to-red-600', 
+        textColor: 'text-red-400',
+        bgColor: 'bg-red-600/20'
+      },
+      'no-response': { 
+        label: 'No Response', 
+        color: 'from-yellow-500 to-yellow-600', 
+        textColor: 'text-yellow-400',
+        bgColor: 'bg-yellow-600/20'
+      }
+    };
+  };
+
+  const statusConfig = getStatusConfig();
   const totalApplications = Object.values(statusData).reduce((sum, count) => sum + count, 0);
   const statusEntries = Object.entries(statusData)
     .filter(([_, count]) => count > 0)
@@ -67,8 +198,8 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
   return (
     <Card className="bg-card border-card-border" elevation="raised">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary-accent rounded-xl flex items-center justify-center shadow-lg">
-          <BarChart3 className="w-5 h-5 text-secondary-foreground" />
+        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+          <BarChart3 className="w-5 h-5 text-white" />
         </div>
         <h2 className="text-lg font-semibold text-foreground">
           Application Status Flow
@@ -161,18 +292,18 @@ export function StatusFlowChart({ statusData }: StatusFlowChartProps) {
           {/* Flow Summary */}
           <div className="pt-4 border-t border-border">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mt-2">
-              <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 shadow-sm">
-                <div className="text-lg font-bold text-primary">{totalApplications}</div>
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 shadow-sm">
+                <div className="text-lg font-bold text-blue-500">{totalApplications}</div>
                 <div className="text-xs text-muted">Total Flow</div>
               </div>
-              <div className="bg-success/10 border border-success/30 rounded-lg p-3 shadow-sm">
-                <div className="text-lg font-bold text-success">
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 shadow-sm">
+                <div className="text-lg font-bold text-green-500">
                   {((statusData.interview || 0) + (statusData.offer || 0))}
                 </div>
                 <div className="text-xs text-muted">Positive Flow</div>
               </div>
-              <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 shadow-sm">
-                <div className="text-lg font-bold text-secondary">
+              <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 shadow-sm">
+                <div className="text-lg font-bold text-purple-500">
                   {statusData.offer || 0}
                 </div>
                 <div className="text-xs text-muted">Success Flow</div>

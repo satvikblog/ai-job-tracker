@@ -6,6 +6,7 @@ import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
 import { Building, MapPin, ExternalLink, Edit, Calendar, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
@@ -14,16 +15,57 @@ interface KanbanBoardProps {
   onEdit: (application: JobApplication) => void;
 }
 
-const columns = [
-  { id: 'applied', title: 'Applied', color: 'from-slate-600 to-slate-700', textColor: 'text-slate-300' },
-  { id: 'followed-up', title: 'Followed Up', color: 'from-primary-600 to-primary-700', textColor: 'text-primary-300' },
-  { id: 'interview', title: 'Interview', color: 'from-secondary-600 to-secondary-700', textColor: 'text-secondary-300' },
-  { id: 'offer', title: 'Offer', color: 'from-success-600 to-success-700', textColor: 'text-success-300' },
-  { id: 'rejected', title: 'Rejected', color: 'from-error-600 to-error-700', textColor: 'text-error-300' },
-  { id: 'no-response', title: 'No Response', color: 'from-warning-600 to-warning-700', textColor: 'text-warning-300' }
-];
-
 export function KanbanBoard({ applications, onEdit }: KanbanBoardProps) {
+  const { colorScheme } = useTheme();
+  
+  // Get column colors based on color scheme
+  const getColumnColors = () => {
+    if (colorScheme === 'yellow') {
+      return [
+        { id: 'applied', title: 'Applied', color: 'from-gray-600 to-gray-700', textColor: 'text-gray-300' },
+        { id: 'followed-up', title: 'Followed Up', color: 'from-yellow-500 to-yellow-600', textColor: 'text-yellow-400' },
+        { id: 'interview', title: 'Interview', color: 'from-purple-500 to-purple-600', textColor: 'text-purple-400' },
+        { id: 'offer', title: 'Offer', color: 'from-green-500 to-green-600', textColor: 'text-green-400' },
+        { id: 'rejected', title: 'Rejected', color: 'from-red-500 to-red-600', textColor: 'text-red-400' },
+        { id: 'no-response', title: 'No Response', color: 'from-yellow-600 to-yellow-700', textColor: 'text-yellow-500' }
+      ];
+    }
+    
+    if (colorScheme === 'purple') {
+      return [
+        { id: 'applied', title: 'Applied', color: 'from-gray-600 to-gray-700', textColor: 'text-gray-300' },
+        { id: 'followed-up', title: 'Followed Up', color: 'from-purple-500 to-purple-600', textColor: 'text-purple-400' },
+        { id: 'interview', title: 'Interview', color: 'from-yellow-500 to-yellow-600', textColor: 'text-yellow-400' },
+        { id: 'offer', title: 'Offer', color: 'from-green-500 to-green-600', textColor: 'text-green-400' },
+        { id: 'rejected', title: 'Rejected', color: 'from-red-500 to-red-600', textColor: 'text-red-400' },
+        { id: 'no-response', title: 'No Response', color: 'from-yellow-600 to-yellow-700', textColor: 'text-yellow-500' }
+      ];
+    }
+    
+    if (colorScheme === 'green') {
+      return [
+        { id: 'applied', title: 'Applied', color: 'from-gray-600 to-gray-700', textColor: 'text-gray-300' },
+        { id: 'followed-up', title: 'Followed Up', color: 'from-green-500 to-green-600', textColor: 'text-green-400' },
+        { id: 'interview', title: 'Interview', color: 'from-purple-500 to-purple-600', textColor: 'text-purple-400' },
+        { id: 'offer', title: 'Offer', color: 'from-green-600 to-green-700', textColor: 'text-green-500' },
+        { id: 'rejected', title: 'Rejected', color: 'from-red-500 to-red-600', textColor: 'text-red-400' },
+        { id: 'no-response', title: 'No Response', color: 'from-yellow-500 to-yellow-600', textColor: 'text-yellow-400' }
+      ];
+    }
+    
+    // Default blue theme
+    return [
+      { id: 'applied', title: 'Applied', color: 'from-gray-600 to-gray-700', textColor: 'text-gray-300' },
+      { id: 'followed-up', title: 'Followed Up', color: 'from-blue-500 to-blue-600', textColor: 'text-blue-400' },
+      { id: 'interview', title: 'Interview', color: 'from-purple-500 to-purple-600', textColor: 'text-purple-400' },
+      { id: 'offer', title: 'Offer', color: 'from-green-500 to-green-600', textColor: 'text-green-400' },
+      { id: 'rejected', title: 'Rejected', color: 'from-red-500 to-red-600', textColor: 'text-red-400' },
+      { id: 'no-response', title: 'No Response', color: 'from-yellow-500 to-yellow-600', textColor: 'text-yellow-400' }
+    ];
+  };
+
+  const columns = getColumnColors();
+
   const getApplicationsByStatus = (status: string) => {
     return applications.filter(app => app.status === status);
   };
@@ -36,11 +78,11 @@ export function KanbanBoard({ applications, onEdit }: KanbanBoardProps) {
         return (
           <div key={column.id} className="flex-shrink-0 w-80">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-100 flex items-center space-x-2">
+              <h3 className="font-semibold text-foreground flex items-center space-x-2">
                 <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${column.color}`}></div>
                 <span>{column.title}</span>
               </h3>
-              <Badge variant="default" className={`${column.textColor} bg-dark-800/50 border-slate-600`}>
+              <Badge variant="default" className={`${column.textColor} bg-card-hover border-card-border`}>
                 {columnApplications.length}
               </Badge>
             </div>
@@ -53,17 +95,17 @@ export function KanbanBoard({ applications, onEdit }: KanbanBoardProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <Card hover className="p-4 bg-dark-800/70 border border-slate-700/50">
+                  <Card hover className="p-4 bg-card/70 border border-card-border/50">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3 flex-1">
                         <div className={`w-12 h-12 bg-gradient-to-br ${column.color} rounded-xl flex items-center justify-center shadow-lg`}>
                           <Building className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-slate-100 text-sm truncate">
+                          <h4 className="font-medium text-foreground text-sm truncate">
                             {application.job_title}
                           </h4>
-                          <p className="text-sm text-slate-300 truncate">
+                          <p className="text-sm text-muted truncate">
                             {application.company_name}
                           </p>
                         </div>
@@ -79,26 +121,26 @@ export function KanbanBoard({ applications, onEdit }: KanbanBoardProps) {
                     </div>
 
                     {application.location && (
-                      <div className="flex items-center text-sm text-slate-400 mb-2">
+                      <div className="flex items-center text-sm text-muted mb-2">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span className="truncate">{application.location}</span>
                       </div>
                     )}
 
                     {application.salary && (
-                      <div className="flex items-center text-sm text-slate-400 mb-2">
+                      <div className="flex items-center text-sm text-muted mb-2">
                         <DollarSign className="w-4 h-4 mr-1" />
                         <span className="truncate">{application.salary}</span>
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-xs text-slate-500 mt-3 pt-3 border-t border-slate-700">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-3 pt-3 border-t border-card-border">
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-3 h-3" />
                         <span>Applied {format(new Date(application.applied_on), 'MMM dd')}</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="text-slate-400">{application.source_site}</span>
+                        <span className="text-muted">{application.source_site}</span>
                         {application.job_link && (
                           <Button
                             variant="ghost"
@@ -113,13 +155,13 @@ export function KanbanBoard({ applications, onEdit }: KanbanBoardProps) {
                     </div>
 
                     {application.next_follow_up_date && (
-                      <div className="mt-2 text-xs text-amber-400 bg-amber-900/20 border border-amber-600/30 rounded px-2 py-1">
+                      <div className="mt-2 text-xs text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 rounded px-2 py-1">
                         Follow up: {format(new Date(application.next_follow_up_date), 'MMM dd')}
                       </div>
                     )}
 
                     {application.notes && (
-                      <div className="mt-2 text-xs text-slate-400 bg-dark-900/50 rounded px-2 py-1 line-clamp-2">
+                      <div className="mt-2 text-xs text-muted bg-card-hover/50 rounded px-2 py-1 line-clamp-2">
                         {application.notes}
                       </div>
                     )}
@@ -128,7 +170,7 @@ export function KanbanBoard({ applications, onEdit }: KanbanBoardProps) {
               ))}
 
               {columnApplications.length === 0 && (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 text-muted">
                   <div className={`w-16 h-16 bg-gradient-to-br ${column.color} opacity-20 rounded-full flex items-center justify-center mx-auto mb-2`}>
                     <Building className="w-6 h-6" />
                   </div>

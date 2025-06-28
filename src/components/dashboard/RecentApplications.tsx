@@ -7,6 +7,7 @@ import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { ArrowRight, Building, MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { Database } from '../../lib/database.types';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
@@ -14,25 +15,65 @@ interface RecentApplicationsProps {
   applications: JobApplication[];
 }
 
-const statusColors = {
-  'applied': 'default',
-  'followed-up': 'primary',
-  'rejected': 'error',
-  'no-response': 'warning',
-  'offer': 'success',
-  'interview': 'secondary'
-} as const;
-
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   const navigate = useNavigate();
+  const { colorScheme } = useTheme();
   const recent = applications.slice(0, 5);
 
+  // Get status colors based on color scheme
+  const getStatusColors = () => {
+    if (colorScheme === 'yellow') {
+      return {
+        'applied': 'default',
+        'followed-up': 'primary', // yellow
+        'rejected': 'error',
+        'no-response': 'warning',
+        'offer': 'success',
+        'interview': 'secondary' // purple
+      };
+    }
+    
+    if (colorScheme === 'purple') {
+      return {
+        'applied': 'default',
+        'followed-up': 'primary', // purple
+        'rejected': 'error',
+        'no-response': 'warning',
+        'offer': 'success',
+        'interview': 'secondary' // yellow
+      };
+    }
+    
+    if (colorScheme === 'green') {
+      return {
+        'applied': 'default',
+        'followed-up': 'primary', // green
+        'rejected': 'error',
+        'no-response': 'warning',
+        'offer': 'success',
+        'interview': 'secondary' // purple
+      };
+    }
+    
+    // Default blue theme
+    return {
+      'applied': 'default',
+      'followed-up': 'primary', // blue
+      'rejected': 'error',
+      'no-response': 'warning',
+      'offer': 'success',
+      'interview': 'secondary' // purple
+    };
+  };
+
+  const statusColors = getStatusColors();
+
   return (
-    <Card className="bg-card border-card-border">
+    <Card className="bg-card border-card-border" elevation="raised">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary-accent rounded-xl flex items-center justify-center shadow-md">
-            <Calendar className="w-5 h-5 text-secondary-foreground" />
+          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+            <Calendar className="w-5 h-5 text-white" />
           </div>
           <h2 className="text-lg font-semibold text-foreground">
             Recent Applications
@@ -60,8 +101,8 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
             <div className="group flex items-center justify-between p-4 bg-card-hover/50 rounded-xl hover:bg-card-hover transition-all duration-300 border border-card-border hover:border-primary/30">
               <div className="flex-1">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
-                    <Building className="w-6 h-6 text-primary-foreground" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
+                    <Building className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">

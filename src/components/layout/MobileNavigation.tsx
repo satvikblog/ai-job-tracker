@@ -13,13 +13,13 @@ import {
 import { cn } from '../../utils/cn';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Jobs', href: '/applications', icon: Briefcase },
-  { name: 'Leads', href: '/job-opportunities', icon: Target },
-  { name: 'Resume', href: '/resume', icon: FileText },
-  { name: 'Letters', href: '/cover-letters', icon: Mail },
-  { name: 'Docs', href: '/documents', icon: FolderOpen },
-  { name: 'Follow', href: '/follow-ups', icon: Clock },
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard, color: 'text-blue-400' },
+  { name: 'Jobs', href: '/applications', icon: Briefcase, color: 'text-purple-400' },
+  { name: 'Leads', href: '/job-opportunities', icon: Target, color: 'text-yellow-400' },
+  { name: 'Resume', href: '/resume', icon: FileText, color: 'text-green-400' },
+  { name: 'Letters', href: '/cover-letters', icon: Mail, color: 'text-blue-400' },
+  { name: 'Docs', href: '/documents', icon: FolderOpen, color: 'text-yellow-400' },
+  { name: 'Follow', href: '/follow-ups', icon: Clock, color: 'text-purple-400' },
 ];
 
 export function MobileNavigation() {
@@ -40,6 +40,7 @@ export function MobileNavigation() {
         >
           <item.icon className={cn(
             "w-5 h-5",
+            item.color,
             theme === 'dark' && 'drop-shadow-glow'
           )} />
           <span>{item.name}</span>

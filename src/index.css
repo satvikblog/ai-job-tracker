@@ -3,82 +3,82 @@
 @tailwind utilities;
 
 @layer base {
-  /* Blue Theme (Default) */
+  /* Light Theme */
   :root {
-    /* Base colors - Improved contrast */
-    --background: 252, 252, 255;
-    --background-secondary: 248, 250, 252;
+    /* Base colors */
+    --background: 255, 255, 255;
+    --background-secondary: 250, 250, 255;
     --foreground: #111827;
     --muted: #4b5563;
     --muted-foreground: #1f2937;
     
-    /* Card colors - Subtle shadows and borders */
+    /* Card colors */
     --card: 255, 255, 255;
     --card-foreground: #111827;
     --card-hover: #f8fafc;
     --card-border: #e2e8f0;
     
-    /* Sidebar colors - Apple-inspired */
+    /* Sidebar colors */
     --sidebar: #f8fafc;
     --sidebar-hover: #f1f5f9;
     --sidebar-active: #eff6ff;
     --sidebar-text: #1d1d1f;
     --sidebar-text-hover: #000000;
-    --sidebar-text-active: #0066cc;
+    --sidebar-text-active: #2563eb;
     --sidebar-border: #e2e8f0;
-    --sidebar-border-active: #0066cc;
+    --sidebar-border-active: #2563eb;
     
-    /* Border and input colors - Refined */
+    /* Border and input colors */
     --border: #e2e8f0;
     --input: #f8fafc;
-    --ring: #60a5fa;
+    --ring: #3b82f6;
     
-    /* Primary colors - Apple blue */
-    --primary: 0 102 204;
+    /* Primary colors - Blue */
+    --primary: 37 99 235;
     --primary-foreground: #ffffff;
-    --primary-hover: #004d99;
-    --primary-accent: #0077e6;
+    --primary-hover: #1d4ed8;
+    --primary-accent: #60a5fa;
     
-    /* Secondary colors - Rich purple */
-    --secondary: 125 83 224;
+    /* Secondary colors - Purple */
+    --secondary: 139 92 246;
     --secondary-foreground: #ffffff;
-    --secondary-hover: #6d46c2;
-    --secondary-accent: #9061f9;
+    --secondary-hover: #7c3aed;
+    --secondary-accent: #a78bfa;
     
-    /* Accent colors - Teal */
-    --accent: 20 184 166;
+    /* Accent colors - Green */
+    --accent: 34 197 94;
     --accent-foreground: #ffffff;
-    --accent-hover: #0d9488;
-    --accent-accent: #2dd4bf;
+    --accent-hover: #16a34a;
+    --accent-accent: #4ade80;
     
-    /* Success colors - Vibrant green */
+    /* Success colors - Green */
     --success: 22 163 74;
     --success-foreground: #ffffff;
     --success-hover: #15803d;
     --success-accent: #4ade80;
     
-    /* Warning colors - Amber */
-    --warning: 217 119 6;
-    --warning-foreground: #ffffff;
-    --warning-hover: #b45309;
-    --warning-accent: #fbbf24;
+    /* Warning colors - Yellow */
+    --warning: 234 179 8;
+    --warning-foreground: #000000;
+    --warning-hover: #ca8a04;
+    --warning-accent: #facc15;
     
-    /* Error colors - Bright red */
+    /* Error colors - Red */
     --error: 220 38 38;
     --error-foreground: #ffffff;
     --error-hover: #b91c1c;
     --error-accent: #f87171;
     
-    /* Icon color - Improved visibility */
+    /* Icon color */
     --icon: #374151;
     
-    /* Shadow colors - Apple-inspired subtle shadows */
-    --shadow-glow-color: rgba(0, 102, 204, 0.25);
+    /* Shadow colors */
+    --shadow-glow-color: rgba(37, 99, 235, 0.25);
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     
-    /* Toast colors - Improved visibility */
+    /* Toast colors */
     --toast-background: #fcfcfc;
     --toast-foreground: #111827;
     --toast-border: #e5e7eb;
@@ -91,21 +91,22 @@
     --error-border: #fecaca;
   }
   
+  /* Dark Theme */
   .dark {
-    /* Base colors - GitHub dark inspired */
+    /* Base colors */
     --background: 10, 15, 25;
     --background-secondary: 17, 24, 39;
     --foreground: #f1f5f9;
     --muted: #8b949e;
     --muted-foreground: #c9d1d9;
     
-    /* Card colors - GitHub-inspired */
+    /* Card colors */
     --card: 22, 27, 34;
     --card-foreground: #e6edf3;
     --card-hover: #30363d;
     --card-border: #30363d;
     
-    /* Sidebar colors - GitHub dark */
+    /* Sidebar colors */
     --sidebar: #111827;
     --sidebar-hover: #161b22;
     --sidebar-active: #1f6feb;
@@ -115,57 +116,57 @@
     --sidebar-border: #30363d;
     --sidebar-border-active: #58a6ff;
     
-    /* Border and input colors - Enhanced GitHub dark */
+    /* Border and input colors */
     --border: #30363d;
     --input: #0d1117;
     --ring: #58a6ff;
     
-    /* Primary colors - GitHub blue */
-    --primary: 88 166 255;
+    /* Primary colors - Blue */
+    --primary: 59 130 246;
     --primary-foreground: #ffffff;
-    --primary-hover: #1a5fbf;
-    --primary-accent: #79c0ff;
+    --primary-hover: #3b82f6;
+    --primary-accent: #93c5fd;
     
-    /* Secondary colors - Rich purple */
-    --secondary: 139 148 255;
+    /* Secondary colors - Purple */
+    --secondary: 167 139 250;
     --secondary-foreground: #ffffff;
-    --secondary-hover: #8957e5;
-    --secondary-accent: #d2a8ff;
+    --secondary-hover: #a78bfa;
+    --secondary-accent: #c4b5fd;
     
-    /* Accent colors - GitHub teal */
-    --accent: 56 227 180;
-    --accent-foreground: #0d1117;
-    --accent-hover: #2ec4a0;
-    --accent-accent: #7ee787;
+    /* Accent colors - Green */
+    --accent: 52 211 153;
+    --accent-foreground: #000000;
+    --accent-hover: #34d399;
+    --accent-accent: #6ee7b7;
     
-    /* Success colors - GitHub green */
-    --success: 63 185 80;
-    --success-foreground: #0d1117;
-    --success-hover: #2ea043;
-    --success-accent: #7ee787;
+    /* Success colors - Green */
+    --success: 74 222 128;
+    --success-foreground: #000000;
+    --success-hover: #4ade80;
+    --success-accent: #86efac;
     
-    /* Warning colors - GitHub yellow */
-    --warning: 210 153 34;
-    --warning-foreground: #0d1117;
-    --warning-hover: #b27c00;
-    --warning-accent: #e3b341;
+    /* Warning colors - Yellow */
+    --warning: 250 204 21;
+    --warning-foreground: #000000;
+    --warning-hover: #facc15;
+    --warning-accent: #fde047;
     
-    /* Error colors - GitHub red */
-    --error: 248 81 73;
-    --error-foreground: #0d1117;
-    --error-hover: #da3633;
-    --error-accent: #ff7b72;
+    /* Error colors - Red */
+    --error: 248 113 113;
+    --error-foreground: #000000;
+    --error-hover: #f87171;
+    --error-accent: #fca5a5;
     
-    /* Icon color - GitHub icon color */
+    /* Icon color */
     --icon: #8b949e;
     
-    /* Shadow colors - GitHub-inspired */
-    --shadow-glow-color: rgba(88, 166, 255, 0.4);
+    /* Shadow colors */
+    --shadow-glow-color: rgba(59, 130, 246, 0.4);
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
     
-    /* Toast colors - GitHub-inspired */
+    /* Toast colors */
     --toast-background: #161b22;
     --toast-foreground: #e6edf3;
     --toast-border: #30363d;
@@ -178,160 +179,160 @@
     --error-border: #f85149;
   }
   
+  /* Yellow Theme */
+  .yellow {
+    --primary: 234 179 8;
+    --primary-foreground: #000000;
+    --primary-hover: #ca8a04;
+    --primary-accent: #facc15;
+    
+    --secondary: 139 92 246;
+    --secondary-foreground: #ffffff;
+    --secondary-hover: #7c3aed;
+    --secondary-accent: #a78bfa;
+    
+    --accent: 34 197 94;
+    --accent-foreground: #ffffff;
+    --accent-hover: #16a34a;
+    --accent-accent: #4ade80;
+    
+    --shadow-glow-color: rgba(234, 179, 8, 0.25);
+  }
+  
+  .yellow.dark {
+    --primary: 250 204 21;
+    --primary-foreground: #000000;
+    --primary-hover: #facc15;
+    --primary-accent: #fde047;
+    
+    --secondary: 167 139 250;
+    --secondary-foreground: #ffffff;
+    --secondary-hover: #a78bfa;
+    --secondary-accent: #c4b5fd;
+    
+    --accent: 52 211 153;
+    --accent-foreground: #000000;
+    --accent-hover: #34d399;
+    --accent-accent: #6ee7b7;
+    
+    --shadow-glow-color: rgba(250, 204, 21, 0.4);
+  }
+  
+  /* Blue Theme */
+  .blue {
+    --primary: 37 99 235;
+    --primary-foreground: #ffffff;
+    --primary-hover: #1d4ed8;
+    --primary-accent: #60a5fa;
+    
+    --secondary: 139 92 246;
+    --secondary-foreground: #ffffff;
+    --secondary-hover: #7c3aed;
+    --secondary-accent: #a78bfa;
+    
+    --accent: 34 197 94;
+    --accent-foreground: #ffffff;
+    --accent-hover: #16a34a;
+    --accent-accent: #4ade80;
+    
+    --shadow-glow-color: rgba(37, 99, 235, 0.25);
+  }
+  
+  .blue.dark {
+    --primary: 59 130 246;
+    --primary-foreground: #ffffff;
+    --primary-hover: #3b82f6;
+    --primary-accent: #93c5fd;
+    
+    --secondary: 167 139 250;
+    --secondary-foreground: #ffffff;
+    --secondary-hover: #a78bfa;
+    --secondary-accent: #c4b5fd;
+    
+    --accent: 52 211 153;
+    --accent-foreground: #000000;
+    --accent-hover: #34d399;
+    --accent-accent: #6ee7b7;
+    
+    --shadow-glow-color: rgba(59, 130, 246, 0.4);
+  }
+  
   /* Purple Theme */
   .purple {
-    --primary: 147 51 234;
-    --primary-foreground: #f8fafc;
-    --primary-hover: #9333ea;
-    --primary-accent: #a855f7;
+    --primary: 139 92 246;
+    --primary-foreground: #ffffff;
+    --primary-hover: #7c3aed;
+    --primary-accent: #a78bfa;
     
-    --secondary: 219 39 119;
-    --secondary-foreground: #ffffff;
-    --secondary-hover: #be185d;
-    --secondary-accent: #ec4899;
+    --secondary: 234 179 8;
+    --secondary-foreground: #000000;
+    --secondary-hover: #ca8a04;
+    --secondary-accent: #facc15;
     
-    --accent: 14 165 233;
+    --accent: 34 197 94;
     --accent-foreground: #ffffff;
-    --accent-hover: #0284c7;
-    --accent-accent: #38bdf8;
+    --accent-hover: #16a34a;
+    --accent-accent: #4ade80;
     
-    --shadow-glow-color: rgba(147, 51, 234, 0.25);
+    --shadow-glow-color: rgba(139, 92, 246, 0.25);
   }
   
   .purple.dark {
-    --primary: 168 85 247;
+    --primary: 167 139 250;
     --primary-foreground: #ffffff;
-    --primary-hover: #8b31d8;
-    --primary-accent: #c084fc;
+    --primary-hover: #a78bfa;
+    --primary-accent: #c4b5fd;
     
-    --secondary: 236 72 153;
-    --secondary-foreground: #ffffff;
-    --secondary-hover: #be185d;
-    --secondary-accent: #f472b6;
+    --secondary: 250 204 21;
+    --secondary-foreground: #000000;
+    --secondary-hover: #facc15;
+    --secondary-accent: #fde047;
     
-    --accent: 56 189 248;
-    --accent-foreground: #0d1117;
-    --accent-hover: #0ea5e9;
-    --accent-accent: #7dd3fc;
+    --accent: 52 211 153;
+    --accent-foreground: #000000;
+    --accent-hover: #34d399;
+    --accent-accent: #6ee7b7;
     
-    --shadow-glow-color: rgba(168, 85, 247, 0.4);
+    --shadow-glow-color: rgba(167, 139, 250, 0.4);
   }
   
   /* Green Theme */
   .green {
-    --primary: 20 184 166;
-    --primary-foreground: #f8fafc;
-    --primary-hover: #0f766e;
-    --primary-accent: #2dd4bf;
+    --primary: 34 197 94;
+    --primary-foreground: #ffffff;
+    --primary-hover: #16a34a;
+    --primary-accent: #4ade80;
     
-    --secondary: 6 182 212;
+    --secondary: 139 92 246;
     --secondary-foreground: #ffffff;
-    --secondary-hover: #0e7490;
-    --secondary-accent: #22d3ee;
+    --secondary-hover: #7c3aed;
+    --secondary-accent: #a78bfa;
     
-    --accent: 124 58 237;
-    --accent-foreground: #ffffff;
-    --accent-hover: #7c3aed;
-    --accent-accent: #a78bfa;
+    --accent: 234 179 8;
+    --accent-foreground: #000000;
+    --accent-hover: #ca8a04;
+    --accent-accent: #facc15;
     
-    --shadow-glow-color: rgba(20, 184, 166, 0.25);
+    --shadow-glow-color: rgba(34, 197, 94, 0.25);
   }
   
   .green.dark {
-    --primary: 45 212 191;
-    --primary-foreground: #0d1117;
-    --primary-hover: #0d9488;
-    --primary-accent: #5eead4;
+    --primary: 74 222 128;
+    --primary-foreground: #000000;
+    --primary-hover: #4ade80;
+    --primary-accent: #86efac;
     
-    --secondary: 34 211 238;
-    --secondary-foreground: #0d1117;
-    --secondary-hover: #06b6d4;
-    --secondary-accent: #67e8f9;
-    
-    --accent: 165 180 252;
-    --accent-foreground: #ffffff;
-    --accent-hover: #818cf8;
-    --accent-accent: #c7d2fe;
-    
-    --shadow-glow-color: rgba(45, 212, 191, 0.4);
-  }
-  
-  /* Red Theme */
-  .red {
-    --primary: 220 38 38;
-    --primary-foreground: #f8fafc;
-    --primary-hover: #b91c1c;
-    --primary-accent: #ef4444;
-    
-    --secondary: 124 58 237;
+    --secondary: 167 139 250;
     --secondary-foreground: #ffffff;
-    --secondary-hover: #6d28d9;
-    --secondary-accent: #8b5cf6;
+    --secondary-hover: #a78bfa;
+    --secondary-accent: #c4b5fd;
     
-    --accent: 234 88 12;
-    --accent-foreground: #ffffff;
-    --accent-hover: #c2410c;
-    --accent-accent: #fb923c;
+    --accent: 250 204 21;
+    --accent-foreground: #000000;
+    --accent-hover: #facc15;
+    --accent-accent: #fde047;
     
-    --shadow-glow-color: rgba(220, 38, 38, 0.25);
-  }
-  
-  .red.dark {
-    --primary: 239 68 68;
-    --primary-foreground: #0d1117;
-    --primary-hover: #b91c1c;
-    --primary-accent: #f87171;
-    
-    --secondary: 139 92 246;
-    --secondary-foreground: #ffffff;
-    --secondary-hover: #7c3aed;
-    --secondary-accent: #a78bfa;
-    
-    --accent: 245 158 11;
-    --accent-foreground: #0d1117;
-    --accent-hover: #d97706;
-    --accent-accent: #fbbf24;
-    
-    --shadow-glow-color: rgba(239, 68, 68, 0.4);
-  }
-  
-  /* Gray Theme */
-  .gray {
-    --primary: 75 85 99;
-    --primary-foreground: #f8fafc;
-    --primary-hover: #374151;
-    --primary-accent: #6b7280;
-    
-    --secondary: 124 58 237;
-    --secondary-foreground: #ffffff;
-    --secondary-hover: #6d28d9;
-    --secondary-accent: #8b5cf6;
-    
-    --accent: 2 132 199;
-    --accent-foreground: #ffffff;
-    --accent-hover: #0369a1;
-    --accent-accent: #0ea5e9;
-    
-    --shadow-glow-color: rgba(75, 85, 99, 0.25);
-  }
-  
-  .gray.dark {
-    --primary: 156 163 175;
-    --primary-foreground: #0d1117;
-    --primary-hover: #6b7280;
-    --primary-accent: #d1d5db;
-    
-    --secondary: 139 92 246;
-    --secondary-foreground: #ffffff;
-    --secondary-hover: #7c3aed;
-    --secondary-accent: #a78bfa;
-    
-    --accent: 14 165 233;
-    --accent-foreground: #0d1117;
-    --accent-hover: #0284c7;
-    --accent-accent: #38bdf8;
-    
-    --shadow-glow-color: rgba(156, 163, 175, 0.4);
+    --shadow-glow-color: rgba(74, 222, 128, 0.4);
   }
 }
 
@@ -366,7 +367,7 @@
 @layer components {
   /* Text gradient */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary-accent to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
     background-size: 300% 100%;
     animation: gradient 8s ease infinite;
   }
@@ -388,7 +389,7 @@
   /* Status indicators */
   .status-applied { @apply bg-muted/20 text-muted-foreground border-muted/50 font-medium; }
   .status-followed-up { @apply bg-primary/20 text-primary border-primary/50 font-medium; }
-  .status-interview { @apply bg-accent/20 text-accent border-accent/50 font-medium; }
+  .status-interview { @apply bg-secondary/20 text-secondary border-secondary/50 font-medium; }
   .status-offer { @apply bg-success/20 text-success border-success/50 font-medium; }
   .status-rejected { @apply bg-error/20 text-error border-error/50 font-medium; }
   .status-no-response { @apply bg-warning/20 text-warning border-warning/50 font-medium; }

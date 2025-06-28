@@ -13,11 +13,10 @@ export function ThemeToggle({ variant = 'icon', className = '' }: ThemeTogglePro
   const [showColorPicker, setShowColorPicker] = React.useState(false);
 
   const colorSchemes = [
-    { name: 'blue', label: 'Blue (Default)', color: '#3b82f6' },
+    { name: 'yellow', label: 'Yellow', color: '#eab308' },
+    { name: 'blue', label: 'Blue', color: '#3b82f6' },
     { name: 'purple', label: 'Purple', color: '#8b5cf6' },
-    { name: 'green', label: 'Green', color: '#10b981' },
-    { name: 'red', label: 'Red', color: '#ef4444' },
-    { name: 'gray', label: 'Gray', color: '#6b7280' },
+    { name: 'green', label: 'Green', color: '#22c55e' },
   ];
 
   const getThemeIcon = () => {

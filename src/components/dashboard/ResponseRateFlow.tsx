@@ -10,7 +10,7 @@ interface ResponseRateFlowProps {
 }
 
 export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
-  const { theme } = useTheme();
+  const { theme, colorScheme } = useTheme();
   const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   
   const totalApps = applications.length;
@@ -27,27 +27,67 @@ export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
   const responseRate = totalApps > 0 ? (responded / totalApps) * 100 : 0;
   const positiveRate = totalApps > 0 ? (positive / totalApps) * 100 : 0;
   
+  // Get colors based on color scheme
+  const getChartColors = () => {
+    if (colorScheme === 'yellow') {
+      return {
+        total: isDarkMode ? '#94a3b8' : '#64748b',
+        responses: isDarkMode ? '#facc15' : '#eab308',
+        positive: isDarkMode ? '#4ade80' : '#22c55e',
+        pending: isDarkMode ? '#a78bfa' : '#8b5cf6'
+      };
+    }
+    
+    if (colorScheme === 'purple') {
+      return {
+        total: isDarkMode ? '#94a3b8' : '#64748b',
+        responses: isDarkMode ? '#a78bfa' : '#8b5cf6',
+        positive: isDarkMode ? '#4ade80' : '#22c55e',
+        pending: isDarkMode ? '#facc15' : '#eab308'
+      };
+    }
+    
+    if (colorScheme === 'green') {
+      return {
+        total: isDarkMode ? '#94a3b8' : '#64748b',
+        responses: isDarkMode ? '#4ade80' : '#22c55e',
+        positive: isDarkMode ? '#a78bfa' : '#8b5cf6',
+        pending: isDarkMode ? '#facc15' : '#eab308'
+      };
+    }
+    
+    // Default blue theme
+    return {
+      total: isDarkMode ? '#94a3b8' : '#64748b',
+      responses: isDarkMode ? '#60a5fa' : '#3b82f6',
+      positive: isDarkMode ? '#4ade80' : '#22c55e',
+      pending: isDarkMode ? '#facc15' : '#eab308'
+    };
+  };
+  
+  const chartColors = getChartColors();
+  
   // Prepare data for chart
   const chartData = [
     {
       name: 'Total',
       value: totalApps,
-      fill: isDarkMode ? '#94a3b8' : '#64748b'
+      fill: chartColors.total
     },
     {
       name: 'Responses',
       value: responded,
-      fill: isDarkMode ? '#60a5fa' : '#3b82f6'
+      fill: chartColors.responses
     },
     {
       name: 'Positive',
       value: positive,
-      fill: isDarkMode ? '#34d399' : '#10b981'
+      fill: chartColors.positive
     },
     {
       name: 'Pending',
       value: pending,
-      fill: isDarkMode ? '#fbbf24' : '#f59e0b'
+      fill: chartColors.pending
     }
   ];
 
@@ -69,8 +109,8 @@ export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
   return (
     <Card className="bg-card border-card-border" elevation="raised">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-accent rounded-xl flex items-center justify-center shadow-lg">
-          <BarChart className="w-5 h-5 text-accent-foreground" />
+        <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg">
+          <BarChart className="w-5 h-5 text-white" />
         </div>
         <h2 className="text-lg font-semibold text-foreground">
           Response Rate Flow
@@ -122,22 +162,22 @@ export function ResponseRateFlow({ applications }: ResponseRateFlowProps) {
           {/* Flow Metrics */}
           <div className="pt-4 border-t border-border/80">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 shadow-sm">
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">Response Rate</span>
+                  <CheckCircle className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm font-medium text-blue-500">Response Rate</span>
                 </div>
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-2xl font-bold text-blue-500">
                   {responseRate.toFixed(1)}%
                 </div>
               </div>
               
-              <div className="bg-success/10 border border-success/30 rounded-lg p-4 shadow-sm">
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center space-x-2 mb-2">
-                  <TrendingUp className="w-4 h-4 text-success" />
-                  <span className="text-sm font-medium text-success">Success Rate</span>
+                  <TrendingUp className="w-4 h-4 text-green-500" />
+                  <span className="text-sm font-medium text-green-500">Success Rate</span>
                 </div>
-                <div className="text-2xl font-bold text-success">
+                <div className="text-2xl font-bold text-green-500">
                   {positiveRate.toFixed(1)}%
                 </div>
               </div>
