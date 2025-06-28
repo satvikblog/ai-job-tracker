@@ -5,8 +5,6 @@ import { Button } from '../ui/Button';
 import { ArrowRight, Building, MapPin, Calendar, ExternalLink, Briefcase } from 'lucide-react';
 import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 
 type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 
