@@ -142,7 +142,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('company_name')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="e.g., Ultra Violet Cyber, Google, Microsoft"
                 />
               </div>
@@ -160,7 +160,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('job_title')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="e.g., SOC L1 Analyst, Software Engineer"
                 />
               </div>
@@ -184,11 +184,11 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
               </label>
               <select
                 {...register('source_site')}
-                className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 <option value="">Select source...</option>
                 {sourceOptions.map((option) => (
-                  <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+                  <option key={option.value} value={option.value} className="bg-background text-foreground">
                     {option.label}
                   </option>
                 ))}
@@ -201,11 +201,11 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
               </label>
               <select
                 {...register('status')}
-                className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 <option value="">Select status...</option>
                 {statusOptions.map((option) => (
-                  <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
+                  <option key={option.value} value={option.value} className="bg-background text-foreground">
                     {option.label}
                   </option>
                 ))}
@@ -226,7 +226,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </label>
                 <input
                   {...register('career_page_company')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   placeholder="Which company's career page did you use?"
                 />
               </div>
@@ -247,7 +247,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 <input
                   type="date"
                   {...register('applied_on')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                 />
               </div>
             </div>
@@ -265,7 +265,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 <input
                   type="date"
                   {...register('next_follow_up_date')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                 />
               </div>
             </div>
@@ -294,7 +294,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('salary')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="e.g., ₹12,00,000 - ₹15,00,000 LPA"
                 />
               </div>
@@ -312,7 +312,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('location')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="e.g., Hyderabad, Bangalore, Remote"
                 />
               </div>
@@ -332,7 +332,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('job_link')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="https://www.linkedin.com/jobs/view/4243216600/..."
                 />
               </div>
@@ -356,7 +356,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
             <textarea
               {...register('notes')}
               rows={4}
-              className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
+              className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 resize-none"
               placeholder="Job Description&#10;Position: Security Analyst – L1&#10;&#10;Department: Security Operations Center&#10;&#10;Job Summary&#10;We are seeking a proactive and detail-oriented Level 1 SOC Analyst..."
             />
           </div>
@@ -385,7 +385,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('contact_name')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="HR Manager / Recruiter name"
                 />
               </div>
@@ -403,7 +403,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('contact_email')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="recruiter@company.com"
                 />
               </div>
@@ -423,7 +423,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('contact_linkedin')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="linkedin.com/in/contact-name"
                 />
               </div>
@@ -441,7 +441,7 @@ export function ApplicationForm({ isOpen, onClose, onSubmit, application }: Appl
                 </div>
                 <input
                   {...register('contact_phone')}
-                  className="w-full px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
+                  className="w-full px-4 py-3 bg-input border-border backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 pl-10"
                   placeholder="+91 98765 43210"
                 />
               </div>
