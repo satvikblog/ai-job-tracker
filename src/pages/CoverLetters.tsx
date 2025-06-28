@@ -3,11 +3,13 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Modal } from '../components/ui/Modal';
+import { ResumeSelector } from '../components/documents/ResumeSelector';
 import { Textarea } from '../components/ui/Textarea';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
-import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare, FileText } from 'lucide-react';
+import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare, FileText, Loader } from 'lucide-react';
 import { useJobApplications } from '../hooks/useJobApplications';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
+import { useGeminiAI } from '../hooks/useGeminiAI';
 import { PDFParser } from '../components/documents/PDFParser';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
@@ -40,6 +42,7 @@ export function CoverLetters() {
   const [formData, setFormData] = useState({
     selectedJobId: '',
     selectedResumeId: '',
+    resumeContent: '',
     jobSource: 'linkedin', // 'linkedin', 'ai_resume', or 'manual'
     companyName: '',
     jobTitle: '',
@@ -52,9 +55,10 @@ export function CoverLetters() {
   
   const [linkedInJobs, setLinkedInJobs] = useState<LinkedInJob[]>([]);
   const [aiResumeJobs, setAiResumeJobs] = useState<AIResumeData[]>([]);
-  const [documents, setDocuments] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [isPDFParserOpen, setIsPDFParserOpen] = useState(false);
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+  const [isGeneratingWithGemini, setIsGeneratingWithGemini] = useState(false);
   
   const { applications } = useJobApplications();
   const { 
@@ -66,31 +70,17 @@ export function CoverLetters() {
     resetState,
     setGeneratedContent
   } = useAIGenerationService();
+  
+  const {
+    loading: geminiLoading,
+    error: geminiError,
+    generateCoverLetterContent
+  } = useGeminiAI();
 
   // Fetch LinkedIn jobs and AI Resume data on component mount
   useEffect(() => {
     fetchJobData();
-    fetchDocuments();
   }, []);
-
-  const fetchDocuments = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      
-      const { data, error } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('user_id', user.id)
-        .in('file_type', ['resume', 'cover-letter'])
-        .order('uploaded_on', { ascending: false });
-        
-      if (error) throw error;
-      setDocuments(data || []);
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    }
-  };
 
   const fetchJobData = async () => {
     try {
@@ -123,11 +113,13 @@ export function CoverLetters() {
   };
 
   const handleParsedContent = (content: string) => {
-    setFormData(prev => ({
-      ...prev,
-      personalExperience: content
-    }));
+    setFormData(prev => ({ ...prev, resumeContent: content }));
     setIsPDFParserOpen(false);
+  };
+
+  const handleResumeSelected = (content: string) => {
+    setFormData(prev => ({ ...prev, resumeContent: content }));
+    setIsResumeModalOpen(false);
   };
 
   // Combine job options from different sources
@@ -159,26 +151,6 @@ export function CoverLetters() {
       ...linkedInOptions,
       ...aiResumeOptions,
       ...applicationOptions
-    ];
-  };
-
-  // Get resume options from documents
-  const getResumeOptions = () => {
-    const baseOptions = [
-      { value: '', label: 'No resume selected', group: 'Select Resume' }
-    ];
-    
-    const resumeOptions = documents
-      .filter(doc => doc.file_type === 'resume')
-      .map(doc => ({
-        value: doc.id,
-        label: doc.file_name,
-        group: 'My Resumes'
-      }));
-    
-    return [
-      ...baseOptions,
-      ...resumeOptions
     ];
   };
 
@@ -223,6 +195,47 @@ export function CoverLetters() {
           }));
         }
       }
+    }
+  };
+
+  const handleGenerateWithGemini = async () => {
+    if (!formData.resumeContent) {
+      toast.error('Please select or parse a resume first');
+      return;
+    }
+
+    if (!formData.companyName || !formData.jobTitle) {
+      toast.error('Please fill in company name and job title');
+      return;
+    }
+
+    if (!formData.jobDescription.trim()) {
+      toast.error('Please enter a job description');
+      return;
+    }
+
+    try {
+      setIsGeneratingWithGemini(true);
+      
+      const result = await generateCoverLetterContent(
+        formData.resumeContent,
+        formData.companyName,
+        formData.jobTitle,
+        formData.jobDescription
+      );
+      
+      setFormData(prev => ({
+        ...prev,
+        personalExperience: result.relevantExperience,
+        whyCompany: result.whyCompany
+      }));
+      
+      toast.success('Content generated successfully with Gemini AI!');
+    } catch (error: any) {
+      console.error('Error generating with Gemini:', error);
+      toast.error(error.message || 'Failed to generate content with Gemini');
+    } finally {
+      setIsGeneratingWithGemini(false);
     }
   };
 
@@ -516,31 +529,45 @@ export function CoverLetters() {
                 {/* Resume Selection */}
                 <div className="w-full">
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Select Resume (Optional)
+                    Resume Content
                   </label>
-                  <div className="flex space-x-2">
-                    <select
-                      value={formData.selectedResumeId}
-                      onChange={(e) => handleInputChange('selectedResumeId', e.target.value)}
-                      className="flex-1 px-4 py-3 bg-dark-800/30 border-slate-600/50 backdrop-blur-xl border rounded-lg focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                    >
-                      {getResumeOptions().map((option) => (
-                        <option key={option.value} value={option.value} className="bg-dark-800 text-slate-100">
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsResumeModalOpen(true)}
+                        leftIcon={<FileText className="w-4 h-4" />}
+                        className="flex-1"
+                      >
+                        Select Resume
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsPDFParserOpen(true)}
+                        leftIcon={<Upload className="w-4 h-4" />}
+                        className="flex-1"
+                      >
+                        Parse Resume
+                      </Button>
+                    </div>
+                    {formData.resumeContent && (
+                      <div className="bg-dark-800/30 border border-primary-500/30 rounded-lg p-2 text-xs text-slate-300">
+                        <div className="flex items-center justify-between">
+                          <span className="text-primary-300 font-medium">Resume content loaded</span>
+                          <span className="text-slate-400">{formData.resumeContent.length} characters</span>
+                        </div>
+                      </div>
+                    )}
                     <Button
-                      variant="outline"
-                      onClick={() => setIsPDFParserOpen(true)}
-                      leftIcon={<FileText className="w-4 h-4" />}
+                      onClick={handleGenerateWithGemini}
+                      disabled={isGeneratingWithGemini || !formData.resumeContent || !formData.jobDescription}
+                      leftIcon={isGeneratingWithGemini ? <Loader className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+                      variant="primary"
+                      className="w-full"
                     >
-                      Parse Resume
+                      Generate with Gemini AI
                     </Button>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Select a resume to extract your experience or parse a new one
-                  </p>
                 </div>
 
                 <Textarea
@@ -707,17 +734,34 @@ export function CoverLetters() {
       </div>
       
       {/* PDF Parser Modal */}
-      <Modal
-        isOpen={isPDFParserOpen}
-        onClose={() => setIsPDFParserOpen(false)}
-        title="Parse Resume"
-        size="lg"
-      >
-        <PDFParser 
-          onParsedContent={handleParsedContent} 
+      {isPDFParserOpen && (
+        <Modal
+          isOpen={isPDFParserOpen}
           onClose={() => setIsPDFParserOpen(false)}
-        />
-      </Modal>
+          title="Parse Resume"
+          size="lg"
+        >
+          <PDFParser 
+            onParsedContent={handleParsedContent} 
+            onClose={() => setIsPDFParserOpen(false)}
+          />
+        </Modal>
+      )}
+      
+      {/* Resume Selector Modal */}
+      {isResumeModalOpen && (
+        <Modal
+          isOpen={isResumeModalOpen}
+          onClose={() => setIsResumeModalOpen(false)}
+          title="Select Resume"
+          size="lg"
+        >
+          <ResumeSelector 
+            onResumeSelected={handleResumeSelected} 
+            onClose={() => setIsResumeModalOpen(false)}
+          />
+        </Modal>
+      )}
     </>
   );
 }
