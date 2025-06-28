@@ -3,7 +3,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { ThemeToggle } from '../layout/ThemeToggle';
-import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle, ArrowRight, Eye, EyeOff, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { testConnection } from '../../lib/supabase';
@@ -187,13 +187,14 @@ export function AuthForm() {
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4 transition-colors duration-300 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {Array.from({ length: 20 }).map((_, i) => (
+        {/* Floating Particles */}
+        {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full bg-primary/10"
             style={{
-              width: `${Math.random() * 4 + 1}px`,
-              height: `${Math.random() * 4 + 1}px`,
+              width: `${Math.random() * 6 + 2}px`,
+              height: `${Math.random() * 6 + 2}px`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
             }}
@@ -214,7 +215,7 @@ export function AuthForm() {
               scale: [1, 1.5, 1, 1.5]
             }}
             transition={{
-              duration: Math.random() * 20 + 10,
+              duration: Math.random() * 20 + 15,
               repeat: Infinity,
               repeatType: "reverse",
               delay: Math.random() * 5,
@@ -226,7 +227,7 @@ export function AuthForm() {
       
       {/* Animated Gradient Blobs */}
       <motion.div
-        className={`absolute w-96 h-96 rounded-full bg-gradient-to-r ${getGradientColors()} blur-3xl opacity-20`}
+        className={`absolute w-[500px] h-[500px] rounded-full bg-gradient-to-r ${getGradientColors()} blur-[100px] opacity-20`}
         animate={{
           x: [50, -50, 50],
           y: [20, -20, 20],
@@ -234,7 +235,7 @@ export function AuthForm() {
           rotate: [0, 10, 0]
         }}
         transition={{
-          duration: 15,
+          duration: 20,
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut"
@@ -243,7 +244,7 @@ export function AuthForm() {
       />
       
       <motion.div
-        className="absolute w-80 h-80 rounded-full bg-gradient-to-r from-purple-500/20 to-yellow-400/20 blur-3xl opacity-20"
+        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-r from-purple-500/20 to-yellow-400/20 blur-[80px] opacity-20"
         animate={{
           x: [-30, 30, -30],
           y: [-40, 40, -40],
@@ -251,7 +252,7 @@ export function AuthForm() {
           rotate: [0, -10, 0]
         }}
         transition={{
-          duration: 18,
+          duration: 25,
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut"
@@ -441,7 +442,7 @@ export function AuthForm() {
                 isLoading={loading}
                 disabled={connectionStatus !== 'connected'} 
                 glow={true}
-                rightIcon={<ArrowRight className="w-5 h-5" />}
+                rightIcon={loading ? <Loader className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
               >
                 {isSignUp ? 'Create Account' : 'Sign In'}
               </Button>
