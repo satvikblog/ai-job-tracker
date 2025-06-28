@@ -403,7 +403,7 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-primary to-secondary rounded border border-primary/20;
+    @apply bg-gradient-to-b from-primary to-secondary rounded border border-primary border-opacity-20;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
