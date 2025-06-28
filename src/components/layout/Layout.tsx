@@ -4,7 +4,7 @@ import { Sidebar } from './Sidebar';
 import { MobileNavigation } from './MobileNavigation';
 import { ThemeToggle } from './ThemeToggle';
 import { Toaster } from 'react-hot-toast';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 
