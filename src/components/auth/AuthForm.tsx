@@ -269,7 +269,7 @@ export function AuthForm() {
         animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }}
         className="w-full max-w-md relative z-10"
       >
-        <Card className="p-8 border-card-border/80 bg-card/90 backdrop-blur-xl shadow-lg">
+        <Card className="p-8 border-card-border/80 bg-card/90 backdrop-blur-xl shadow-lg rounded-2xl">
           <motion.div 
             className="text-center mb-8"
             initial={{ scale: 0.9, opacity: 0 }}
