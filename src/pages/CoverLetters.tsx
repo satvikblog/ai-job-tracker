@@ -6,7 +6,7 @@ import { Modal } from '../components/ui/Modal';
 import { ResumeSelector } from '../components/documents/ResumeSelector';
 import { Textarea } from '../components/ui/Textarea';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
-import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare, FileText, Loader } from 'lucide-react';
+import { Mail, Sparkles, Copy, Download, Save, Send, Zap, Target, Brain, MessageSquare, FileText, Loader, Upload } from 'lucide-react';
 import { useJobApplications } from '../hooks/useJobApplications';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
 import { useGeminiAI } from '../hooks/useGeminiAI';
