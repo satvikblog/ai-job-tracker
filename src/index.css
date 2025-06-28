@@ -13,7 +13,7 @@
     --muted-foreground: #334155;
     
     /* Card colors */
-    --card: #ffffff;
+    --card: 255, 255, 255;
     --card-foreground: #0f172a;
     --card-hover: #f8fafc;
     --card-border: #e2e8f0;
@@ -93,7 +93,7 @@
     --muted-foreground: #cbd5e1;
     
     /* Card colors */
-    --card: #1e293b;
+    --card: 30, 41, 59;
     --card-foreground: #f8fafc;
     --card-hover: #334155;
     --card-border: #334155;

@@ -26,7 +26,7 @@ export default {
         'muted-foreground': 'var(--muted-foreground)',
         
         card: {
-          DEFAULT: 'var(--card)',
+          DEFAULT: 'rgb(var(--card) / <alpha-value>)',
           foreground: 'var(--card-foreground)',
           hover: 'var(--card-hover)',
           border: 'var(--card-border)',
