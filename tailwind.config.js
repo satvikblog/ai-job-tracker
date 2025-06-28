@@ -48,14 +48,14 @@ export default {
         ring: 'var(--ring)',
         
         primary: {
-          DEFAULT: 'var(--primary)',
+          DEFAULT: 'rgb(var(--primary-rgb) / <alpha-value>)',
           foreground: 'var(--primary-foreground)',
           hover: 'var(--primary-hover)',
           accent: 'var(--primary-accent)',
         },
         
         secondary: {
-          DEFAULT: 'var(--secondary)',
+          DEFAULT: 'rgb(var(--secondary-rgb) / <alpha-value>)',
           foreground: 'var(--secondary-foreground)',
           hover: 'var(--secondary-hover)',
           accent: 'var(--secondary-accent)',
