@@ -194,11 +194,57 @@ Write a concise, professional paragraph (100-150 words) for the "Why This Compan
     }
   };
 
+  const generateResumeContent = async (
+    resumeContent: string,
+    jobDescription: string
+  ): Promise<string> => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const apiKey = await getGeminiAPIKey();
+      
+      if (!apiKey) {
+        throw new Error('Gemini API key not found. Please add it in Settings > API Keys.');
+      }
+
+      const prompt = `
+You are an expert resume writer and ATS (Applicant Tracking System) optimizer. Your task is to provide tailored resume suggestions based on the provided resume content and job description.
+
+Focus on extracting key skills, keywords, and responsibilities from the job description, and suggest how the user can incorporate them into their resume's professional summary, experience section (with action verbs and quantifiable achievements), and technical skills section.
+
+The output should be in plain text, clearly structured with headings and bullet points.
+
+Resume Content:
+${resumeContent}
+
+Job Description:
+${jobDescription}
+
+Provide suggestions for:
+1. **Keyword Optimization**: List 5-10 critical keywords from the job description.
+2. **Professional Summary**: Suggest a 2-3 sentence summary tailored to this role.
+3. **Experience Section**: Provide 3-5 examples of quantifiable achievements using strong action verbs relevant to the job.
+4. **Technical Skills**: List 5-8 technical skills directly mentioned or implied.
+5. **ATS Tips**: Give 3-5 general ATS optimization tips.
+`;
+
+      const generatedText = await callGeminiAPI(prompt, apiKey);
+      return generatedText.trim();
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
     generateRelevantExperience,
     generateWhyCompany,
-    generateCoverLetterContent
+    generateCoverLetterContent,
+    generateResumeContent
   };
 }
