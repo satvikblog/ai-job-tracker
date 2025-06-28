@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Textarea } from '../components/ui/Textarea';
+import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
 import { ProgressScreen } from '../components/ui/ProgressScreen';
-import { FileText, Sparkles, Copy, Download, Save, Zap, Target, Brain, TrendingUp } from 'lucide-react';
+import { FileText, Sparkles, Copy, Download, Save, Zap, Target, Brain, TrendingUp, Upload, Loader } from 'lucide-react';
 import { useAIGenerationService } from '../hooks/useAIGenerationService';
+import { useGeminiAI } from '../hooks/useGeminiAI';
+import { PDFParser } from '../components/documents/PDFParser';
+import { ResumeSelector } from '../components/documents/ResumeSelector';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -33,6 +37,7 @@ interface AIResumeData {
 export function ResumeGenerator() {
   const [formData, setFormData] = useState({
     selectedJobId: '',
+    resumeContent: '',
     companyName: '',
     jobTitle: '',
     jobDescription: ''
@@ -41,6 +46,9 @@ export function ResumeGenerator() {
   const [aiResumeJobs, setAiResumeJobs] = useState<AIResumeData[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [selectedAiResume, setSelectedAiResume] = useState<AIResumeData | null>(null);
+  const [isPDFParserOpen, setIsPDFParserOpen] = useState(false);
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+  const [isGeneratingWithGemini, setIsGeneratingWithGemini] = useState(false);
   
   const { 
     loading, 
@@ -51,6 +59,12 @@ export function ResumeGenerator() {
     resetState,
     setGeneratedContent 
   } = useAIGenerationService();
+
+  const {
+    loading: geminiLoading,
+    error: geminiError,
+    generateRelevantExperience
+  } = useGeminiAI();
 
   // Fetch AI Resume jobs on component mount
   useEffect(() => {
@@ -101,6 +115,16 @@ export function ResumeGenerator() {
         }));
       }
     }
+  };
+
+  const handleParsedContent = (content: string) => {
+    setFormData(prev => ({ ...prev, resumeContent: content }));
+    setIsPDFParserOpen(false);
+  };
+
+  const handleResumeSelected = (content: string) => {
+    setFormData(prev => ({ ...prev, resumeContent: content }));
+    setIsResumeModalOpen(false);
   };
 
   const handleGenerate = async () => {
@@ -190,6 +214,41 @@ export function ResumeGenerator() {
     }
   };
 
+  const handleGenerateWithGemini = async () => {
+    if (!formData.resumeContent) {
+      toast.error('Please select or parse a resume first');
+      return;
+    }
+
+    if (!formData.companyName || !formData.jobTitle) {
+      toast.error('Please fill in company name and job title');
+      return;
+    }
+
+    if (!formData.jobDescription.trim()) {
+      toast.error('Please enter a job description');
+      return;
+    }
+
+    try {
+      setIsGeneratingWithGemini(true);
+      
+      const result = await generateRelevantExperience(
+        formData.resumeContent,
+        formData.jobDescription
+      );
+      
+      setGeneratedContent(result);
+      
+      toast.success('Resume suggestions generated successfully with Gemini AI!');
+    } catch (error: any) {
+      console.error('Error generating with Gemini:', error);
+      toast.error(error.message || 'Failed to generate content with Gemini');
+    } finally {
+      setIsGeneratingWithGemini(false);
+    }
+  };
+
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(generatedContent);
     toast.success('Copied to clipboard!');
@@ -220,6 +279,36 @@ export function ResumeGenerator() {
           <p className="text-slate-400">Loading job opportunities...</p>
         </div>
       </div>
+      
+      {/* PDF Parser Modal */}
+      {isPDFParserOpen && (
+        <Modal
+          isOpen={isPDFParserOpen}
+          onClose={() => setIsPDFParserOpen(false)}
+          title="Parse Resume"
+          size="lg"
+        >
+          <PDFParser 
+            onParsedContent={handleParsedContent} 
+            onClose={() => setIsPDFParserOpen(false)}
+          />
+        </Modal>
+      )}
+      
+      {/* Resume Selector Modal */}
+      {isResumeModalOpen && (
+        <Modal
+          isOpen={isResumeModalOpen}
+          onClose={() => setIsResumeModalOpen(false)}
+          title="Select Resume"
+          size="lg"
+        >
+          <ResumeSelector 
+            onResumeSelected={handleResumeSelected} 
+            onClose={() => setIsResumeModalOpen(false)}
+          />
+        </Modal>
+      )}
     );
   }
 
@@ -344,6 +433,52 @@ export function ResumeGenerator() {
                     variant="glass"
                     disabled={!!formData.selectedJobId}
                   />
+                </div>
+
+                {/* Resume Selection */}
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Resume Content (Optional)
+                  </label>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsResumeModalOpen(true)}
+                        leftIcon={<FileText className="w-4 h-4" />}
+                        className="flex-1"
+                      >
+                        Select Resume
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsPDFParserOpen(true)}
+                        leftIcon={<Upload className="w-4 h-4" />}
+                        className="flex-1"
+                      >
+                        Parse Resume
+                      </Button>
+                    </div>
+                    {formData.resumeContent && (
+                      <div className="bg-dark-800/30 border border-primary-500/30 rounded-lg p-2 text-xs text-slate-300">
+                        <div className="flex items-center justify-between">
+                          <span className="text-primary-300 font-medium">Resume content loaded</span>
+                          <span className="text-slate-400">{formData.resumeContent.length} characters</span>
+                        </div>
+                      </div>
+                    )}
+                    {formData.resumeContent && (
+                      <Button
+                        onClick={handleGenerateWithGemini}
+                        disabled={isGeneratingWithGemini || !formData.resumeContent || !formData.jobDescription}
+                        leftIcon={isGeneratingWithGemini ? <Loader className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+                        variant="primary"
+                        className="w-full"
+                      >
+                        Generate with Gemini AI
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="w-full">
