@@ -2,7 +2,12 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { supabase } from './lib/supabase';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.js?url';
 import './index.css';
+
+// Configure PDF.js worker globally
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 // Log Supabase connection status for debugging
 console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not set');

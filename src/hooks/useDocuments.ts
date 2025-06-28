@@ -7,9 +7,6 @@ import * as pdfjsLib from 'pdfjs-dist';
 
 type Document = Database['public']['Tables']['documents']['Row'];
 
-// Set the worker source
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).href;
-
 export function useDocuments() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);

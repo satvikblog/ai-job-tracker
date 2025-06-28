@@ -5,9 +5,6 @@ import { FileText, Upload, Check, X, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Set the worker source
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).href;
-
 interface PDFParserProps {
   onParsedContent: (content: string) => void;
   onClose?: () => void;
