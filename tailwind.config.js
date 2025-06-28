@@ -18,8 +18,8 @@ export default {
       colors: {
         // Semantic color tokens
         background: {
-          DEFAULT: 'var(--background)',
-          secondary: 'var(--background-secondary)',
+          DEFAULT: 'rgb(var(--background) / <alpha-value>)',
+          secondary: 'rgb(var(--background-secondary) / <alpha-value>)',
         },
         foreground: 'var(--foreground)',
         muted: 'var(--muted)',

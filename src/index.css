@@ -5,8 +5,8 @@
 @layer base {
   /* Blue Theme (Default) */
   .blue {
-    --background: #f8fafc;
-    --background-secondary: #f1f5f9;
+    --background: 248 250 252;
+    --background-secondary: 241 245 249;
     --foreground: #0f172a;
     --muted: #64748b;
     --muted-foreground: #334155;
@@ -80,8 +80,8 @@
   }
   
   .blue.dark {
-    --background: #0f172a;
-    --background-secondary: #1e293b;
+    --background: 15 23 42;
+    --background-secondary: 30 41 59;
     --foreground: #f8fafc;
     --muted: #94a3b8;
     --muted-foreground: #cbd5e1;
@@ -399,7 +399,7 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-background/30 rounded;
+    @apply bg-slate-200/30 rounded;
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
