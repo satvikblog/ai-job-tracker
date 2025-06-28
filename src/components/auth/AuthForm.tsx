@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
 import { ThemeToggle } from '../layout/ThemeToggle';
-import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, CheckCircle, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { testConnection } from '../../lib/supabase';
 import toast from 'react-hot-toast';
-import { useTheme } from '../../contexts/ThemeContext';
 
 export function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -18,7 +14,6 @@ export function AuthForm() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
-  const { colorScheme } = useTheme();
 
   const { signIn, signUp } = useAuth();
 
@@ -75,16 +70,16 @@ export function AuthForm() {
   // Configuration screen if not connected
   if (connectionStatus === 'disconnected') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-background-secondary">
         <div className="absolute top-4 right-4">
           <ThemeToggle />
         </div>
         
         <div className="w-full max-w-md">
-          <Card className="p-6">
+          <div className="backdrop-blur-xl bg-card/80 border border-card-border/50 rounded-2xl p-8 shadow-lg">
             <div className="text-center mb-6">
               <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Settings className="w-8 h-8 text-white" />
+                <AlertCircle className="w-8 h-8 text-white" />
               </div>
               <h1 className="text-xl font-bold text-foreground">
                 Configuration Required
@@ -105,36 +100,35 @@ export function AuthForm() {
                 </ol>
               </div>
 
-              <Button
+              <button
                 onClick={checkConnection}
-                className="w-full"
-                leftIcon={<Settings className="w-4 h-4" />}
+                className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-xl font-medium transition-all duration-200 hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background shadow-md"
               >
                 Test Connection
-              </Button>
+              </button>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-background-secondary">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
       
       <div className="w-full max-w-md">
-        <Card className="p-8 shadow-lg rounded-xl">
-          <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
-              <Sparkles className="w-8 h-8 text-white" />
+        <div className="backdrop-blur-xl bg-card/80 border border-card-border/50 rounded-2xl p-8 shadow-lg">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-primary/80 to-secondary/80 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <User className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
               {isSignUp ? 'Create Account' : 'Welcome Back'}
             </h1>
-            <p className="text-muted mt-1">
+            <p className="text-muted">
               {isSignUp ? 'Sign up to get started' : 'Sign in to your account'}
             </p>
             
@@ -156,64 +150,88 @@ export function AuthForm() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {isSignUp && (
-              <Input
-                label="Full Name"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                leftIcon={<User className="w-5 h-5 text-muted" />}
-                required
-                placeholder="Enter your full name"
-                size="lg"
-                className="w-full"
-              />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-foreground">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User className="w-5 h-5 text-muted" />
+                  </div>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                    placeholder="Enter your full name"
+                    className="w-full pl-10 pr-4 py-3 bg-input/70 backdrop-blur-sm border border-border rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 transition-all duration-200"
+                  />
+                </div>
+              </div>
             )}
             
-            <Input
-              label="Email Address"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              leftIcon={<Mail className="w-5 h-5 text-muted" />}
-              required
-              placeholder="Enter your email"
-              size="lg"
-              className="w-full"
-            />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-foreground">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="w-5 h-5 text-muted" />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="Enter your email"
+                  className="w-full pl-10 pr-4 py-3 bg-input/70 backdrop-blur-sm border border-border rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 transition-all duration-200"
+                />
+              </div>
+            </div>
             
-            <div className="relative">
-              <Input
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                leftIcon={<Lock className="w-5 h-5 text-muted" />}
-                required
-                placeholder="Enter your password"
-                minLength={6}
-                size="lg"
-                className="w-full pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-foreground transition-colors"
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-foreground">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="w-5 h-5 text-muted" />
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="Enter your password"
+                  minLength={6}
+                  className="w-full pl-10 pr-12 py-3 bg-input/70 backdrop-blur-sm border border-border rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted/80 transition-all duration-200"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
 
             <div className="pt-2">
-              <Button
+              <button
                 type="submit"
-                className="w-full py-4 rounded-xl text-base"
-                isLoading={loading}
-                rightIcon={loading ? undefined : <ArrowRight className="w-5 h-5" />}
-                glow
+                className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-xl font-medium transition-all duration-200 hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background shadow-md flex items-center justify-center space-x-2"
+                disabled={loading}
               >
-                {isSignUp ? 'Create Account' : 'Sign In'}
-              </Button>
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <span>{isSignUp ? 'Create Account' : 'Sign In'}</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
             </div>
           </form>
 
@@ -239,7 +257,7 @@ export function AuthForm() {
               <span>Secure authentication powered by Supabase</span>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
