@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { supabase } from './lib/supabase';
 import * as pdfjsLib from 'pdfjs-dist';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.js?url';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import './index.css';
 
 // Configure PDF.js worker globally
