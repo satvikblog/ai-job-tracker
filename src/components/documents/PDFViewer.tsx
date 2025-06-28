@@ -7,7 +7,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { supabase } from '../../lib/supabase';
 
 // Set the worker source
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.js', import.meta.url).href;
 
 interface PDFViewerProps {
   url: string;
