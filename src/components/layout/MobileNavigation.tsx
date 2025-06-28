@@ -10,6 +10,7 @@ import {
   Clock,
   Target
 } from 'lucide-react';
+import { cn } from '../../utils/cn';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -30,16 +31,17 @@ export function MobileNavigation() {
         <NavLink
           key={item.name}
           to={item.href}
-          className={({ isActive }) => `
-            flex flex-col items-center space-y-1 p-2 rounded-lg text-xs font-medium transition-all duration-200
-            min-w-[60px] text-center
-            ${isActive
-              ? 'text-primary bg-primary/10 border border-primary/30'
-              : 'text-muted hover:text-foreground border border-transparent'
-            }
-          `}
+          className={({ isActive }) => cn(
+            "flex flex-col items-center space-y-1 p-2 rounded-lg text-xs font-medium transition-all duration-200 min-w-[60px] text-center border",
+            isActive
+              ? "text-primary bg-primary/10 border-primary/30"
+              : "text-muted hover:text-foreground border-transparent"
+          )}
         >
-          <item.icon className={`w-5 h-5 ${theme === 'dark' ? 'drop-shadow-glow' : ''} ${isActive ? 'text-primary' : ''}`} />
+          <item.icon className={cn(
+            "w-5 h-5",
+            theme === 'dark' && 'drop-shadow-glow'
+          )} />
           <span>{item.name}</span>
         </NavLink>
       ))}
