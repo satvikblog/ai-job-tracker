@@ -3,8 +3,8 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { ThemeToggle } from '../layout/ThemeToggle';
-import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Sparkles, Mail, Lock, User, AlertCircle, Settings, CheckCircle, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { testConnection } from '../../lib/supabase';
 import toast from 'react-hot-toast';
@@ -17,6 +17,7 @@ export function AuthForm() {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
   const { colorScheme } = useTheme();
 
@@ -342,85 +343,105 @@ export function AuthForm() {
             <motion.div 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center space-x-2"
+              className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl flex items-center space-x-3"
             >
-              <AlertCircle className="w-4 h-4 text-red-500" />
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
               <span className="text-red-500 text-sm">{error}</span>
             </motion.div> 
           )}
 
           <motion.form 
             onSubmit={handleSubmit} 
-            className="space-y-4"
+            className="space-y-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {isSignUp && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-              >
-                <Input
-                  label="Full Name"
-                  type="text"
-                  className="rounded-xl shadow-md mb-2"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  leftIcon={<User className="w-4 h-4" />}
-                  required
-                  placeholder="Enter your full name"
-                />
-              </motion.div>
-            )}
+            <AnimatePresence mode="wait">
+              {isSignUp && (
+                <motion.div
+                  key="fullname"
+                  initial={{ opacity: 0, height: 0, y: -20 }}
+                  animate={{ opacity: 1, height: 'auto', y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Input
+                    label="Full Name"
+                    type="text"
+                    className="rounded-xl shadow-md mb-2"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    leftIcon={<User className="w-5 h-5 text-muted" />}
+                    required
+                    placeholder="Enter your full name"
+                    size="lg"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
             >
               <Input
-                label="Email"
+                label="Email Address"
                 type="email"
                 className="rounded-xl shadow-md mb-2"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                leftIcon={<Mail className="w-4 h-4" />}
+                leftIcon={<Mail className="w-5 h-5 text-muted" />}
                 required
                 placeholder="Enter your email"
+                size="lg"
               />
             </motion.div>
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
             >
-              <Input
-                label="Password"
-                type="password"
-                className="rounded-xl shadow-md mb-2"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                leftIcon={<Lock className="w-4 h-4" />}
-                required
-                placeholder="Enter your password"
-                minLength={6}
-              />
+              <div className="relative">
+                <Input
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  className="rounded-xl shadow-md mb-2 pr-12"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  leftIcon={<Lock className="w-5 h-5 text-muted" />}
+                  rightIcon={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  }
+                  required
+                  placeholder="Enter your password"
+                  minLength={6}
+                  size="lg"
+                />
+              </div>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="pt-2"
             >
               <Button
                 type="submit"
-                className="w-full rounded-xl py-3 shadow-lg"
+                className="w-full rounded-xl py-4 text-base shadow-lg"
                 isLoading={loading}
                 disabled={connectionStatus !== 'connected'} 
                 glow={true}
+                rightIcon={<ArrowRight className="w-5 h-5" />}
               >
                 {isSignUp ? 'Create Account' : 'Sign In'}
               </Button>
@@ -431,7 +452,7 @@ export function AuthForm() {
             className="mt-6 text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
           >
             <button
               type="button"
@@ -453,11 +474,24 @@ export function AuthForm() {
               className="mt-4 text-xs text-muted text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.5 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
             >
               By creating an account, you agree to our Terms of Service and Privacy Policy.
             </motion.div>
           )}
+          
+          {/* Connection Status Footer */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="mt-8 pt-6 border-t border-card-border/30"
+          >
+            <div className="flex items-center justify-center space-x-2 text-xs text-muted">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span>Secure authentication powered by Supabase</span>
+            </div>
+          </motion.div>
         </Card>
       </motion.div>
     </div>
