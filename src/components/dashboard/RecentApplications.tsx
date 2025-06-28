@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
 import { ArrowRight, Building, MapPin, Calendar, ExternalLink, Briefcase } from 'lucide-react';
 import { Database } from '../../lib/database.types';
 import { format } from 'date-fns';
