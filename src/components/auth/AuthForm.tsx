@@ -335,7 +335,7 @@ export function AuthForm() {
                   {connectionStatus === 'disconnected' && 'Connection failed'}
                 </span>
               </div>
-            </motion.div>
+            </motion.div> 
           </motion.div>
 
           {error && (
@@ -365,7 +365,7 @@ export function AuthForm() {
                 <Input
                   label="Full Name"
                   type="text"
-                  className="rounded-xl shadow-sm"
+                  className="rounded-xl shadow-md"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   leftIcon={<User className="w-4 h-4" />}
@@ -383,7 +383,7 @@ export function AuthForm() {
               <Input
                 label="Email"
                 type="email"
-                className="rounded-xl shadow-sm"
+                className="rounded-xl shadow-md"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 leftIcon={<Mail className="w-4 h-4" />}
@@ -400,7 +400,7 @@ export function AuthForm() {
               <Input
                 label="Password"
                 type="password"
-                className="rounded-xl shadow-sm"
+                className="rounded-xl shadow-md"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 leftIcon={<Lock className="w-4 h-4" />}
@@ -417,7 +417,7 @@ export function AuthForm() {
             >
               <Button
                 type="submit"
-                className="w-full rounded-xl py-3 shadow-md"
+                className="w-full rounded-xl py-3 shadow-lg"
                 isLoading={loading}
                 disabled={connectionStatus !== 'connected'}
                 glow={true}

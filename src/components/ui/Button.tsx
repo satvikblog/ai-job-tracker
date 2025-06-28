@@ -4,25 +4,25 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../utils/cn';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm",
+  "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm shadow-md",
   {
     variants: {
       variant: {
-        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-md font-semibold tracking-wide !text-primary-foreground",
-        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-md font-semibold tracking-wide !text-secondary-foreground",
-        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors !text-foreground hover:!text-primary shadow-sm",
+        primary: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary/20 shadow-lg font-semibold tracking-wide !text-primary-foreground",
+        secondary: "bg-secondary hover:bg-secondary-hover text-secondary-foreground border border-secondary/20 shadow-lg font-semibold tracking-wide !text-secondary-foreground",
+        outline: "border border-border hover:border-primary hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors !text-foreground hover:!text-primary shadow-md",
         ghost: "hover:bg-card-hover text-foreground hover:text-primary font-medium transition-colors !text-foreground hover:!text-primary",
-        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-md font-semibold tracking-wide !text-error-foreground",
-        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-md font-semibold tracking-wide !text-success-foreground",
-        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-md font-semibold tracking-wide !text-accent-foreground",
+        danger: "bg-error hover:bg-error-hover text-error-foreground border border-error/20 shadow-lg font-semibold tracking-wide !text-error-foreground",
+        success: "bg-success hover:bg-success-hover text-success-foreground border border-success/20 shadow-lg font-semibold tracking-wide !text-success-foreground",
+        accent: "bg-accent hover:bg-accent-hover text-accent-foreground border border-accent/20 shadow-lg font-semibold tracking-wide !text-accent-foreground",
       },
       size: {
         sm: "px-3 py-2 text-xs",
-        md: "px-4 py-2.5 text-sm",
-        lg: "px-6 py-3 text-base",
+        md: "px-4 py-3 text-sm",
+        lg: "px-6 py-3.5 text-base",
       },
       glow: {
-        true: "shadow-glow hover:shadow-glow-lg transition-all duration-300",
+        true: "shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:translate-y-[-2px]",
         false: "",
       },
     },
@@ -65,7 +65,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.97 }}
       className={cn(buttonVariants({ variant, size, glow, className }))}
       disabled={disabled || isLoading}
       ref={ref}
